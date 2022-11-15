@@ -1,7 +1,7 @@
 // Add compose gradle plugin
 plugins {
-    kotlin("multiplatform") version "1.5.31"
-    id("org.jetbrains.compose") version "1.0.0-beta1"
+    kotlin("multiplatform") version "1.7.20"
+    id("org.jetbrains.compose") version "1.2.1"
 }
 group = "com.theapache64.benchart"
 version = "1.0.0-alpha01"
