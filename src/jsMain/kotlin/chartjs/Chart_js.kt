@@ -43,8 +43,11 @@ external val SubTitle: dynamic = definedExternally
 
 external class Chart {
     companion object {
+        @Suppress("MemberVisibilityCanBePrivate")
         fun register(vararg elements: dynamic)
     }
+
+
 
     constructor(context: String, options: ChartConfiguration)
     constructor(context: CanvasRenderingContext2D, options: ChartConfiguration)

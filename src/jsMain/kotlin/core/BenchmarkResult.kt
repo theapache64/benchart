@@ -1,28 +1,32 @@
 package core
 
+import FormData
+
 class InvalidBenchmarkDataException(message: String?) : Throwable(message)
 class InvalidFrameDurationNodeException(message: String?) : Throwable(message)
 class InvalidFrameOverrunNodeException(message: String?) : Throwable(message)
 
 data class BenchmarkResult(
     val title: String,
+    val fileAndTestName : String,
     val frameDurationMs: Map<String, Float>,
-    val frameOverrunMs: Map<String, Float>?,
+    val frameOverrunMs: Map<String, Float>,
 ) {
     companion object {
-        private const val KEY_FRAME_DURATION_MS = "frameDurationCpuMs"
-        private const val KEY_FRAME_OVERRUN_MS = "frameOverrunMs"
+        const val KEY_FRAME_DURATION_MS = "frameDurationCpuMs"
+        const val KEY_FRAME_OVERRUN_MS = "frameOverrunMs"
         private const val KEY_TRACES = "Traces"
 
-        fun parse(input: String): BenchmarkResult {
+        fun parse(form: FormData): BenchmarkResult {
+            val input = form.data
             val lines = input.split("\n")
             if (lines.size != 3 && lines.size != 4) {
                 throw InvalidBenchmarkDataException("Invalid benchmark input : '$input'. Expected either 3 or 4 lines, but found ${lines.size}")
             }
 
-            val title = lines.first().trim()
-            if(title.startsWith(KEY_FRAME_DURATION_MS) || title.startsWith(KEY_FRAME_OVERRUN_MS)){
-                throw InvalidBenchmarkDataException("title missing. First line should be title but found '$title'")
+            val fileAndTestName = lines.first().trim()
+            if(fileAndTestName.startsWith(KEY_FRAME_DURATION_MS) || fileAndTestName.startsWith(KEY_FRAME_OVERRUN_MS)){
+                throw InvalidBenchmarkDataException("fileAndTestName missing. First line should be fileAndTestName but found '$fileAndTestName'")
             }
 
             val lastLine = lines.last().trim()
@@ -38,11 +42,12 @@ data class BenchmarkResult(
             val frameOverrunMs = if (thirdLine.startsWith(KEY_FRAME_OVERRUN_MS)) {
                 parseOverrunMs(thirdLine)
             } else {
-                null
+                emptyMap()
             }
 
             return BenchmarkResult(
-                title = title,
+                title = form.title,
+                fileAndTestName = fileAndTestName,
                 frameDurationMs = frameDurationMs,
                 frameOverrunMs = frameOverrunMs
             )
