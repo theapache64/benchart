@@ -14,7 +14,13 @@ repositories {
 
 kotlin {
     js(IR) {
-        browser()
+        browser{
+            testTask {
+                useKarma {
+                    useChrome()
+                }
+            }
+        }
         binaries.executable()
     }
     sourceSets {
@@ -22,6 +28,15 @@ kotlin {
             dependencies {
                 implementation(compose.web.core)
                 implementation(compose.runtime)
+                implementation(npm("chart.js", "3.9.1", generateExternals = false))
+
+
+            }
+        }
+
+        val jsTest by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-test-js")
             }
         }
     }
