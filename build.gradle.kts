@@ -14,13 +14,7 @@ repositories {
 
 kotlin {
     js(IR) {
-        browser{
-            testTask {
-                useKarma {
-                    useChrome()
-                }
-            }
-        }
+        browser()
         binaries.executable()
     }
     sourceSets {
@@ -29,8 +23,6 @@ kotlin {
                 implementation(compose.web.core)
                 implementation(compose.runtime)
                 implementation(npm("chart.js", "3.9.1", generateExternals = false))
-
-
             }
         }
 

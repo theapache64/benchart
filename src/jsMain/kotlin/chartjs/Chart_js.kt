@@ -11,8 +11,7 @@
 @file:JsNonModule
 
 import Chart.*
-import chart.Type
-import org.jetbrains.compose.web.css.*
+import chartjs.Type
 import org.w3c.dom.*
 import org.w3c.dom.events.*
 import kotlin.js.Json

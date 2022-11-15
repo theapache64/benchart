@@ -1,5 +1,5 @@
 import androidx.compose.runtime.DisposableEffect
-import chart.Type
+import chartjs.Type
 import org.jetbrains.compose.web.css.maxWidth
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px

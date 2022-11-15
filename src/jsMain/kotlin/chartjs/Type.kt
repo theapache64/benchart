@@ -1,4 +1,4 @@
-package chart
+package chartjs
 
 interface Type {
     companion object {
