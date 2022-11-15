@@ -1,30 +1,29 @@
 ![](cover.jpeg)
 
-# compose-web-template
+# benchart
 
-![buildStatus](https://img.shields.io/github/workflow/status/theapache64/compose-web-template/Java%20CI%20with%20Gradle?style=plastic)
-![latestVersion](https://img.shields.io/github/v/release/theapache64/compose-web-template)
+![buildStatus](https://img.shields.io/github/workflow/status/theapache64/benchart/Java%20CI%20with%20Gradle?style=plastic)
+![latestVersion](https://img.shields.io/github/v/release/theapache64/benchart)
 <a href="https://twitter.com/theapache64" target="_blank">
 <img alt="Twitter: theapache64" src="https://img.shields.io/twitter/follow/theapache64.svg?style=social" />
 </a>
 
-> A basic compose web project template
+> A web tool to visualise and compare your android benchmark result
 
-## 💻 Demo
+### ✨ Demo
 
 ![](demo.gif)
 
-## 🏃 Run
+## 🦿 Prerequisites
 
-```
-./gradlew jsBrowserRun
-```
+- Java 8 or above
 
-## 📦 Distribute
+## ⌨️ Usage
 
-```
-./gradlew jsBrowserDistribution // and then open index.html (build/distributions)
-```
+1. Step 1
+1. Step 2
+1. Step 3
+
 
 ## ✍️ Author
 
@@ -61,11 +60,18 @@ Give a ⭐️ if this project helped you!
     <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="160">
 </a>
 
+<a href="https://www.paypal.me/theapache64" target="_blank">
+    <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="Donation" width="160">
+</a>
+
+## ☑️ TODO
+
+- [ ] Task 1
 
 ## 📝 License
 
 ```
-Copyright © 2021 - theapache64
+Copyright © 2022 - theapache64
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
