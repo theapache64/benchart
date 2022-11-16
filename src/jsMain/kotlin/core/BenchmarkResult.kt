@@ -31,7 +31,7 @@ data class BenchmarkResult(
 
             val lastLine = lines.last().trim()
             if(!lastLine.startsWith(KEY_TRACES)){
-                throw InvalidBenchmarkDataException("last line should contain traces cound, but found '$lastLine'")
+                throw InvalidBenchmarkDataException("last line should contain traces count, but found '$lastLine'")
             }
 
 
