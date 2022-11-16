@@ -16,11 +16,12 @@ class BenchmarkResultTest {
                 frameDurationCpuMs   P50   14.0,   P90   22.8,   P95   28.5,   P99   50.8
                 frameOverrunMs   P50   -5.7,   P90    8.6,   P95   23.0,   P99   64.7
                 Traces: Iteration 0 1 2 3 4
-            """.trimIndent()
+            """.trimIndent().toFormData()
         )
 
         val expectedBenchmarkResult = BenchmarkResult(
-            title = "HomeScrollBenchmark_scrollTest",
+            title = TEMP_FORM_DATA_TITLE,
+            fileAndTestName = "HomeScrollBenchmark_scrollTest",
             frameDurationMs = mapOf(
                 "P50" to 14.0f,
                 "P90" to 22.8f,
@@ -45,18 +46,19 @@ class BenchmarkResultTest {
                 HomeScrollBenchmark_scrollTest
                 frameDurationCpuMs   P50   14.0,   P90   22.8,   P95   28.5,   P99   50.8
                 Traces: Iteration 0 1 2 3 4
-            """.trimIndent()
+            """.trimIndent().toFormData()
         )
 
         val expectedBenchmarkResult = BenchmarkResult(
-            title = "HomeScrollBenchmark_scrollTest",
+            title = TEMP_FORM_DATA_TITLE,
+            fileAndTestName = "HomeScrollBenchmark_scrollTest",
             frameDurationMs = mapOf(
                 "P50" to 14.0f,
                 "P90" to 22.8f,
                 "P95" to 28.5f,
                 "P99" to 50.8f,
             ),
-            frameOverrunMs = null,
+            frameOverrunMs = emptyMap(),
         )
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
@@ -70,7 +72,7 @@ class BenchmarkResultTest {
                 frameDurationCpuMs   P50   14.0,   P90   22.8,   P95   28.5,   P99   50.8
                 frameOverrunMs   P50   -5.7,   P90    8.6,   P95   23.0,   P99   64.7
                 Traces: Iteration 0 1 2 3 4
-            """.trimIndent()
+            """.trimIndent().toFormData()
             )
             error("Expected to fail")
         } catch (e: InvalidBenchmarkDataException) {
@@ -86,7 +88,7 @@ class BenchmarkResultTest {
                 HomeScrollBenchmark_scrollTest
                 frameOverrunMs   P50   -5.7,   P90    8.6,   P95   23.0,   P99   64.7
                 Traces: Iteration 0 1 2 3 4
-            """.trimIndent()
+            """.trimIndent().toFormData()
             )
             error("Expected to fail")
         } catch (e: InvalidFrameDurationNodeException) {
@@ -102,7 +104,7 @@ class BenchmarkResultTest {
                 HomeScrollBenchmark_scrollTest
                 frameDurationCpuMs   P50   14.0,   P90   22.8,   P95   28.5,   P99   50.8
                 frameOverrunMs   P50   -5.7,   P90    8.6,   P95   23.0,   P99   64.7
-            """.trimIndent()
+            """.trimIndent().toFormData()
             )
             error("Expected to fail")
         } catch (e: InvalidBenchmarkDataException) {
@@ -110,4 +112,11 @@ class BenchmarkResultTest {
         }
     }
 
+}
+private const val TEMP_FORM_DATA_TITLE = "myFormData"
+private fun String.toFormData(): FormData {
+    return FormData(
+        title = TEMP_FORM_DATA_TITLE,
+        data = this
+    )
 }
