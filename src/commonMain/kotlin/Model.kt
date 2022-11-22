@@ -1,4 +1,3 @@
-
 data class ManualFormData(
     val title: String,
     val data: String

@@ -1,5 +1,4 @@
 import androidx.compose.runtime.*
-import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.attributes.rows
 import org.jetbrains.compose.web.dom.*
