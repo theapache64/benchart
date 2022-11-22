@@ -1,19 +1,32 @@
 package core
 
-import ChartData
 import Charts
 import ManualFormData
 
 
-fun List<ManualFormData>.toCharts(): Charts {
-    val benchmarkResults = this.toBenchmarkResults()
+fun List<ManualFormData>.toCharts(
+    onInvalidData: (InvalidBenchmarkDataException?) -> Unit
+): Charts {
+    val benchmarkResults = this.toBenchmarkResults(onInvalidData)
     return benchmarkResults.toChartData()
 }
 
-private fun List<ManualFormData>.toBenchmarkResults(): List<BenchmarkResult> {
+private fun List<ManualFormData>.toBenchmarkResults(
+    onInvalidData: (InvalidBenchmarkDataException?) -> Unit
+): List<BenchmarkResult> {
     val benchmarkResults = mutableListOf<BenchmarkResult>()
+    var hasError = false
     for (item in this) {
-        benchmarkResults.add(BenchmarkResult.parse(item))
+        try {
+            benchmarkResults.add(BenchmarkResult.parse(item))
+        } catch (e: InvalidBenchmarkDataException) {
+            e.printStackTrace()
+            hasError = true
+            onInvalidData(e)
+        }
+    }
+    if(!hasError){
+        onInvalidData(null)
     }
     return benchmarkResults
 }

@@ -89,24 +89,23 @@ fun main() {
                 Div(attrs = {
                     classes("col-md-6")
                 }) {
-                    when(currentMode){
+                    when (currentMode) {
                         Mode.MANUAL -> {
                             // Form
                             ManualFormUi(
                                 onFormUpdated = { forms ->
-                                    try {
-                                        println("Form updated : $forms")
-                                        charts = forms.toCharts()
-                                        errorMsg = ""
-                                    } catch (e: Throwable) {
-                                        e.printStackTrace()
-                                        errorMsg = e.message ?: "Something went wrong"
-                                    }
+                                    println("Form updated : $forms")
+                                    charts = forms.toCharts(
+                                        onInvalidData = { exception ->
+                                            errorMsg = exception?.message ?: ""
+                                        }
+                                    )
                                 }
                             )
                         }
+
                         Mode.AUTOMATIC -> {
-                            AutomaticFormUi (
+                            AutomaticFormUi(
                                 onFormChanged = { form ->
                                     try {
                                         println("Form updated : $form")
