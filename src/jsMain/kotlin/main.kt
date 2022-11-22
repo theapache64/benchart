@@ -138,7 +138,11 @@ fun main() {
                 }) {
                     charts?.let { charts ->
                         // Rendering frameDurationMs
-                        ChartUi(charts.frameDurationChart)
+                        charts.frameDurationChart.dataSets.isNotEmpty().let { hasData ->
+                            if(hasData){
+                                ChartUi(charts.frameDurationChart)
+                            }
+                        }
 
                         charts.frameOverrunChart?.let { frameOverrunChart ->
                             ChartUi(frameOverrunChart)

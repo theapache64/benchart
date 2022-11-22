@@ -116,7 +116,7 @@ fun FormUi(
                         value = form.data
                     ) {
                         classes("form-control")
-                        placeholder(value = "Benchmark data")
+                        placeholder(value = "Benchmark data goes here (separate each benchmark by a blank line)")
                         rows(12)
                         onInput { textInput ->
                             val newForm = form.copy(data = textInput.value)
