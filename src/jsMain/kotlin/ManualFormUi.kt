@@ -41,6 +41,8 @@ fun ManualFormUi(
                     )
                 )
             }
+
+            onFormUpdated(this.values.toList())
         }
     }
     MenuBar(onAddSlotClicked = {

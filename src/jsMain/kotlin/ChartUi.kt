@@ -50,15 +50,9 @@ fun ChartUi(chartData: ChartData) {
 
                 }
                 this.options = jso {
-                    scales = jso {
-                        y = jso {
-                            beginAtZero = true
-                        }
-                    }
                     plugins = jso {
                         title = jso {
                             display = true
-                            text = "HELLLOOOO"
                         }
                     }
                 }
