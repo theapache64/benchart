@@ -14,10 +14,10 @@ import org.jetbrains.compose.web.renderComposable
 
 enum class Mode {
     MANUAL,
-    AUTOMATIC
+    AUTO
 }
 
-val currentMode = Mode.MANUAL
+val currentMode = Mode.AUTO
 val IS_DEBUG = true
 
 fun main() {
@@ -104,8 +104,8 @@ fun main() {
                             )
                         }
 
-                        Mode.AUTOMATIC -> {
-                            AutomaticFormUi(
+                        Mode.AUTO -> {
+                            AutoFormUi(
                                 onFormChanged = { form ->
                                     try {
                                         println("Form updated : $form")

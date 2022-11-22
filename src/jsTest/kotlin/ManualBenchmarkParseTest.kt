@@ -1,6 +1,5 @@
 import core.BenchmarkResult
 import core.InvalidBenchmarkDataException
-import core.InvalidFrameDurationNodeException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -16,7 +15,7 @@ class ManualBenchmarkParseTest {
                 frameDurationCpuMs   P50   14.0,   P90   22.8,   P95   28.5,   P99   50.8
                 frameOverrunMs   P50   -5.7,   P90    8.6,   P95   23.0,   P99   64.7
                 Traces: Iteration 0 1 2 3 4
-            """.trimIndent().toFormData()
+            """.trimIndent().toAutoFormData()
         )
 
         val expectedBenchmarkResult = BenchmarkResult(
@@ -45,7 +44,7 @@ class ManualBenchmarkParseTest {
                 HomeScrollBenchmark_scrollTest
                 frameDurationCpuMs   P50   14.0,   P90   22.8,   P95   28.5,   P99   50.8
                 Traces: Iteration 0 1 2 3 4
-            """.trimIndent().toFormData()
+            """.trimIndent().toAutoFormData()
         )
 
         val expectedBenchmarkResult = BenchmarkResult(
@@ -69,7 +68,7 @@ class ManualBenchmarkParseTest {
                 frameDurationCpuMs   P50   14.0,   P90   22.8,   P95   28.5,   P99   50.8
                 frameOverrunMs   P50   -5.7,   P90    8.6,   P95   23.0,   P99   64.7
                 Traces: Iteration 0 1 2 3 4
-            """.trimIndent().toFormData()
+            """.trimIndent().toAutoFormData()
         )
 
         val expectedBenchmarkResult = BenchmarkResult(
@@ -99,7 +98,7 @@ class ManualBenchmarkParseTest {
                 HomeScrollBenchmark_scrollTest
                 frameOverrunMs   P50   -5.7,   P90    8.6,   P95   23.0,   P99   64.7
                 Traces: Iteration 0 1 2 3 4
-            """.trimIndent().toFormData()
+            """.trimIndent().toAutoFormData()
             )
             assertTrue(false)
         }catch (e  : InvalidBenchmarkDataException){
@@ -114,7 +113,7 @@ class ManualBenchmarkParseTest {
                 HomeScrollBenchmark_scrollTest
                 frameDurationCpuMs   P50   14.0,   P90   22.8,   P95   28.5,   P99   50.8
                 frameOverrunMs   P50   -5.7,   P90    8.6,   P95   23.0,   P99   64.7
-            """.trimIndent().toFormData()
+            """.trimIndent().toAutoFormData()
         )
 
         val expectedBenchmarkResult = BenchmarkResult(
@@ -141,7 +140,7 @@ class ManualBenchmarkParseTest {
         val actualBenchmarkResult = BenchmarkResult.parse(
             """
                 frameDurationCpuMs   P50   14.0,   P90   22.8,   P95   28.5,   P99   50.8
-            """.trimIndent().toFormData()
+            """.trimIndent().toAutoFormData()
         )
 
         val expectedBenchmarkResult = BenchmarkResult(
@@ -167,7 +166,7 @@ class ManualBenchmarkParseTest {
                 frameDurationCpuMs   P50   14.0,   P90   22.8,   P95   28.5,   P99   50.8
                 frameDurationCpuMs   P50   14.0,   P90   22.8,   P95   28.5,   P99   50.6
                 frameDurationCpuMs   P50   14.0,   P90   22.8,   P95   28.5,   P99   50.7
-            """.trimIndent().toFormData()
+            """.trimIndent().toAutoFormData()
             )
             assertTrue(false)
         }catch (e : InvalidBenchmarkDataException){
@@ -177,7 +176,7 @@ class ManualBenchmarkParseTest {
 }
 
 private const val TEMP_FORM_DATA_TITLE = "myFormData"
-private fun String.toFormData(): ManualFormData {
+private fun String.toAutoFormData(): ManualFormData {
     return ManualFormData(
         title = TEMP_FORM_DATA_TITLE,
         data = this

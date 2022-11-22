@@ -1,9 +1,9 @@
 package core
 
-import AutomaticFormData
+import AutoFormData
 import Charts
 
-fun AutomaticFormData.toCharts(): Charts {
+fun AutoFormData.toCharts(): Charts {
     val benchmarkResults = BenchmarkResult.parse(this)
     return benchmarkResults.toChartData()
 }

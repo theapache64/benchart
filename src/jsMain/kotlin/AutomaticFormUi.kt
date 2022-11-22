@@ -5,10 +5,10 @@ import org.jetbrains.compose.web.attributes.rows
 import org.jetbrains.compose.web.dom.*
 
 @Composable
-fun AutomaticFormUi(
-    onFormChanged : (form : AutomaticFormData) -> Unit
+fun AutoFormUi(
+    onFormChanged : (form : AutoFormData) -> Unit
 ) {
-    var form by remember { mutableStateOf(AutomaticFormData(data = "")) }
+    var form by remember { mutableStateOf(AutoFormData(data = "")) }
 
     Div(
         attrs = {

@@ -4,7 +4,7 @@ data class ManualFormData(
     val data: String
 )
 
-data class AutomaticFormData(
+data class AutoFormData(
     val data: String
 )
 
