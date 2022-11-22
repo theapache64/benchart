@@ -1,3 +1,4 @@
+import junit.framework.TestCase.assertTrue
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -351,6 +352,38 @@ class AutoBenchmarkParseTest {
         )
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
+    }
+
+    @Test
+    fun parseDuplicateMetricsFailure() {
+        try {
+            BenchmarkResult.parse(
+                """
+                ### Before 1
+                HomeScrollBenchmark_scrollTest
+                this is some weird shit
+                frameOverrunMs   P50   -5.9,   P90    7.0,   P95   20.1,   P99   64.4
+                SOME MAJOR SHIT
+                frameDurationCpuMs   P50   13.5,   P90   20.8,   P95   25.4,   P99   47.4
+                frameDurationCpuMs   P50   13.5,   P90   20.8,   P95   25.4,   P99   47.4
+                this is also some weird shit
+                Traces: Iteration 0 1 2 3 4
+                
+                ### Before 1
+                HomeScrollBenchmark_scrollTest
+                this is some weird shit
+                frameOverrunMs   P50   -5.9,   P90    7.0,   P95   20.1,   P99   64.4
+                SOME MAJOR SHIT
+                frameDurationCpuMs   P50   13.5,   P90   20.8,   P95   25.4,   P99   47.4
+                this is also some weird shit
+                Traces: Iteration 0 1 2 3 4
+  
+            """.trimIndent().toAutoFormData()
+            )
+            assertTrue(false)
+        } catch (e: InvalidBenchmarkDataException) {
+            assertTrue(true)
+        }
     }
 }
 

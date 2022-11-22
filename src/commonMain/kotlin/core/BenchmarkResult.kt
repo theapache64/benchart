@@ -52,33 +52,39 @@ data class BenchmarkResult(
             val benchmarkResults = mutableListOf<BenchmarkResult>()
 
             val blocks = form.data.split("^\\s+".toRegex(RegexOption.MULTILINE))
-            for((index, block) in blocks.withIndex()){
+            for ((index, block) in blocks.withIndex()) {
                 val lines = block.split("\n")
-                var title : String? = null
-                var durationMs : Map<String, Float>? = null
-                var overrunMs : Map<String, Float>? = null
-                for(line in lines){
+                var title: String? = null
+                var durationMs: Map<String, Float>? = null
+                var overrunMs: Map<String, Float>? = null
+                for (line in lines) {
 
-                    if(title==null && isHumanLine(line)){
+                    if (title == null && isHumanLine(line)) {
                         title = line
                     }
 
-                    if(line.startsWith(KEY_FRAME_DURATION_MS)){
+                    if (line.startsWith(KEY_FRAME_DURATION_MS)) {
+                        if (durationMs != null) {
+                            throw InvalidBenchmarkDataException("Two $KEY_FRAME_DURATION_MS found in block $index. Expected only one")
+                        }
                         durationMs = parseDurationMs(line)
                     }
 
-                    if(line.startsWith(KEY_FRAME_OVERRUN_MS)){
+                    if (line.startsWith(KEY_FRAME_OVERRUN_MS)) {
+                        if (overrunMs != null) {
+                            throw InvalidBenchmarkDataException("Two $KEY_FRAME_OVERRUN_MS found in block $index. Expected only one")
+                        }
                         overrunMs = parseOverrunMs(line)
                     }
                 }
 
-                if(title == null){
+                if (title == null) {
                     title = "benchmark $index"
                 }
 
                 title = parseTitle(title)
 
-                if(durationMs!=null){
+                if (durationMs != null) {
                     benchmarkResults.add(
                         BenchmarkResult(
                             title = title,

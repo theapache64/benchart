@@ -1,23 +1,16 @@
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import core.toCharts
-import org.jetbrains.compose.web.css.Position
-import org.jetbrains.compose.web.css.position
-import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.css.top
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.H4
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.attributes.InputType
+import org.jetbrains.compose.web.attributes.name
+import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.renderComposable
 
 enum class Mode {
-    MANUAL,
-    AUTO
+    AUTO,
+    MANUAL
 }
 
-val currentMode = Mode.AUTO
 val IS_DEBUG = true
 
 fun main() {
@@ -51,12 +44,20 @@ fun main() {
     renderComposable(rootElementId = "root") {
         Div(
             attrs = {
-                classes("container")
+                classes("container-fluid")
             }
         ) {
 
             // Heading
             Heading()
+
+            var mode by remember { mutableStateOf(Mode.AUTO) }
+            ModeSwitcher(
+                currentMode = mode,
+                onModeChanged = { newMode ->
+                    mode = newMode
+                }
+            )
 
             var charts by remember {
                 mutableStateOf<Charts?>(null)
@@ -85,11 +86,14 @@ fun main() {
 
             Div(attrs = {
                 classes("row")
+                style {
+                    padding(40.px)
+                }
             }) {
                 Div(attrs = {
                     classes("col-md-6")
                 }) {
-                    when (currentMode) {
+                    when (mode) {
                         Mode.MANUAL -> {
                             // Form
                             ManualFormUi(
@@ -144,5 +148,48 @@ fun main() {
     }
 }
 
+@Composable
+fun ModeSwitcher(
+    currentMode: Mode,
+    onModeChanged: (mode: Mode) -> Unit
+) {
+    println("Current mode is $currentMode")
+    Div(
+        attrs = {
+            classes("row")
+        }
+    ) {
+        Div(
+            attrs = {
+                classes("col-md-12", "text-center")
+            }
+        ) {
+            Form {
+                Mode.values().forEach { mode ->
+                    Div(
+                        attrs = {
+                            classes("radio-inline")
+                        }
+                    ) {
+                        Label {
+                            Input(
+                                type = InputType.Radio
+                            ) {
+                                name("mode")
+                                onInput { newValue ->
+                                    println("input changed ${newValue.value}")
+                                    if (newValue.value) {
+                                        onModeChanged(mode)
+                                    }
+                                }
+                            }
 
+                            Text(mode.name)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
