@@ -16,7 +16,7 @@ fun ManualFormUi(
             if (IS_DEBUG) {
                 put(
                     0, ManualFormData(
-                        title = "report 1",
+                        title = "before",
                         data = """
                     frameDurationCpuMs   P50   14.7,   P90   45.8,   P95   65.7,   P99  179.7
                     frameOverrunMs   P50   -5.3,   P90   65.4,   P95  109.1,   P99  200.6
@@ -26,9 +26,9 @@ fun ManualFormUi(
 
                 put(
                     1, ManualFormData(
-                        title = "report 2",
+                        title = "after",
                         data = """
-                    frameDurationCpuMs   P50   14.6,   P90   45.8,   P95   65.7,   P99  80.7
+                    frameDurationCpuMs   P50   10.7,   P90   40.8,   P95   50.7,   P99  100.7
                     frameOverrunMs   P50   -5.3,   P90   65.4,   P95  109.1,   P99  100.6
                 """.trimIndent()
                     )
