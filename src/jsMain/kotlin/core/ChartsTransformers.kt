@@ -2,29 +2,16 @@ package core
 
 import ChartData
 import Charts
-import FormData
 
-
-fun List<FormData>.toCharts(): Charts {
-    val benchmarkResults = this.toBenchmarkResults()
-    return benchmarkResults.toChartData()
-}
-
-private fun List<FormData>.toBenchmarkResults(): List<BenchmarkResult> {
-    val benchmarkResults = mutableListOf<BenchmarkResult>()
-    for (item in this) {
-        benchmarkResults.add(BenchmarkResult.parse(item))
-    }
-    return benchmarkResults
-}
-
-
-private fun List<BenchmarkResult>.toChartData(): Charts {
+fun List<BenchmarkResult>.toChartData(): Charts {
     val frameDurationMap = mutableMapOf<String, Array<Float>>()
     val frameOverrunMap = mutableMapOf<String, Array<Float>>()
     for (item in this) {
         frameDurationMap[item.title] = item.frameDurationMs.values.toTypedArray()
-        frameOverrunMap[item.title] = item.frameOverrunMs.values.toTypedArray()
+        val frameOverrunMs = item.frameOverrunMs
+        if (frameOverrunMs != null) {
+            frameOverrunMap[item.title] = frameOverrunMs.values.toTypedArray()
+        }
     }
 
     return Charts(
@@ -42,4 +29,3 @@ private fun List<BenchmarkResult>.toChartData(): Charts {
         }
     )
 }
-

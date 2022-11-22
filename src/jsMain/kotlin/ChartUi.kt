@@ -2,10 +2,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import chartjs.Type
 import core.jso
-import org.jetbrains.compose.web.css.maxWidth
-import org.jetbrains.compose.web.css.percent
-import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.css.width
+import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Canvas
 import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.Text
@@ -19,7 +16,10 @@ fun ChartUi(chartData: ChartData) {
         attrs = {
             style {
                 width(100.percent)
-                maxWidth(700.px)
+                maxWidth(100.percent)
+
+                height(800.px)
+                maxHeight(800.px)
             }
         }
     ) {

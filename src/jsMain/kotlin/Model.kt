@@ -1,6 +1,10 @@
 
-data class FormData(
+data class ManualFormData(
     val title: String,
+    val data: String
+)
+
+data class AutomaticFormData(
     val data: String
 )
 

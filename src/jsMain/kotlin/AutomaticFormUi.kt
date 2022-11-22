@@ -5,37 +5,10 @@ import org.jetbrains.compose.web.attributes.rows
 import org.jetbrains.compose.web.dom.*
 
 @Composable
-fun FormsUi(
-    onFormUpdated: (forms: List<FormData>) -> Unit
+fun AutomaticFormUi(
+    onFormChanged : (form : AutomaticFormData) -> Unit
 ) {
-    // Menu
-    val forms = remember { mutableMapOf<Int, FormData>() }
-    var formCount by remember { mutableStateOf(1) }
-    println("Form count is $formCount")
-    MenuBar(
-        onAddSlotClicked = {
-            formCount++
-        }
-    )
-
-    // Slots
-    repeat(formCount) { index ->
-        FormUi(
-            onFormChanged = {
-                forms[index] = it
-
-                onFormUpdated(forms.values.toList())
-            }
-        )
-    }
-}
-
-
-@Composable
-fun FormUi(
-    onFormChanged: (form: FormData) -> Unit
-) {
-    var form by remember { mutableStateOf(FormData(title = "", data = "")) }
+    var form by remember { mutableStateOf(AutomaticFormData(data = "")) }
 
     Div(
         attrs = {
@@ -61,21 +34,6 @@ fun FormUi(
 
 
             Form {
-                Div(attrs = {
-                    classes("form-group")
-                }) {
-                    Input(
-                        type = InputType.Text,
-                    ) {
-                        classes("form-control")
-                        value(form.title)
-                        placeholder(value = "Label")
-                        onInput { textInput ->
-                            form = form.copy(title = textInput.value)
-                            onFormChanged(form)
-                        }
-                    }
-                }
 
                 Div(attrs = {
                     classes("form-group")

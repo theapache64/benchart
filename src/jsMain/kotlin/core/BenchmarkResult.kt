@@ -1,6 +1,7 @@
 package core
 
-import FormData
+import AutomaticFormData
+import ManualFormData
 
 class InvalidBenchmarkDataException(message: String?) : Throwable(message)
 class InvalidFrameDurationNodeException(message: String?) : Throwable(message)
@@ -8,49 +9,51 @@ class InvalidFrameOverrunNodeException(message: String?) : Throwable(message)
 
 data class BenchmarkResult(
     val title: String,
-    val fileAndTestName : String,
     val frameDurationMs: Map<String, Float>,
-    val frameOverrunMs: Map<String, Float>,
+    val frameOverrunMs: Map<String, Float>?,
 ) {
     companion object {
         const val KEY_FRAME_DURATION_MS = "frameDurationCpuMs"
         const val KEY_FRAME_OVERRUN_MS = "frameOverrunMs"
         private const val KEY_TRACES = "Traces"
 
-        fun parse(form: FormData): BenchmarkResult {
-            val input = form.data
-            val lines = input.split("\n")
-            if (lines.size != 3 && lines.size != 4) {
-                throw InvalidBenchmarkDataException("Invalid benchmark input : '$input'. Expected either 3 or 4 lines, but found ${lines.size}")
+        private val frameDurationRegEx = "($KEY_FRAME_DURATION_MS.+)".toRegex(RegexOption.MULTILINE)
+        private val frameOverrunRegEx = "$KEY_FRAME_OVERRUN_MS.+".toRegex()
+
+        fun parse(form: ManualFormData): BenchmarkResult {
+            val frameDurationMatches = frameDurationRegEx.findAll(form.data).toList()
+            val frameDurationMsRaw = frameDurationMatches.firstOrNull()
+                ?: throw InvalidBenchmarkDataException("Missing $KEY_FRAME_DURATION_MS. Given '${form.data}'")
+            if(frameDurationMatches.size > 1){
+                throw InvalidBenchmarkDataException("Found ${frameDurationMatches.size} instances of $KEY_FRAME_DURATION_MS. Expected only one")
             }
 
-            val fileAndTestName = lines.first().trim()
-            if(fileAndTestName.startsWith(KEY_FRAME_DURATION_MS) || fileAndTestName.startsWith(KEY_FRAME_OVERRUN_MS)){
-                throw InvalidBenchmarkDataException("fileAndTestName missing. First line should be fileAndTestName but found '$fileAndTestName'")
+            val frameDurationMs = parseFrameDurationMs(frameDurationMsRaw.value)
+
+            val frameOverrunMsMatches = frameOverrunRegEx.findAll(form.data).toList()
+            if(frameOverrunMsMatches.size > 1){
+                throw InvalidBenchmarkDataException("Found ${frameOverrunMsMatches.size} instances of $KEY_FRAME_OVERRUN_MS. Expected only one")
             }
+            val frameOverrunMsRaw = frameOverrunMsMatches.firstOrNull()
 
-            val lastLine = lines.last().trim()
-            if(!lastLine.startsWith(KEY_TRACES)){
-                throw InvalidBenchmarkDataException("last line should contain traces count, but found '$lastLine'")
-            }
-
-
-            val frameDurationMs = parseFrameDurationMs(lines[1].trim())
-
-            val thirdLine = lines[2].trim()
             // optional
-            val frameOverrunMs = if (thirdLine.startsWith(KEY_FRAME_OVERRUN_MS)) {
-                parseOverrunMs(thirdLine)
+            val frameOverrunMs = if (frameOverrunMsRaw != null) {
+                parseOverrunMs(frameOverrunMsRaw.value)
             } else {
-                emptyMap()
+                null
             }
 
             return BenchmarkResult(
                 title = form.title,
-                fileAndTestName = fileAndTestName,
                 frameDurationMs = frameDurationMs,
                 frameOverrunMs = frameOverrunMs
             )
+        }
+
+        fun parse(form: AutomaticFormData): List<BenchmarkResult> {
+            val benchmarkResults = mutableListOf<BenchmarkResult>()
+
+            return benchmarkResults
         }
 
         private fun parseOverrunMs(frameOverrunMsData: String): Map<String, Float> {

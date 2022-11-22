@@ -12,7 +12,13 @@ import org.jetbrains.compose.web.dom.H4
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.renderComposable
 
+enum class Mode {
+    MANUAL,
+    AUTOMATIC
+}
 
+val currentMode = Mode.MANUAL
+val IS_DEBUG = true
 
 fun main() {
 
@@ -83,19 +89,37 @@ fun main() {
                 Div(attrs = {
                     classes("col-md-6")
                 }) {
-                    // Form
-                    FormsUi(
-                        onFormUpdated = { forms ->
-                            try {
-                                println("Form updated : $forms")
-                                charts = forms.toCharts()
-                                errorMsg = ""
-                            } catch (e: Throwable) {
-                                e.printStackTrace()
-                                errorMsg = e.message ?: "Something went wrong"
-                            }
+                    when(currentMode){
+                        Mode.MANUAL -> {
+                            // Form
+                            ManualFormUi(
+                                onFormUpdated = { forms ->
+                                    try {
+                                        println("Form updated : $forms")
+                                        charts = forms.toCharts()
+                                        errorMsg = ""
+                                    } catch (e: Throwable) {
+                                        e.printStackTrace()
+                                        errorMsg = e.message ?: "Something went wrong"
+                                    }
+                                }
+                            )
                         }
-                    )
+                        Mode.AUTOMATIC -> {
+                            AutomaticFormUi (
+                                onFormChanged = { form ->
+                                    try {
+                                        println("Form updated : $form")
+                                        charts = form.toCharts()
+                                        errorMsg = ""
+                                    } catch (e: Throwable) {
+                                        e.printStackTrace()
+                                        errorMsg = e.message ?: "Something went wrong"
+                                    }
+                                }
+                            )
+                        }
+                    }
                 }
 
                 Div(attrs = {
