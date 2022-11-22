@@ -1,3 +1,5 @@
+package ui
+
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.css.marginBottom
 import org.jetbrains.compose.web.css.px

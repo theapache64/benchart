@@ -1,3 +1,6 @@
+package ui
+
+import AutoFormData
 import androidx.compose.runtime.*
 import kotlinx.browser.window
 import org.jetbrains.compose.web.attributes.placeholder
@@ -5,8 +8,7 @@ import org.jetbrains.compose.web.attributes.rows
 import org.jetbrains.compose.web.dom.*
 
 
-private val defaultAutoForm = if (IS_DEBUG) {
-    """
+private val defaultAutoForm = """
                 ### Before 1
                 HomeScrollBenchmark_scrollTest
                 frameDurationCpuMs   P50   13.5,   P90   20.8,   P95   25.4,   P99   47.4
@@ -31,9 +33,6 @@ private val defaultAutoForm = if (IS_DEBUG) {
                 frameOverrunMs   P50   -5.7,   P90    7.4,   P95   22.4,   P99   63.2
                 Traces: Iteration 0 1 2 3 4
             """.trimIndent()
-} else {
-    ""
-}
 
 private const val KEY_AUTO_FORM_INPUT = "auto_form_input"
 
@@ -41,9 +40,15 @@ private const val KEY_AUTO_FORM_INPUT = "auto_form_input"
 fun AutoFormUi(
     onFormChanged: (form: AutoFormData) -> Unit
 ) {
-    var form by remember { mutableStateOf(AutoFormData(data = window.localStorage.getItem(KEY_AUTO_FORM_INPUT) ?: defaultAutoForm)) }
+    var form by remember {
+        mutableStateOf(
+            AutoFormData(
+                data = window.localStorage.getItem(KEY_AUTO_FORM_INPUT) ?: defaultAutoForm
+            )
+        )
+    }
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         onFormChanged(form)
     }
 

@@ -1,17 +1,21 @@
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import core.toCharts
-import org.jetbrains.compose.web.attributes.InputType
-import org.jetbrains.compose.web.attributes.name
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.H4
+import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.renderComposable
+import ui.*
 
 enum class Mode {
     AUTO,
     MANUAL
 }
 
-val IS_DEBUG = true
+val IS_INJECT_DUMMY = true
 
 fun main() {
 
@@ -48,7 +52,7 @@ fun main() {
             }
         ) {
 
-            // Heading
+            // ui.Heading
             Heading()
 
             var mode by remember { mutableStateOf(Mode.AUTO) }
@@ -147,50 +151,3 @@ fun main() {
         }
     }
 }
-
-@Composable
-fun ModeSwitcher(
-    currentMode: Mode,
-    onModeChanged: (mode: Mode) -> Unit
-) {
-    println("Current mode is $currentMode")
-    Div(
-        attrs = {
-            classes("row")
-        }
-    ) {
-        Div(
-            attrs = {
-                classes("col-md-12", "text-center")
-            }
-        ) {
-            Form {
-                Mode.values().forEach { mode ->
-                    Div(
-                        attrs = {
-                            classes("radio-inline")
-                        }
-                    ) {
-                        Label {
-                            Input(
-                                type = InputType.Radio
-                            ) {
-                                name("mode")
-                                checked(currentMode == mode)
-                                onInput { newValue ->
-                                    println("input changed ${newValue.value}")
-                                    if (newValue.value) {
-                                        onModeChanged(mode)
-                                    }
-                                }
-                            }
-
-                            Text(mode.name)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-

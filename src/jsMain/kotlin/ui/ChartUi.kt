@@ -1,6 +1,11 @@
+package ui
+
+import Chart
+import ChartData
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import chartjs.Type
+import jso
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Canvas
 import org.jetbrains.compose.web.dom.H3

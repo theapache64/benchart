@@ -1,3 +1,7 @@
+package ui
+
+import IS_INJECT_DUMMY
+import ManualFormData
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
@@ -13,7 +17,7 @@ fun ManualFormUi(
     // Menu
     val forms = remember {
         mutableStateMapOf<Int, ManualFormData>().apply {
-            if (IS_DEBUG) {
+            if (IS_INJECT_DUMMY) {
                 put(
                     0, ManualFormData(
                         title = "before",
