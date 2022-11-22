@@ -26,7 +26,7 @@ data class BenchmarkResult(
                 throw InvalidBenchmarkDataException("Found ${frameDurationMatches.size} instances of $KEY_FRAME_DURATION_MS. Expected only one")
             }
 
-            val frameDurationMs = parseFrameDurationMs(frameDurationMsRaw.value)
+            val frameDurationMs = parseDurationMs(frameDurationMsRaw.value)
 
             val frameOverrunMsMatches = frameOverrunRegEx.findAll(form.data).toList()
             if (frameOverrunMsMatches.size > 1) {
@@ -50,50 +50,43 @@ data class BenchmarkResult(
 
         fun parse(form: AutoFormData): List<BenchmarkResult> {
             val benchmarkResults = mutableListOf<BenchmarkResult>()
-            val lines = form.data.split("\n").map { it.trim() }.filter { it.isNotBlank() }
 
-            var title: String? = null
-            var frameDurationMs: Map<String, Float>? = null
-            var frameOverrunMs: Map<String, Float>? = null
+            val blocks = form.data.split("^\\s+".toRegex(RegexOption.MULTILINE))
+            for((index, block) in blocks.withIndex()){
+                val lines = block.split("\n")
+                var title : String? = null
+                var durationMs : Map<String, Float>? = null
+                var overrunMs : Map<String, Float>? = null
+                for(line in lines){
 
-            val hasOverrunMetrics = form.data.contains(KEY_FRAME_OVERRUN_MS)
+                    if(title==null && isHumanLine(line)){
+                        title = line
+                    }
 
-            for (line in lines) {
-                if (title == null && isHumanLine(line)) {
-                    title = line
+                    if(line.startsWith(KEY_FRAME_DURATION_MS)){
+                        durationMs = parseDurationMs(line)
+                    }
+
+                    if(line.startsWith(KEY_FRAME_OVERRUN_MS)){
+                        overrunMs = parseOverrunMs(line)
+                    }
                 }
 
-                if (line.startsWith(KEY_FRAME_DURATION_MS)) {
-                    frameDurationMs = parseFrameDurationMs(line)
+                if(title == null){
+                    title = "benchmark $index"
                 }
 
-                if (line.startsWith(KEY_FRAME_OVERRUN_MS)) {
-                    frameOverrunMs = parseOverrunMs(line)
-                }
+                title = parseTitle(title)
 
-                if (isHumanLine(line) && title != null && frameDurationMs != null && (!hasOverrunMetrics || frameOverrunMs != null)) {
+                if(durationMs!=null){
                     benchmarkResults.add(
                         BenchmarkResult(
-                            title = parseTitle(title),
-                            frameDurationMs = frameDurationMs,
-                            frameOverrunMs = frameOverrunMs
+                            title = title,
+                            frameDurationMs = durationMs,
+                            frameOverrunMs = overrunMs
                         )
                     )
-
-                    title = line
-                    frameDurationMs = null
-                    frameOverrunMs = null
                 }
-            }
-
-            if (title != null && frameDurationMs != null) {
-                benchmarkResults.add(
-                    BenchmarkResult(
-                        title = parseTitle(title).trim(),
-                        frameDurationMs = frameDurationMs,
-                        frameOverrunMs = frameOverrunMs
-                    )
-                )
             }
 
             return benchmarkResults
@@ -123,7 +116,7 @@ data class BenchmarkResult(
             }
         }
 
-        private fun parseFrameDurationMs(frameDurationMsData: String): Map<String, Float> {
+        private fun parseDurationMs(frameDurationMsData: String): Map<String, Float> {
             try {
                 return parseBenchmarkValues(KEY_FRAME_DURATION_MS, frameDurationMsData)
             } catch (e: IllegalStateException) {
