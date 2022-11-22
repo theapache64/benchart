@@ -1,8 +1,3 @@
-package core
-
-import AutoFormData
-import ManualFormData
-
 class InvalidBenchmarkDataException(message: String?) : Throwable(message)
 class InvalidFrameDurationNodeException(message: String?) : Throwable(message)
 class InvalidFrameOverrunNodeException(message: String?) : Throwable(message)
@@ -20,8 +15,8 @@ data class BenchmarkResult(
         private val frameDurationRegEx = "($KEY_FRAME_DURATION_MS.+)".toRegex(RegexOption.MULTILINE)
         private val frameOverrunRegEx = "$KEY_FRAME_OVERRUN_MS.+".toRegex()
 
-        private val machineLineRegEx = "^(frameDurationCpuMs|frameOverrunMs|Traces)".toRegex()
-        private val titleStripRegEx = "([\\w\\s]+)".toRegex()
+        private val machineLineRegEx = "^(frameDurationCpuMs|frameOverrunMs|Traces).+".toRegex()
+        private val titleStripRegEx = "\\W+".toRegex()
 
         fun parse(form: ManualFormData): BenchmarkResult {
             val frameDurationMatches = frameDurationRegEx.findAll(form.data).toList()
@@ -61,12 +56,22 @@ data class BenchmarkResult(
             var frameDurationMs: Map<String, Float>? = null
             var frameOverrunMs: Map<String, Float>? = null
 
+            val hasOverrunMetrics = form.data.contains(KEY_FRAME_OVERRUN_MS)
+
             for (line in lines) {
                 if (title == null && isHumanLine(line)) {
                     title = line
                 }
 
-                if (isHumanLine(line) && title != null && frameDurationMs != null) {
+                if (line.startsWith(KEY_FRAME_DURATION_MS)) {
+                    frameDurationMs = parseFrameDurationMs(line)
+                }
+
+                if (line.startsWith(KEY_FRAME_OVERRUN_MS)) {
+                    frameOverrunMs = parseOverrunMs(line)
+                }
+
+                if (isHumanLine(line) && title != null && frameDurationMs != null && (!hasOverrunMetrics || frameOverrunMs != null)) {
                     benchmarkResults.add(
                         BenchmarkResult(
                             title = parseTitle(title),
@@ -79,21 +84,26 @@ data class BenchmarkResult(
                     frameDurationMs = null
                     frameOverrunMs = null
                 }
-
-                if(line.startsWith(KEY_FRAME_DURATION_MS)){
-                    frameDurationMs = parseFrameDurationMs(line)
-                }
-
-                if(line.startsWith(KEY_FRAME_OVERRUN_MS)){
-                    frameOverrunMs = parseOverrunMs(line)
-                }
             }
+
+            if (title != null && frameDurationMs != null) {
+                benchmarkResults.add(
+                    BenchmarkResult(
+                        title = parseTitle(title).trim(),
+                        frameDurationMs = frameDurationMs,
+                        frameOverrunMs = frameOverrunMs
+                    )
+                )
+            }
+
             return benchmarkResults
         }
 
         private fun parseTitle(title: String): String {
-            val matcher = titleStripRegEx.find(title)
-            return matcher?.groupValues?.firstOrNull() ?: title
+            return title
+                .replace(titleStripRegEx, " ")
+                .replace("\\s{2,}".toRegex(), " ")
+                .trim()
         }
 
         private fun isHumanLine(line: String): Boolean {

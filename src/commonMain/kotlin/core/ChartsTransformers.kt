@@ -1,5 +1,6 @@
 package core
 
+import BenchmarkResult
 import ChartData
 import Charts
 
