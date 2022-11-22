@@ -65,14 +65,14 @@ data class BenchmarkResult(
 
                     if (line.startsWith(KEY_FRAME_DURATION_MS)) {
                         if (durationMs != null) {
-                            throw InvalidBenchmarkDataException("Two $KEY_FRAME_DURATION_MS found in block $index. Expected only one")
+                            throw InvalidBenchmarkDataException("Two $KEY_FRAME_DURATION_MS found in block ${index + 1}. Expected only one")
                         }
                         durationMs = parseDurationMs(line)
                     }
 
                     if (line.startsWith(KEY_FRAME_OVERRUN_MS)) {
                         if (overrunMs != null) {
-                            throw InvalidBenchmarkDataException("Two $KEY_FRAME_OVERRUN_MS found in block $index. Expected only one")
+                            throw InvalidBenchmarkDataException("Two $KEY_FRAME_OVERRUN_MS found in block ${index + 1}. Expected only one")
                         }
                         overrunMs = parseOverrunMs(line)
                     }
@@ -85,6 +85,11 @@ data class BenchmarkResult(
                 title = parseTitle(title)
 
                 if (durationMs != null) {
+                    val isDuplicateTitle = benchmarkResults.find { it.title == title } != null
+                    if (isDuplicateTitle) {
+                        throw InvalidBenchmarkDataException("Duplicate title found. '$title' already exist")
+                    }
+
                     benchmarkResults.add(
                         BenchmarkResult(
                             title = title,

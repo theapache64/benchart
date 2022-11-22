@@ -176,6 +176,7 @@ fun ModeSwitcher(
                                 type = InputType.Radio
                             ) {
                                 name("mode")
+                                checked(currentMode == mode)
                                 onInput { newValue ->
                                     println("input changed ${newValue.value}")
                                     if (newValue.value) {
