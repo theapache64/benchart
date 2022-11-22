@@ -51,9 +51,11 @@ data class BenchmarkResult(
         fun parse(form: AutoFormData): List<BenchmarkResult> {
             val benchmarkResults = mutableListOf<BenchmarkResult>()
 
-            val blocks = form.data.split("^\\s+".toRegex(RegexOption.MULTILINE))
+            val blocks = form.data
+                .split("\n").joinToString(separator = "\n") { it.trim() }
+                .split("^\\s+".toRegex(RegexOption.MULTILINE)).map { it.trim() }
             for ((index, block) in blocks.withIndex()) {
-                val lines = block.split("\n")
+                val lines = block.split("\n").map { it.trim() }
                 var title: String? = null
                 var durationMs: Map<String, Float>? = null
                 var overrunMs: Map<String, Float>? = null

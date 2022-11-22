@@ -1,9 +1,6 @@
-import core.BenchmarkResult
-import core.InvalidBenchmarkDataException
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Test
 
 class ManualBenchmarkParseTest {
 
@@ -55,7 +52,7 @@ class ManualBenchmarkParseTest {
                 "P95" to 28.5f,
                 "P99" to 50.8f,
             ),
-            frameOverrunMs = emptyMap(),
+            frameOverrunMs = null,
         )
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
@@ -101,7 +98,7 @@ class ManualBenchmarkParseTest {
             """.trimIndent().toAutoFormData()
             )
             assertTrue(false)
-        }catch (e  : InvalidBenchmarkDataException){
+        } catch (e: InvalidBenchmarkDataException) {
             assertTrue(true)
         }
     }
@@ -151,7 +148,7 @@ class ManualBenchmarkParseTest {
                 "P95" to 28.5f,
                 "P99" to 50.8f,
             ),
-            frameOverrunMs = emptyMap(),
+            frameOverrunMs = null,
         )
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
@@ -169,7 +166,7 @@ class ManualBenchmarkParseTest {
             """.trimIndent().toAutoFormData()
             )
             assertTrue(false)
-        }catch (e : InvalidBenchmarkDataException){
+        } catch (e: InvalidBenchmarkDataException) {
             assertTrue(true)
         }
     }
