@@ -1,4 +1,5 @@
 import androidx.compose.runtime.*
+import kotlinx.browser.window
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.attributes.rows
 import org.jetbrains.compose.web.dom.*
@@ -34,11 +35,13 @@ private val defaultAutoForm = if (IS_DEBUG) {
     ""
 }
 
+private const val KEY_AUTO_FORM_INPUT = "auto_form_input"
+
 @Composable
 fun AutoFormUi(
     onFormChanged: (form: AutoFormData) -> Unit
 ) {
-    var form by remember { mutableStateOf(AutoFormData(data = defaultAutoForm)) }
+    var form by remember { mutableStateOf(AutoFormData(data = window.localStorage.getItem(KEY_AUTO_FORM_INPUT) ?: defaultAutoForm)) }
 
     LaunchedEffect(Unit){
         onFormChanged(form)
@@ -80,6 +83,7 @@ fun AutoFormUi(
                         rows(30)
                         onInput { textInput ->
                             form = form.copy(data = textInput.value)
+                            window.localStorage.setItem(KEY_AUTO_FORM_INPUT, textInput.value)
                             onFormChanged(form)
                         }
                     }
