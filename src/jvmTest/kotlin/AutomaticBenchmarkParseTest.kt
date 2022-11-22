@@ -7,7 +7,7 @@ class AutoBenchmarkParseTest {
 
     @Test
     fun parseFullSuccess() {
-        val actualBenchmarkResult = BenchmarkResult.parse(
+        val actualBenchmarkResult = diff.BenchmarkResult.parse(
             """
                 ### Before 1
                 HomeScrollBenchmark_scrollTest
@@ -36,7 +36,7 @@ class AutoBenchmarkParseTest {
         )
 
         val expectedBenchmarkResult = listOf(
-            BenchmarkResult(
+            diff.BenchmarkResult(
                 title = "Before 1",
                 frameDurationMs = mapOf(
                     "P50" to 13.5f,
@@ -52,7 +52,7 @@ class AutoBenchmarkParseTest {
                 ),
             ),
 
-            BenchmarkResult(
+            diff.BenchmarkResult(
                 title = "Before 2",
                 frameDurationMs = mapOf(
                     "P50" to 13.4f,
@@ -68,7 +68,7 @@ class AutoBenchmarkParseTest {
                 ),
             ),
 
-            BenchmarkResult(
+            diff.BenchmarkResult(
                 title = "After 1",
                 frameDurationMs = mapOf(
                     "P50" to 13.6f,
@@ -84,7 +84,7 @@ class AutoBenchmarkParseTest {
                 ),
             ),
 
-            BenchmarkResult(
+            diff.BenchmarkResult(
                 title = "After 2",
                 frameDurationMs = mapOf(
                     "P50" to 13.8f,
@@ -99,13 +99,12 @@ class AutoBenchmarkParseTest {
                     "P99" to 63.2f,
                 ),
             ),
-
-            )
+        )
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
 }
 
-private fun String.toAutoFormData(): AutoFormData {
-    return AutoFormData(data = this)
+private fun String.toAutoFormData(): diff.AutoFormData {
+    return diff.AutoFormData(data = this)
 }
