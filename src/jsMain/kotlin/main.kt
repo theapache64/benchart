@@ -113,7 +113,7 @@ fun main() {
                                         errorMsg = ""
                                     } catch (e: Throwable) {
                                         e.printStackTrace()
-                                        errorMsg = e.message ?: "Something went wrong"
+                                        errorMsg = e.message ?: "Something went wrong!"
                                     }
                                 }
                             )
