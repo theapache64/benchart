@@ -95,7 +95,7 @@ fun main() {
                 }
             }) {
                 Div(attrs = {
-                    classes("col-md-6")
+                    classes("col-md-3")
                 }) {
                     when (mode) {
                         Mode.MANUAL -> {
@@ -129,22 +129,44 @@ fun main() {
                     }
                 }
 
+                val hasOverrunMs = charts?.frameOverrunChart?.dataSets?.isNotEmpty() ?: false
+
                 Div(attrs = {
-                    classes("col-md-6")
+                    classes(
+                        if (hasOverrunMs) {
+                            "col-md-5"
+                        } else {
+                            "col-md-9"
+                        }
+                    )
                     style {
-                        position(Position.Sticky)
-                        top(0.px)
+                        if (mode == Mode.MANUAL) {
+                            position(Position.Sticky)
+                            top(0.px)
+                        }
                     }
                 }) {
                     charts?.let { charts ->
                         // Rendering frameDurationMs
                         charts.frameDurationChart.dataSets.isNotEmpty().let { hasData ->
-                            if(hasData){
+                            if (hasData) {
                                 ChartUi(charts.frameDurationChart)
                             }
                         }
+                    }
+                }
 
-                        charts.frameOverrunChart?.let { frameOverrunChart ->
+                if (hasOverrunMs) {
+                    Div(attrs = {
+                        classes(
+                            "col-md-4"
+                        )
+                        style {
+                            position(Position.Sticky)
+                            top(0.px)
+                        }
+                    }) {
+                        charts?.frameOverrunChart?.let { frameOverrunChart ->
                             ChartUi(frameOverrunChart)
                         }
                     }
