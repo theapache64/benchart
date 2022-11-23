@@ -95,7 +95,7 @@ fun main() {
                 }
             }) {
                 Div(attrs = {
-                    classes("col-md-3")
+                    classes("col-md-4")
                 }) {
                     when (mode) {
                         Mode.MANUAL -> {
@@ -134,9 +134,9 @@ fun main() {
                 Div(attrs = {
                     classes(
                         if (hasOverrunMs) {
-                            "col-md-5"
+                            "col-md-4"
                         } else {
-                            "col-md-9"
+                            "col-md-8"
                         }
                     )
                     style {
