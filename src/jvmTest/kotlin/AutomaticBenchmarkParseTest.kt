@@ -38,6 +38,7 @@ class AutoBenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "Before 1",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.5f,
                     "P90" to 20.8f,
@@ -54,6 +55,7 @@ class AutoBenchmarkParseTest {
 
             BenchmarkResult(
                 title = "Before 2",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.4f,
                     "P90" to 20.7f,
@@ -70,6 +72,7 @@ class AutoBenchmarkParseTest {
 
             BenchmarkResult(
                 title = "After 1",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.6f,
                     "P90" to 21.8f,
@@ -86,6 +89,7 @@ class AutoBenchmarkParseTest {
 
             BenchmarkResult(
                 title = "After 2",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.8f,
                     "P90" to 21.9f,
@@ -120,6 +124,7 @@ class AutoBenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "Before 1",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.5f,
                     "P90" to 20.8f,
@@ -156,6 +161,7 @@ class AutoBenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "Before 1",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.5f,
                     "P90" to 20.8f,
@@ -193,6 +199,7 @@ class AutoBenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "Before 1",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.5f,
                     "P90" to 20.8f,
@@ -231,6 +238,7 @@ class AutoBenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "Before 1",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.5f,
                     "P90" to 20.8f,
@@ -248,6 +256,39 @@ class AutoBenchmarkParseTest {
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
+
+    @Test
+    fun testNameParseSuccess() {
+        val actualBenchmarkResult = BenchmarkResult.parse(
+            """
+                ### Before 1
+                frameOverrunMs   P50   -5.9,   P90    7.0,   P95   20.1,   P99   64.4
+                frameDurationCpuMs   P50   13.5,   P90   20.8,   P95   25.4,   P99   47.4 
+            """.trimIndent().toAutoFormData()
+        )
+
+        val expectedBenchmarkResult = listOf(
+            BenchmarkResult(
+                title = "Before 1",
+                testName = null,
+                frameDurationMs = mapOf(
+                    "P50" to 13.5f,
+                    "P90" to 20.8f,
+                    "P95" to 25.4f,
+                    "P99" to 47.4f,
+                ),
+                frameOverrunMs = mapOf(
+                    "P50" to -5.9f,
+                    "P90" to 7.0f,
+                    "P95" to 20.1f,
+                    "P99" to 64.4f,
+                ),
+            ),
+        )
+
+        assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
+    }
+
 
 
     @Test
@@ -288,6 +329,7 @@ class AutoBenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "Before 1",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.5f,
                     "P90" to 20.8f,
@@ -304,6 +346,7 @@ class AutoBenchmarkParseTest {
 
             BenchmarkResult(
                 title = "Before 2",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.4f,
                     "P90" to 20.7f,
@@ -320,6 +363,7 @@ class AutoBenchmarkParseTest {
 
             BenchmarkResult(
                 title = "After 1",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.6f,
                     "P90" to 21.8f,
@@ -336,6 +380,7 @@ class AutoBenchmarkParseTest {
 
             BenchmarkResult(
                 title = "After 2",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.8f,
                     "P90" to 21.9f,
@@ -425,6 +470,7 @@ class AutoBenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "Before 1",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.5f,
                     "P90" to 20.8f,
@@ -441,6 +487,7 @@ class AutoBenchmarkParseTest {
 
             BenchmarkResult(
                 title = "Before 2",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.4f,
                     "P90" to 20.7f,
@@ -457,6 +504,7 @@ class AutoBenchmarkParseTest {
 
             BenchmarkResult(
                 title = "After 1",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.6f,
                     "P90" to 21.8f,
@@ -473,6 +521,7 @@ class AutoBenchmarkParseTest {
 
             BenchmarkResult(
                 title = "After 2",
+                testName = "HomeScrollBenchmark_scrollTest",
                 frameDurationMs = mapOf(
                     "P50" to 13.8f,
                     "P90" to 21.9f,
@@ -490,6 +539,8 @@ class AutoBenchmarkParseTest {
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
+
+
 }
 
 private fun String.toAutoFormData(): AutoFormData {

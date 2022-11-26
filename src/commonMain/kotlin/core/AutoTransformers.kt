@@ -1,10 +1,10 @@
 package core
 
 import AutoFormData
+import BenchmarkResult
 import Charts
 
-fun AutoFormData.toCharts(): Charts {
-    val benchmarkResults = BenchmarkResult.parse(this)
+fun AutoFormData.toCharts(benchmarkResults : List<BenchmarkResult>): Charts {
     return benchmarkResults.toChartData()
 }
 

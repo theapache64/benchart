@@ -1,4 +1,4 @@
-package ui
+package components
 
 import IS_INJECT_DUMMY
 import ManualFormData

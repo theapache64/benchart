@@ -17,6 +17,7 @@ class ManualBenchmarkParseTest {
 
         val expectedBenchmarkResult = BenchmarkResult(
             title = TEMP_FORM_DATA_TITLE,
+            testName = "HomeScrollBenchmark_scrollTest",
             frameDurationMs = mapOf(
                 "P50" to 14.0f,
                 "P90" to 22.8f,
@@ -46,6 +47,7 @@ class ManualBenchmarkParseTest {
 
         val expectedBenchmarkResult = BenchmarkResult(
             title = TEMP_FORM_DATA_TITLE,
+            testName = "HomeScrollBenchmark_scrollTest",
             frameDurationMs = mapOf(
                 "P50" to 14.0f,
                 "P90" to 22.8f,
@@ -70,6 +72,7 @@ class ManualBenchmarkParseTest {
 
         val expectedBenchmarkResult = BenchmarkResult(
             title = TEMP_FORM_DATA_TITLE,
+            testName = "HomeScrollBenchmark_scrollTest",
             frameDurationMs = mapOf(
                 "P50" to 14.0f,
                 "P90" to 22.8f,
@@ -115,6 +118,7 @@ class ManualBenchmarkParseTest {
 
         val expectedBenchmarkResult = BenchmarkResult(
             title = TEMP_FORM_DATA_TITLE,
+            testName = "HomeScrollBenchmark_scrollTest",
             frameDurationMs = mapOf(
                 "P50" to 14.0f,
                 "P90" to 22.8f,
@@ -142,6 +146,7 @@ class ManualBenchmarkParseTest {
 
         val expectedBenchmarkResult = BenchmarkResult(
             title = TEMP_FORM_DATA_TITLE,
+            testName = "HomeScrollBenchmark_scrollTest",
             frameDurationMs = mapOf(
                 "P50" to 14.0f,
                 "P90" to 22.8f,

@@ -4,6 +4,7 @@ class InvalidFrameOverrunNodeException(message: String?) : Throwable(message)
 
 data class BenchmarkResult(
     val title: String,
+    val testName: String?,
     val frameDurationMs: Map<String, Float>,
     val frameOverrunMs: Map<String, Float>?,
 ) {
@@ -17,6 +18,7 @@ data class BenchmarkResult(
 
         private val machineLineRegEx = "^(frameDurationCpuMs|frameOverrunMs|Traces).+".toRegex()
         private val titleStripRegEx = "\\W+".toRegex()
+        private val testNameRegex = "[A-Z].*_[a-z].*".toRegex()
 
         fun parse(form: ManualFormData): BenchmarkResult {
             val frameDurationMatches = frameDurationRegEx.findAll(form.data).toList()
@@ -43,6 +45,7 @@ data class BenchmarkResult(
 
             return BenchmarkResult(
                 title = form.title,
+                testName = null, // TODO
                 frameDurationMs = frameDurationMs,
                 frameOverrunMs = frameOverrunMs
             )
@@ -54,15 +57,41 @@ data class BenchmarkResult(
             val blocks = form.data
                 .split("\n").joinToString(separator = "\n") { it.trim() }
                 .split("^\\s+".toRegex(RegexOption.MULTILINE)).map { it.trim() }
+
             for ((index, block) in blocks.withIndex()) {
                 val lines = block.split("\n").map { it.trim() }
                 var title: String? = null
+                var testName: String? = null
                 var durationMs: Map<String, Float>? = null
                 var overrunMs: Map<String, Float>? = null
                 for (line in lines) {
 
                     if (title == null && isHumanLine(line)) {
                         title = line
+                    }
+
+                    if (isTestName(line)) {
+                        if (testName != null && durationMs != null) {
+
+                            if (title == null) {
+                                title = "benchmark $index $testName"
+                            }
+
+                            // We already have an unsaved testData, so let's save it
+                            benchmarkResults.add(
+                                BenchmarkResult(
+                                    title = title,
+                                    testName = testName,
+                                    frameDurationMs = durationMs,
+                                    frameOverrunMs = overrunMs
+                                )
+                            )
+
+                            durationMs = null
+                            overrunMs = null
+                        }
+
+                        testName = line
                     }
 
                     if (line.startsWith(KEY_FRAME_DURATION_MS)) {
@@ -87,14 +116,10 @@ data class BenchmarkResult(
                 title = parseTitle(title)
 
                 if (durationMs != null) {
-                    val isDuplicateTitle = benchmarkResults.find { it.title == title } != null
-                    if (isDuplicateTitle) {
-                        throw InvalidBenchmarkDataException("Duplicate title found. '$title' already exist")
-                    }
-
                     benchmarkResults.add(
                         BenchmarkResult(
                             title = title,
+                            testName = testName,
                             frameDurationMs = durationMs,
                             frameOverrunMs = overrunMs
                         )
@@ -103,6 +128,10 @@ data class BenchmarkResult(
             }
 
             return benchmarkResults
+        }
+
+        private fun isTestName(line: String): Boolean {
+            return testNameRegex.matches(line)
         }
 
         private fun parseTitle(title: String): String {

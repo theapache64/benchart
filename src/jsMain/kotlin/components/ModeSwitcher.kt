@@ -1,4 +1,4 @@
-package ui
+package components
 
 import Mode
 import androidx.compose.runtime.Composable
