@@ -27,6 +27,7 @@ fun HomePage(
         }
 
 
+        // Main
         Div(attrs = {
             classes("row")
             style {
@@ -34,11 +35,11 @@ fun HomePage(
             }
         }) {
             Div(attrs = {
-                classes("col-md-4")
+                classes("col-lg-4")
             }) {
                 FormUi(
                     onFormChanged = { form ->
-                        viewModel.onAutoFormChanged(form)
+                        viewModel.onFormChanged(form)
                     },
                     testNames = viewModel.testNames,
                     onTestNameChanged = { newTestName ->
@@ -49,13 +50,14 @@ fun HomePage(
 
             val hasOverrunMs = viewModel.charts?.frameOverrunChart?.dataSets?.isNotEmpty() ?: false
 
+            // duration chart
             Div(attrs = {
                 classes(
                     if (hasOverrunMs) {
-                        "col-md-4"
+                        "col-lg-4"
                     } else {
-                        "col-md-8"
-                    }
+                        "col-lg-8"
+                    },
                 )
             }) {
                 viewModel.charts?.let { charts ->
@@ -68,10 +70,11 @@ fun HomePage(
                 }
             }
 
+            // overrun chart
             if (hasOverrunMs) {
                 Div(attrs = {
                     classes(
-                        "col-md-4"
+                        "col-lg-4"
                     )
                     style {
                         position(Position.Sticky)

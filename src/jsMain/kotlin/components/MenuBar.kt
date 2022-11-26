@@ -15,7 +15,7 @@ fun MenuBar(onAddSlotClicked: () -> Unit) {
     ) {
         Div(
             attrs = {
-                classes("col-md-12", "text-right")
+                classes("col-lg-12", "text-right")
             }
         ) {
             Button(

@@ -62,97 +62,77 @@ fun FormUi(
         onFormChanged(form)
     }
 
-    Div(
-        attrs = {
-            classes("row")
-        }
-    ) {
-        // Input
-        Div(
-            attrs = {
-                classes("col-md-12")
-            }
-        ) {
-            Div(
-                attrs = {
-                    classes("row")
-                }
-            ) {
-                H3 {
-                    Text("Input")
-                }
+    H3 {
+        Text("Input")
+    }
 
-            }
+    Form {
 
-            Form {
-
-                if(testNames.isNotEmpty()){
-                    key("testNames"){
-                        Div(
-                            attrs = {
-                                classes("form-group")
+        if(testNames.isNotEmpty()){
+            key("testNames"){
+                Div(
+                    attrs = {
+                        classes("form-group")
+                    }
+                ) {
+                    Label(
+                        forId = "testNames"
+                    ) {
+                        Text("Test Name :")
+                    }
+                    Select(
+                        attrs = {
+                            classes("form-control")
+                            id("testNames")
+                            onInput {
+                                it.value?.let { newTestName ->
+                                    onTestNameChanged(newTestName)
+                                }
                             }
-                        ) {
-                            Label(
-                                forId = "testNames"
-                            ) {
-                                Text("Test Name :")
-                            }
-                            Select(
+                        }
+                    ) {
+                        for (testName in testNames) {
+                            Option(
+                                value = testName,
                                 attrs = {
-                                    classes("form-control")
-                                    id("testNames")
-                                    onInput {
-                                        it.value?.let { newTestName ->
-                                            onTestNameChanged(newTestName)
-                                        }
+                                    if (testName == currentTestName) {
+                                        selected()
                                     }
                                 }
                             ) {
-                                for (testName in testNames) {
-                                    Option(
-                                        value = testName,
-                                        attrs = {
-                                            if (testName == currentTestName) {
-                                                selected()
-                                            }
-                                        }
-                                    ) {
-                                        Text(testName)
-                                    }
-                                }
+                                Text(testName)
                             }
                         }
                     }
                 }
+            }
+        }
 
 
-                key("inputForm"){
-                    Div(
-                        attrs = {
-                            classes("form-group")
-                        }
-                    ) {
+        key("inputForm"){
+            Div(
+                attrs = {
+                    classes("form-group")
+                }
+            ) {
 
-                        Label(
-                            forId = "benchmark"
-                        ) {
-                            Text("Benchmark :")
-                        }
+                Label(
+                    forId = "benchmark"
+                ) {
+                    Text("Benchmark :")
+                }
 
-                        TextArea(
-                            value = form.data
-                        ) {
-                            id("benchmark")
-                            classes("form-control")
-                            placeholder(value = "Benchmark data")
-                            rows(30)
-                            onInput { textInput ->
-                                form = form.copy(data = textInput.value)
-                                window.localStorage.setItem(KEY_AUTO_FORM_INPUT, textInput.value)
-                                onFormChanged(form)
-                            }
-                        }
+                TextArea(
+                    value = form.data
+                ) {
+                    id("benchmark")
+                    classes("form-control")
+                    placeholder(value = "Benchmark data")
+                    rows(30)
+                    onInput { textInput ->
+                        form = form.copy(data = textInput.value)
+                        window.localStorage.setItem(KEY_AUTO_FORM_INPUT, textInput.value)
+                        onFormChanged(form)
                     }
                 }
             }

@@ -17,7 +17,7 @@ fun Heading() {
         }
     }) {
         Div(attrs = {
-            classes("col-md-12")
+            classes("col-lg-12")
         }) {
             H1(attrs = {
                 classes("text-center")

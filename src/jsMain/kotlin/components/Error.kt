@@ -11,7 +11,7 @@ fun Error(message: String) {
         classes("row")
     }) {
         Div(attrs = {
-            classes("col-md-12")
+            classes("col-lg-12")
         }) {
             H4(attrs = {
                 classes("text-center")
