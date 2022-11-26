@@ -2,14 +2,12 @@ package page.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import components.ChartUi
-import components.FormUi
-import components.Heading
-import components.TestNames
+import components.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.Text
+import kotlin.Error
 
 @Composable
 fun HomePage(
@@ -54,8 +52,19 @@ fun HomePage(
                     classes("col-lg-8")
                 }
             ) {
-                H3 {
-                    Text("🖥 Output")
+
+                if (viewModel.isEditableTitleEnabled) {
+                    EditableTitle()
+                } else {
+                    H3(
+                        attrs = {
+                            onDoubleClick {
+                                viewModel.onTitleDoubleClicked()
+                            }
+                        }
+                    ) {
+                        Text("🖥 Output")
+                    }
                 }
 
                 // 🧪 Test Names

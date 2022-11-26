@@ -9,7 +9,7 @@ import core.toChartData
 @Stable
 class HomeViewModel {
 
-    companion object{
+    companion object {
         private const val ERROR_GENERIC = "Something went wrong!"
     }
 
@@ -23,6 +23,9 @@ class HomeViewModel {
         private set
 
     var errorMsg by mutableStateOf("")
+        private set
+
+    var isEditableTitleEnabled by mutableStateOf(false)
         private set
 
     // Normal fields
@@ -72,5 +75,9 @@ class HomeViewModel {
             e.printStackTrace()
             errorMsg = e.message ?: ERROR_GENERIC
         }
+    }
+
+    fun onTitleDoubleClicked() {
+        isEditableTitleEnabled = true
     }
 }
