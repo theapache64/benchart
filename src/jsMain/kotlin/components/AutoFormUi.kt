@@ -44,11 +44,55 @@ private val defaultAutoForm = """
 private const val KEY_AUTO_FORM_INPUT = "auto_form_input"
 
 @Composable
-fun FormUi(
+fun TestNames(
     testNames: List<String>,
-    onFormChanged: (form: FormData) -> Unit,
     currentTestName: String? = null,
     onTestNameChanged: (option: String) -> Unit
+){
+    if(testNames.isNotEmpty()){
+        key("testNames"){
+            Div(
+                attrs = {
+                    classes("form-group")
+                }
+            ) {
+                Label(
+                    forId = "testNames"
+                ) {
+                    Text("Test Name :")
+                }
+                Select(
+                    attrs = {
+                        classes("form-control")
+                        id("testNames")
+                        onInput {
+                            it.value?.let { newTestName ->
+                                onTestNameChanged(newTestName)
+                            }
+                        }
+                    }
+                ) {
+                    for (testName in testNames) {
+                        Option(
+                            value = testName,
+                            attrs = {
+                                if (testName == currentTestName) {
+                                    selected()
+                                }
+                            }
+                        ) {
+                            Text(testName)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FormUi(
+    onFormChanged: (form: FormData) -> Unit,
 ) {
     var form by remember {
         mutableStateOf(
@@ -63,51 +107,10 @@ fun FormUi(
     }
 
     H3 {
-        Text("Input")
+        Text("⌨️ Input")
     }
 
     Form {
-
-        if(testNames.isNotEmpty()){
-            key("testNames"){
-                Div(
-                    attrs = {
-                        classes("form-group")
-                    }
-                ) {
-                    Label(
-                        forId = "testNames"
-                    ) {
-                        Text("Test Name :")
-                    }
-                    Select(
-                        attrs = {
-                            classes("form-control")
-                            id("testNames")
-                            onInput {
-                                it.value?.let { newTestName ->
-                                    onTestNameChanged(newTestName)
-                                }
-                            }
-                        }
-                    ) {
-                        for (testName in testNames) {
-                            Option(
-                                value = testName,
-                                attrs = {
-                                    if (testName == currentTestName) {
-                                        selected()
-                                    }
-                                }
-                            ) {
-                                Text(testName)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
 
         key("inputForm"){
             Div(
