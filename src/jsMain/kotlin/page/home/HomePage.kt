@@ -7,8 +7,6 @@ import components.FormUi
 import components.Heading
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.H4
-import org.jetbrains.compose.web.dom.Text
 
 @Composable
 fun HomePage(
@@ -20,24 +18,14 @@ fun HomePage(
         }
     ) {
 
-        // ui.Heading
+        // Heading
         Heading()
 
-        Div(attrs = {
-            classes("row")
-        }) {
-            Div(attrs = {
-                classes("col-md-12")
-            }) {
-                H4(attrs = {
-                    classes("text-center")
-                }) {
-                    if (viewModel.errorMsg.isNotBlank()) {
-                        Text("❌ ${viewModel.errorMsg}")
-                    }
-                }
-            }
+        // Error
+        if (viewModel.errorMsg.isNotBlank()) {
+            Error(viewModel.errorMsg)
         }
+
 
         Div(attrs = {
             classes("row")

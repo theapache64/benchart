@@ -10,8 +10,7 @@ import core.toChartData
 class HomeViewModel {
 
     // States
-    var currentTestName by mutableStateOf<String?>(null)
-        private set
+    private var currentTestName : String? = null
 
     var testNames = mutableStateListOf<String>()
         private set
@@ -22,14 +21,13 @@ class HomeViewModel {
     var errorMsg by mutableStateOf("")
         private set
 
-
     // Normal fields
-    val fullBenchmarkResults = mutableListOf<BenchmarkResult>()
-    var autoFormData: FormData? = null
+    private val fullBenchmarkResults = mutableListOf<BenchmarkResult>()
+    var formData: FormData? = null
 
     fun onAutoFormChanged(form: FormData) {
         try {
-            autoFormData = form
+            formData = form
             println("Form updated : $form")
             fullBenchmarkResults.clear()
             fullBenchmarkResults.addAll(BenchmarkResult.parse(form))
@@ -52,7 +50,7 @@ class HomeViewModel {
     }
 
     fun onTestNameChanged(newTestName: String) {
-        autoFormData?.let { form ->
+        formData?.let { form ->
             try {
                 currentTestName = newTestName
                 val filteredBenchmarkResult = if (currentTestName != null) {
