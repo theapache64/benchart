@@ -1,6 +1,6 @@
 package components
 
-import AutoFormData
+import FormData
 import androidx.compose.runtime.*
 import kotlinx.browser.window
 import org.jetbrains.compose.web.attributes.placeholder
@@ -44,15 +44,15 @@ private val defaultAutoForm = """
 private const val KEY_AUTO_FORM_INPUT = "auto_form_input"
 
 @Composable
-fun AutoFormUi(
+fun FormUi(
     testNames: List<String>,
-    onFormChanged: (form: AutoFormData) -> Unit,
+    onFormChanged: (form: FormData) -> Unit,
     currentTestName: String? = null,
     onTestNameChanged: (option: String) -> Unit
 ) {
     var form by remember {
         mutableStateOf(
-            AutoFormData(
+            FormData(
                 data = window.localStorage.getItem(KEY_AUTO_FORM_INPUT) ?: defaultAutoForm
             )
         )

@@ -11,47 +11,12 @@ data class BenchmarkResult(
     companion object {
         const val KEY_FRAME_DURATION_MS = "frameDurationCpuMs"
         const val KEY_FRAME_OVERRUN_MS = "frameOverrunMs"
-        private const val KEY_TRACES = "Traces"
-
-        private val frameDurationRegEx = "($KEY_FRAME_DURATION_MS.+)".toRegex(RegexOption.MULTILINE)
-        private val frameOverrunRegEx = "$KEY_FRAME_OVERRUN_MS.+".toRegex()
 
         private val machineLineRegEx = "^(frameDurationCpuMs|frameOverrunMs|Traces).+".toRegex()
         private val titleStripRegEx = "\\W+".toRegex()
         private val testNameRegex = "[A-Z].*_[a-z].*".toRegex()
 
-        fun parse(form: ManualFormData): BenchmarkResult {
-            val frameDurationMatches = frameDurationRegEx.findAll(form.data).toList()
-            val frameDurationMsRaw = frameDurationMatches.firstOrNull()
-                ?: throw InvalidBenchmarkDataException("Missing $KEY_FRAME_DURATION_MS. Given '${form.data}'")
-            if (frameDurationMatches.size > 1) {
-                throw InvalidBenchmarkDataException("Found ${frameDurationMatches.size} instances of $KEY_FRAME_DURATION_MS. Expected only one")
-            }
-
-            val frameDurationMs = parseDurationMs(frameDurationMsRaw.value)
-
-            val frameOverrunMsMatches = frameOverrunRegEx.findAll(form.data).toList()
-            if (frameOverrunMsMatches.size > 1) {
-                throw InvalidBenchmarkDataException("Found ${frameOverrunMsMatches.size} instances of $KEY_FRAME_OVERRUN_MS. Expected only one")
-            }
-            val frameOverrunMsRaw = frameOverrunMsMatches.firstOrNull()
-
-            // optional
-            val frameOverrunMs = if (frameOverrunMsRaw != null) {
-                parseOverrunMs(frameOverrunMsRaw.value)
-            } else {
-                null
-            }
-
-            return BenchmarkResult(
-                title = form.title,
-                testName = null, // TODO
-                frameDurationMs = frameDurationMs,
-                frameOverrunMs = frameOverrunMs
-            )
-        }
-
-        fun parse(form: AutoFormData): List<BenchmarkResult> {
+        fun parse(form: FormData): List<BenchmarkResult> {
             val benchmarkResults = mutableListOf<BenchmarkResult>()
 
             val blocks = form.data

@@ -543,6 +543,6 @@ class AutoBenchmarkParseTest {
 
 }
 
-private fun String.toAutoFormData(): AutoFormData {
-    return AutoFormData(data = this)
+private fun String.toAutoFormData(): FormData {
+    return FormData(data = this)
 }

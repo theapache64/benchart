@@ -1,20 +1,15 @@
 package page.home
 
-import AutoFormData
 import BenchmarkResult
 import Charts
-import ManualFormData
-import Mode
+import FormData
 import androidx.compose.runtime.*
-import core.toCharts
+import core.toChartData
 
 @Stable
 class HomeViewModel {
 
     // States
-    var mode by mutableStateOf(Mode.AUTO)
-        private set
-
     var currentTestName by mutableStateOf<String?>(null)
         private set
 
@@ -30,14 +25,9 @@ class HomeViewModel {
 
     // Normal fields
     val fullBenchmarkResults = mutableListOf<BenchmarkResult>()
-    var autoFormData: AutoFormData? = null
+    var autoFormData: FormData? = null
 
-
-    fun onModeChanged(newMode: Mode) {
-        this.mode = newMode
-    }
-
-    fun onAutoFormChanged(form: AutoFormData) {
+    fun onAutoFormChanged(form: FormData) {
         try {
             autoFormData = form
             println("Form updated : $form")
@@ -53,20 +43,12 @@ class HomeViewModel {
             } else {
                 fullBenchmarkResults
             }
-            charts = form.toCharts(filteredBenchmarkResult)
+            charts = filteredBenchmarkResult.toChartData()
             errorMsg = ""
         } catch (e: Throwable) {
             e.printStackTrace()
             errorMsg = e.message ?: "Something went wrong!"
         }
-    }
-
-    fun onManualFormChanged(forms: List<ManualFormData>) {
-        charts = forms.toCharts(
-            onInvalidData = { exception ->
-                errorMsg = exception?.message ?: ""
-            }
-        )
     }
 
     fun onTestNameChanged(newTestName: String) {
@@ -78,7 +60,7 @@ class HomeViewModel {
                 } else {
                     fullBenchmarkResults
                 }
-                charts = form.toCharts(filteredBenchmarkResult)
+                charts = filteredBenchmarkResult.toChartData()
                 errorMsg = ""
             } catch (e: Throwable) {
                 e.printStackTrace()

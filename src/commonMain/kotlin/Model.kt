@@ -1,9 +1,5 @@
-data class ManualFormData(
-    val title: String,
-    val data: String
-)
 
-data class AutoFormData(
+data class FormData(
     val data: String
 )
 

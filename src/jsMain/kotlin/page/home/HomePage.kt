@@ -1,9 +1,10 @@
 package page.home
 
-import Mode
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import components.*
+import components.ChartUi
+import components.FormUi
+import components.Heading
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H4
@@ -21,13 +22,6 @@ fun HomePage(
 
         // ui.Heading
         Heading()
-
-        ModeSwitcher(
-            currentMode = viewModel.mode,
-            onModeChanged = { newMode ->
-                viewModel.onModeChanged(newMode)
-            }
-        )
 
         Div(attrs = {
             classes("row")
@@ -54,29 +48,15 @@ fun HomePage(
             Div(attrs = {
                 classes("col-md-4")
             }) {
-                when (viewModel.mode) {
-                    Mode.MANUAL -> {
-                        // Form
-                        ManualFormUi(
-                            onFormUpdated = { forms ->
-                                println("Form updated : $forms")
-                                viewModel.onManualFormChanged(forms)
-                            }
-                        )
+                FormUi(
+                    onFormChanged = { form ->
+                        viewModel.onAutoFormChanged(form)
+                    },
+                    testNames = viewModel.testNames,
+                    onTestNameChanged = { newTestName ->
+                        viewModel.onTestNameChanged(newTestName)
                     }
-
-                    Mode.AUTO -> {
-                        AutoFormUi(
-                            onFormChanged = { form ->
-                                viewModel.onAutoFormChanged(form)
-                            },
-                            testNames = viewModel.testNames,
-                            onTestNameChanged = { newTestName ->
-                                viewModel.onTestNameChanged(newTestName)
-                            }
-                        )
-                    }
-                }
+                )
             }
 
             val hasOverrunMs = viewModel.charts?.frameOverrunChart?.dataSets?.isNotEmpty() ?: false
@@ -89,12 +69,6 @@ fun HomePage(
                         "col-md-8"
                     }
                 )
-                style {
-                    if (viewModel.mode == Mode.MANUAL) {
-                        position(Position.Sticky)
-                        top(0.px)
-                    }
-                }
             }) {
                 viewModel.charts?.let { charts ->
                     // Rendering frameDurationMs

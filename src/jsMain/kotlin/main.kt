@@ -1,11 +1,6 @@
 import org.jetbrains.compose.web.renderComposable
 import page.home.HomePage
 
-enum class Mode {
-    AUTO,
-    MANUAL
-}
-
 const val IS_INJECT_DUMMY = true
 
 fun main() {
