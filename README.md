@@ -10,11 +10,12 @@
 
 > A web tool to visualise and compare your android benchmark result
 
-![image](https://user-images.githubusercontent.com/9678279/202082897-0a7184fb-aac0-4b47-9bc6-51d2be29b779.png)
+![image](https://user-images.githubusercontent.com/9678279/204081081-bbe0d38b-6fe0-4f2c-b360-930fbfe20cf6.png)
+
 
 ## ✨ Demo
 
-https://user-images.githubusercontent.com/9678279/202092320-a95e0055-179d-4c68-9935-61f7be310517.mov
+https://user-images.githubusercontent.com/9678279/204081186-36c7ce90-6c46-4ec6-9c36-dd16cdf25acf.mov
 
 
 ## ✍️ Author
@@ -56,9 +57,6 @@ Give a ⭐️ if this project helped you!
     <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="Donation" width="160">
 </a>
 
-## ☑️ TODO
-
-- [ ] Task 1
 
 ## 📝 License
 
