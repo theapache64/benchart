@@ -5,7 +5,8 @@ data class FormData(
 
 data class ChartData(
     val label: String,
-    val dataSets: Map<String, Array<Float>>
+    val dataSets: Map<String, Array<Float>>,
+    val colorMap : Map<String, String>
 )
 
 data class Charts(
