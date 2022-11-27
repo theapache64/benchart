@@ -28,6 +28,9 @@ class HomeViewModel {
     var isEditableTitleEnabled by mutableStateOf(false)
         private set
 
+    var isAutoGroupEnabled by mutableStateOf(false)
+        private set
+
     // Normal fields
     private val fullBenchmarkResults = mutableListOf<BenchmarkResult>()
     var formData: FormData? = null
@@ -79,5 +82,9 @@ class HomeViewModel {
 
     fun onTitleDoubleClicked() {
         isEditableTitleEnabled = true
+    }
+
+    fun onToggleColorMapClicked(){
+        isAutoGroupEnabled = !isAutoGroupEnabled
     }
 }

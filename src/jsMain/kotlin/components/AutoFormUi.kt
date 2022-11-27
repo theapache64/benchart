@@ -5,7 +5,6 @@ import androidx.compose.runtime.*
 import kotlinx.browser.window
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.attributes.rows
-import org.jetbrains.compose.web.attributes.selected
 import org.jetbrains.compose.web.dom.*
 
 
@@ -43,52 +42,6 @@ private val defaultAutoForm = """
 
 private const val KEY_AUTO_FORM_INPUT = "auto_form_input"
 
-@Composable
-fun TestNames(
-    testNames: List<String>,
-    currentTestName: String? = null,
-    onTestNameChanged: (option: String) -> Unit
-){
-    if(testNames.isNotEmpty()){
-        key("testNames"){
-            Div(
-                attrs = {
-                    classes("form-group")
-                }
-            ) {
-                Label(
-                    forId = "testNames"
-                ) {
-                    Text("Test Name :")
-                }
-                Select(
-                    attrs = {
-                        classes("form-control")
-                        id("testNames")
-                        onInput {
-                            it.value?.let { newTestName ->
-                                onTestNameChanged(newTestName)
-                            }
-                        }
-                    }
-                ) {
-                    for (testName in testNames) {
-                        Option(
-                            value = testName,
-                            attrs = {
-                                if (testName == currentTestName) {
-                                    selected()
-                                }
-                            }
-                        ) {
-                            Text(testName)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun FormUi(
@@ -112,7 +65,7 @@ fun FormUi(
 
     Form {
 
-        key("inputForm"){
+        key("inputForm") {
             Div(
                 attrs = {
                     classes("form-group")

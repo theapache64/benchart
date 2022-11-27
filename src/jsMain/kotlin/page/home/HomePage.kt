@@ -5,6 +5,7 @@ import androidx.compose.runtime.remember
 import components.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Form
 import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.Text
 import kotlin.Error
@@ -67,18 +68,29 @@ fun HomePage(
                     }
                 }
 
-                // 🧪 Test Names
+                // 🧪 ToolBar
                 Div(
                     attrs = {
                         classes("row")
                     }
                 ) {
-                    TestNames(
-                        testNames = viewModel.testNames,
-                        onTestNameChanged = { newTestName ->
-                            viewModel.onTestNameChanged(newTestName)
+                    Form(
+                        attrs = {
+                            classes("form-inline")
                         }
-                    )
+                    ) {
+                        TestNames(
+                            testNames = viewModel.testNames,
+                            onTestNameChanged = { newTestName ->
+                                viewModel.onTestNameChanged(newTestName)
+                            }
+                        )
+
+                        AutoGroup(
+                            isAutoGroupEnabled = viewModel.isAutoGroupEnabled,
+                            onButtonClicked = viewModel::onToggleColorMapClicked
+                        )
+                    }
                 }
 
 
@@ -102,7 +114,7 @@ fun HomePage(
                             // Rendering frameDurationMs
                             charts.frameDurationChart.dataSets.isNotEmpty().let { hasData ->
                                 if (hasData) {
-                                    ChartUi(charts.frameDurationChart)
+                                    ChartUi(viewModel.isAutoGroupEnabled, charts.frameDurationChart)
                                 }
                             }
                         }
@@ -120,7 +132,7 @@ fun HomePage(
                             }
                         }) {
                             viewModel.charts?.frameOverrunChart?.let { frameOverrunChart ->
-                                ChartUi(frameOverrunChart)
+                                ChartUi(viewModel.isAutoGroupEnabled, frameOverrunChart)
                             }
                         }
                     }

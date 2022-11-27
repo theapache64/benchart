@@ -12,7 +12,10 @@ import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
-fun ChartUi(chartData: ChartData) {
+fun ChartUi(
+    isColorMapEnabled: Boolean,
+    chartData: ChartData,
+) {
     H3 { Text(chartData.label) }
 
     // Charts
@@ -27,14 +30,16 @@ fun ChartUi(chartData: ChartData) {
             }
         }
     ) {
-        DisposableEffect(chartData) {
+        DisposableEffect(chartData, isColorMapEnabled) {
             val dataSets = mutableListOf<Chart.ChartDataSets>()
             for ((key, value) in chartData.dataSets) {
                 dataSets.add(
                     jso {
                         label = key
                         data = value
-                        borderColor = if(chartData.colorMap.isEmpty()){
+                        borderColor = if (isColorMapEnabled) {
+                            chartData.colorMap[label]
+                        } else {
                             arrayOf(
                                 "rgba(255, 99, 132, 1)",
                                 "rgba(54, 162, 235, 1)",
@@ -43,8 +48,6 @@ fun ChartUi(chartData: ChartData) {
                                 "rgba(153, 102, 255, 1)",
                                 "rgba(255, 159, 64, 1)"
                             )
-                        }else{
-                            chartData.colorMap[label]
                         }
                         borderWidth = 3
                     }
