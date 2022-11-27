@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.compose") version "1.2.1"
 }
 group = "com.theapache64.benchart"
-version = "1.0.0-alpha03"
+version = "1.0.0-alpha04"
 
 // Add maven repositories
 repositories {
