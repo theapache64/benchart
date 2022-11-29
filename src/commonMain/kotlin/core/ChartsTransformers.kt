@@ -57,7 +57,7 @@ fun parseColorMap(benchmarkResults: List<BenchmarkResult>): Map<String, String> 
                 throw IllegalStateException("lineColors exhausted")
             }
 
-            val newColor = lineColors.random()
+            val newColor = lineColors.first()
             lineColors.remove(newColor)
             newColor
         }
