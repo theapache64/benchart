@@ -18,6 +18,10 @@
 https://user-images.githubusercontent.com/9678279/204081186-36c7ce90-6c46-4ec6-9c36-dd16cdf25acf.mov
 
 
+## ⭐️ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=theapache64/benchart&type=Date)](https://star-history.com/#theapache64/benchart&Date)
+
 ## ✍️ Author
 
 👤 **theapache64**
