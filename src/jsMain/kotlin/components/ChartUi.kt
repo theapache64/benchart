@@ -5,6 +5,7 @@ import ChartData
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import chartjs.Type
+import core.GroupMap
 import jso
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Canvas
@@ -14,6 +15,7 @@ import org.jetbrains.compose.web.dom.Text
 @Composable
 fun ChartUi(
     isColorMapEnabled: Boolean,
+    groupMap: GroupMap,
     chartData: ChartData,
 ) {
     H3 { Text(chartData.label) }
@@ -38,7 +40,7 @@ fun ChartUi(
                         label = key
                         data = value
                         borderColor = if (isColorMapEnabled) {
-                            chartData.groupMap.autoGroupMap[label]
+                            groupMap.autoGroupMap[label]
                         } else {
                             arrayOf(
                                 "rgba(255, 99, 132, 1)",

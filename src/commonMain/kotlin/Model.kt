@@ -7,10 +7,10 @@ data class FormData(
 data class ChartData(
     val label: String,
     val dataSets: Map<String, Array<Float>>,
-    val groupMap: GroupMap,
 )
 
 data class Charts(
+    val groupMap: GroupMap,
     val frameDurationChart: ChartData,
     val frameOverrunChart: ChartData?
 )

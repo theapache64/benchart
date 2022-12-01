@@ -4,7 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import components.*
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Form
+import org.jetbrains.compose.web.dom.H3
+import org.jetbrains.compose.web.dom.Text
 import kotlin.Error
 
 @Composable
@@ -124,7 +127,11 @@ fun HomePage(
                             // Rendering frameDurationMs
                             charts.frameDurationChart.dataSets.isNotEmpty().let { hasData ->
                                 if (hasData) {
-                                    ChartUi(viewModel.isAutoGroupEnabled, charts.frameDurationChart)
+                                    ChartUi(
+                                        isColorMapEnabled = viewModel.isAutoGroupEnabled,
+                                        groupMap = charts.groupMap,
+                                        chartData = charts.frameDurationChart
+                                    )
                                 }
                             }
                         }
@@ -142,7 +149,11 @@ fun HomePage(
                             }
                         }) {
                             viewModel.charts?.frameOverrunChart?.let { frameOverrunChart ->
-                                ChartUi(viewModel.isAutoGroupEnabled, frameOverrunChart)
+                                ChartUi(
+                                    viewModel.isAutoGroupEnabled,
+                                    viewModel.charts!!.groupMap,
+                                    frameOverrunChart
+                                )
                             }
                         }
                     }

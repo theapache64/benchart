@@ -20,18 +20,17 @@ fun List<BenchmarkResult>.toCharts(): Charts {
     return Charts(
         frameDurationChart = ChartData(
             label = BenchmarkResult.KEY_FRAME_DURATION_MS,
-            dataSets = frameDurationMap,
-            groupMap = groupMap
+            dataSets = frameDurationMap
         ),
         frameOverrunChart = if (frameOverrunMap.isNotEmpty()) {
             ChartData(
                 label = BenchmarkResult.KEY_FRAME_OVERRUN_MS,
-                dataSets = frameOverrunMap,
-                groupMap = groupMap
+                dataSets = frameOverrunMap
             )
         } else {
             null
         },
+        groupMap = groupMap
     )
 }
 
