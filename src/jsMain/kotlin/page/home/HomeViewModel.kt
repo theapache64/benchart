@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import components.SummaryNode
 import core.GroupMap
 import core.toCharts
+import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 @Stable
@@ -68,7 +69,7 @@ class HomeViewModel {
                     val after = combinedMap[words[1]]?.get(index) ?: 0f
                     val before = combinedMap[words[0]]?.get(index) ?: 0f
                     val diff = "${(after - before).asDynamic().toFixed(2)}".toFloat()
-                    val percDiff = "${(((before - after) / before) * 100).asDynamic().toFixed(2)}".toFloat()
+                    val percDiff = "${(((before - after) / before) * 100).asDynamic().toFixed(2)}".toFloat().absoluteValue
 
                     val resultWord = if (diff > 0) "worse" else "better"
                     val symbol = if (diff > 0) "+" else ""
