@@ -27,7 +27,7 @@ fun TestNames(
             }
             Select(
                 attrs = {
-                    classes("form-control")
+                    classes("form-select")
                     id("testNames")
                     onInput {
                         it.value?.let { newTestName ->

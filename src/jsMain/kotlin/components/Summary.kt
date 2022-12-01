@@ -22,13 +22,13 @@ fun SummaryContainer(
 ) {
     if(durationSummary.isNotEmpty()){
         key("durationSum"){
-            Summary("Duration Summary", durationSummary)
+            Summary("⏱ Duration Summary", durationSummary)
         }
     }
 
     if(overrunSummary.isNotEmpty()){
         key("overrunSum"){
-            Summary("Overrun Summary", overrunSummary)
+            Summary("🏃🏻‍♂️ Overrun Summary", overrunSummary)
         }
     }
 }
