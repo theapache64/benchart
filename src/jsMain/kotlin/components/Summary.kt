@@ -13,6 +13,8 @@ class SummaryNode(
     val stateWord: String,
     val diff: Float,
     val diffSymbol: String,
+    val after: Float,
+    val before: Float
 )
 
 @Composable
@@ -20,14 +22,14 @@ fun SummaryContainer(
     durationSummary: List<SummaryNode>,
     overrunSummary: List<SummaryNode>
 ) {
-    if(durationSummary.isNotEmpty()){
-        key("durationSum"){
+    if (durationSummary.isNotEmpty()) {
+        key("durationSum") {
             Summary("⏱ Duration Summary", durationSummary)
         }
     }
 
-    if(overrunSummary.isNotEmpty()){
-        key("overrunSum"){
+    if (overrunSummary.isNotEmpty()) {
+        key("overrunSum") {
             Summary("🏃🏻‍♂️ Overrun Summary", overrunSummary)
         }
     }
@@ -43,11 +45,15 @@ fun Summary(title: String, summary: List<SummaryNode>) {
         H3 { Text(title) }
         Ul {
             summary.forEach { node ->
-                Li {
+                Li{
                     Text("${node.emoji} ${node.segment} : ${node.label} performed ${node.percentage}% ")
                     Span(
                         attrs = {
                             classes("badge", "bg-${if (node.diff > 0) "danger" else "success"}")
+
+                            attr("data-bs-toggle", "tooltip")
+                            attr("data-bs-placement", "top")
+                            attr("title", "${node.before}ms to ${node.after}ms")
                         }
                     ) {
                         Text(node.stateWord)

@@ -83,7 +83,9 @@ class HomeViewModel {
                             percentage = percDiff,
                             stateWord = resultWord,
                             diff = diff,
-                            diffSymbol = symbol
+                            diffSymbol = symbol,
+                            after = "${after.asDynamic().toFixed(2)}".toFloat(),
+                            before = "${before.asDynamic().toFixed(2)}".toFloat()
                         )
                     )
                 }
