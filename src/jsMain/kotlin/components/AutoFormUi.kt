@@ -73,7 +73,10 @@ fun FormUi(
             ) {
 
                 Label(
-                    forId = "benchmark"
+                    forId = "benchmark",
+                    attrs = {
+                        classes("form-label")
+                    }
                 ) {
                     Text("Benchmark :")
                 }

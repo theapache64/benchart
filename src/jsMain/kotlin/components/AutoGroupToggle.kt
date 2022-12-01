@@ -5,10 +5,7 @@ import org.jetbrains.compose.web.attributes.ButtonType
 import org.jetbrains.compose.web.attributes.type
 import org.jetbrains.compose.web.css.marginLeft
 import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.dom.Button
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Label
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.*
 
 @Composable
 fun AutoGroup(
@@ -26,15 +23,18 @@ fun AutoGroup(
         // 🖌 Color map
 
         Label(
-            forId = "colorMap"
+            forId = "colorMap",
+            attrs = {
+                classes("form-label")
+            }
         ) {
             Text("Auto Group:")
         }
-
+        Br()
         Button(
             attrs = {
                 id("colorMap")
-                classes("btn", if (isAutoGroupEnabled) "btn-success" else "btn-default")
+                classes("btn", if (isAutoGroupEnabled) "btn-success" else "btn-secondary")
                 onClick {
                     onButtonClicked()
                 }

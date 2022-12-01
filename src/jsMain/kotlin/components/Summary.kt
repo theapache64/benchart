@@ -1,10 +1,11 @@
 package components
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import org.jetbrains.compose.web.dom.*
 
 // P50 : After performed 25% better (-30ms)
-data class SummaryNode(
+class SummaryNode(
     val emoji: String,
     val segment: String,
     val label: String,
@@ -20,11 +21,15 @@ fun SummaryContainer(
     overrunSummary: List<SummaryNode>
 ) {
     if(durationSummary.isNotEmpty()){
-        Summary("Duration Summary", durationSummary)
+        key("durationSum"){
+            Summary("Duration Summary", durationSummary)
+        }
     }
 
     if(overrunSummary.isNotEmpty()){
-        Summary("Overrun Summary", overrunSummary)
+        key("overrunSum"){
+            Summary("Overrun Summary", overrunSummary)
+        }
     }
 }
 

@@ -23,7 +23,10 @@ fun EditableTitle() {
             }
         ) {
             Label(
-                forId = "customTitle"
+                forId = "customTitle",
+                attrs = {
+                    classes("form-label")
+                }
             ) {
                 Text("Title :")
             }

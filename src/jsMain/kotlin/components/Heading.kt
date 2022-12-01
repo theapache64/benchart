@@ -1,10 +1,7 @@
 package components
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.web.css.border
-import org.jetbrains.compose.web.css.marginBottom
-import org.jetbrains.compose.web.css.overflow
-import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 
 
@@ -14,6 +11,7 @@ fun Heading() {
         classes("row")
         style {
             marginBottom(30.px)
+            marginTop(30.px)
         }
     }) {
         Div(attrs = {

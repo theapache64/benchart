@@ -39,17 +39,13 @@ fun HomePage(
             Div(attrs = {
                 classes("col-lg-4")
             }) {
-                Div(
-                    attrs = {
-                        classes("row")
-                    }
-                ) {
-                    FormUi(
-                        onFormChanged = { form ->
-                            viewModel.onFormChanged(form)
-                        },
-                    )
-                }
+                FormUi(
+                    onFormChanged = { form ->
+                        viewModel.onFormChanged(form)
+                    },
+                )
+
+                Br()
 
                 SummaryContainer(
                     durationSummary = viewModel.durationSummary,
@@ -85,25 +81,41 @@ fun HomePage(
                             classes("row")
                         }
                     ) {
-                        Form(
-                            attrs = {
-                                classes("form-inline")
-                            }
-                        ) {
-                            TestNames(
-                                testNames = viewModel.testNames,
-                                onTestNameChanged = { newTestName ->
-                                    viewModel.onTestNameChanged(newTestName)
+                        Form{
+                            Div(
+                                attrs = {
+                                    classes("row")
                                 }
-                            )
+                            ) {
+                                Div(
+                                    attrs = {
+                                        classes("col-md-4")
+                                    }
+                                ) {
+                                    TestNames(
+                                        testNames = viewModel.testNames,
+                                        onTestNameChanged = { newTestName ->
+                                            viewModel.onTestNameChanged(newTestName)
+                                        }
+                                    )
+                                }
 
-                            AutoGroup(
-                                isAutoGroupEnabled = viewModel.isAutoGroupEnabled,
-                                onButtonClicked = viewModel::onToggleAutoGroupClicked
-                            )
+                                Div(
+                                    attrs = {
+                                        classes("col-md-2")
+                                    }
+                                ) {
+                                    AutoGroup(
+                                        isAutoGroupEnabled = viewModel.isAutoGroupEnabled,
+                                        onButtonClicked = viewModel::onToggleAutoGroupClicked
+                                    )
+                                }
+
+                            }
                         }
                     }
 
+                    Br()
 
                     // 📊 Charts
                     Div(

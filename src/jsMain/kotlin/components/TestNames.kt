@@ -18,7 +18,10 @@ fun TestNames(
             }
         ) {
             Label(
-                forId = "testNames"
+                forId = "testNames",
+                attrs = {
+                    classes("form-label")
+                }
             ) {
                 Text("Test Name :")
             }
