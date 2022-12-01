@@ -47,7 +47,7 @@ fun Summary(title: String, summary: List<SummaryNode>) {
                     Text("${node.emoji} ${node.segment} : ${node.label} performed ${node.percentage}% ")
                     Span(
                         attrs = {
-                            classes("label", "label-${if (node.diff > 0) "danger" else "success"}")
+                            classes("badge", "bg-${if (node.diff > 0) "danger" else "success"}")
                         }
                     ) {
                         Text(node.stateWord)
