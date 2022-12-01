@@ -8,9 +8,6 @@ import androidx.compose.runtime.*
 import components.SummaryNode
 import core.GroupMap
 import core.toCharts
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Stable
@@ -175,7 +172,7 @@ class HomeViewModel {
         )
 
         val frameOverrunChart = charts.frameOverrunChart
-        if (frameOverrunChart != null) {
+        if (frameOverrunChart != null && frameOverrunChart.dataSets.isNotEmpty()) {
             updateSummary(
                 groupMap = charts.groupMap,
                 chartData = frameOverrunChart,
@@ -187,6 +184,8 @@ class HomeViewModel {
                     overrunSummary.clear()
                 }
             )
+        } else {
+            overrunSummary.clear()
         }
     }
 
