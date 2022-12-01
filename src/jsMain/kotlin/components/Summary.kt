@@ -9,7 +9,7 @@ class SummaryNode(
     val emoji: String,
     val segment: String,
     val label: String,
-    val percentage: Int,
+    val percentage: Float,
     val stateWord: String,
     val diff: Float,
     val diffSymbol: String,
