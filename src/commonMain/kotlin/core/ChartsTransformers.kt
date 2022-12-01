@@ -19,11 +19,13 @@ fun List<BenchmarkResult>.toCharts(): Charts {
 
     return Charts(
         frameDurationChart = ChartData(
+            emoji = "⏱",
             label = BenchmarkResult.KEY_FRAME_DURATION_MS,
             dataSets = frameDurationMap
         ),
         frameOverrunChart = if (frameOverrunMap.isNotEmpty()) {
             ChartData(
+                emoji = "🏃🏻‍♂️",
                 label = BenchmarkResult.KEY_FRAME_OVERRUN_MS,
                 dataSets = frameOverrunMap
             )
@@ -35,8 +37,8 @@ fun List<BenchmarkResult>.toCharts(): Charts {
 }
 
 class GroupMap(
-    val autoGroupMap : Map<String, String>,
-    val wordColorMap :  Map<String, String>
+    val autoGroupMap: Map<String, String>,
+    val wordColorMap: Map<String, String>
 )
 
 fun parseGroupMap(benchmarkResults: List<BenchmarkResult>): GroupMap {

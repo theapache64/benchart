@@ -5,6 +5,7 @@ data class FormData(
 )
 
 data class ChartData(
+    val emoji :String,
     val label: String,
     val dataSets: Map<String, Array<Float>>,
 )

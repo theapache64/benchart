@@ -18,7 +18,7 @@ fun ChartUi(
     groupMap: GroupMap,
     chartData: ChartData,
 ) {
-    H3 { Text(chartData.label) }
+    H3 { Text("${chartData.emoji} ${chartData.label}") }
 
     // Charts
     Canvas(
