@@ -10,7 +10,7 @@ data class SummaryNode(
     val label: String,
     val percentage: Int,
     val stateWord: String,
-    val diff: Int,
+    val diff: Float,
     val diffSymbol : String,
 )
 

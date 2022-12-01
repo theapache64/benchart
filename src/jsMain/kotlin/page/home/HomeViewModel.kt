@@ -1,10 +1,12 @@
 package page.home
 
 import BenchmarkResult
+import ChartData
 import Charts
 import FormData
 import androidx.compose.runtime.*
 import components.SummaryNode
+import core.GroupMap
 import core.toCharts
 import kotlin.math.roundToInt
 
@@ -78,12 +80,36 @@ class HomeViewModel {
 
     private fun updateSummary(charts: Charts) {
         // Calculating duration summary
-        val totalGroups = charts.groupMap.wordColorMap.size
+        updateSummary(
+            groupMap = charts.groupMap,
+            chartData = charts.frameDurationChart,
+            onSummaryReady = { summaryNodes ->
+                durationSummary = summaryNodes
+            }
+        )
+
+        charts.frameOverrunChart?.let { frameOverrunChart ->
+            updateSummary(
+                groupMap = charts.groupMap,
+                chartData = frameOverrunChart,
+                onSummaryReady = { summaryNodes ->
+                    overrunSummary = summaryNodes
+                }
+            )
+        }
+    }
+
+    private fun updateSummary(
+        groupMap: GroupMap,
+        chartData: ChartData,
+        onSummaryReady: (summaryList: List<SummaryNode>) -> Unit
+    ) {
+        val totalGroups = groupMap.wordColorMap.size
         if (totalGroups == 2) {
             val combinedMap = mutableMapOf<String, Array<Float>>()
-            val words = charts.groupMap.wordColorMap.keys.toList()
+            val words = groupMap.wordColorMap.keys.toList()
             for (word in words) {
-                combinedMap[word] = charts.frameDurationChart
+                combinedMap[word] = chartData
                     .dataSets
                     .filterKeys { it.startsWith(word) }
                     .values
@@ -103,11 +129,11 @@ class HomeViewModel {
                         newArray
                     }
             }
-            val summaryList = mutableListOf<SummaryNode>()
             for ((key, value) in combinedMap) {
                 println(key)
                 println(value)
             }
+            val summaryList = mutableListOf<SummaryNode>()
             repeat(4) { index ->
                 val segment = when (index) {
                     0 -> "P50"
@@ -119,12 +145,11 @@ class HomeViewModel {
 
                 val after = combinedMap[words[1]]?.get(index) ?: 0f
                 val before = combinedMap[words[0]]?.get(index) ?: 0f
-                val diff = (after - before).roundToInt()
+                val diff = "${(after - before).asDynamic().toFixed(2)}".toFloat()
                 val percDiff = (((before - after) / before) * 100).roundToInt()
                 println("diff $segment -> $diff ms")
                 val resultWord = if (diff > 0) "worse" else "better"
                 val symbol = if (diff > 0) "+" else ""
-                // Sentence : P50 : After performed 25% better (-30ms)
                 val emoji = if (diff > 0) "❌" else "✅"
                 summaryList.add(
                     SummaryNode(
@@ -137,7 +162,7 @@ class HomeViewModel {
                         diffSymbol = symbol
                     )
                 )
-                durationSummary = summaryList
+                onSummaryReady(summaryList)
             }
         }
     }

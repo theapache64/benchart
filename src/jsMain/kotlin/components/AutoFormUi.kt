@@ -84,7 +84,7 @@ fun FormUi(
                     id("benchmark")
                     classes("form-control")
                     placeholder(value = "Benchmark data")
-                    rows(30)
+                    rows(20)
                     onInput { textInput ->
                         form = form.copy(data = textInput.value)
                         window.localStorage.setItem(KEY_AUTO_FORM_INPUT, textInput.value)
