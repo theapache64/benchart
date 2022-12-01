@@ -41,7 +41,7 @@ fun AutoGroup(
                 type(ButtonType.Button)
             }
         ) {
-            Text("🖌 + 💻")
+            Text(if (isAutoGroupEnabled) "ON" else "OFF")
         }
     }
 }

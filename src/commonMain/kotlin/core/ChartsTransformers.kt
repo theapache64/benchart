@@ -4,7 +4,7 @@ import BenchmarkResult
 import ChartData
 import Charts
 
-fun List<BenchmarkResult>.toChartData(): Charts {
+fun List<BenchmarkResult>.toCharts(): Charts {
     val frameDurationMap = mutableMapOf<String, Array<Float>>()
     val frameOverrunMap = mutableMapOf<String, Array<Float>>()
     for (item in this) {
@@ -15,19 +15,19 @@ fun List<BenchmarkResult>.toChartData(): Charts {
         }
     }
 
-    val colorMap = parseColorMap(this)
+    val groupMap = parseGroupMap(this)
 
     return Charts(
         frameDurationChart = ChartData(
             label = BenchmarkResult.KEY_FRAME_DURATION_MS,
             dataSets = frameDurationMap,
-            colorMap = colorMap
+            groupMap = groupMap
         ),
         frameOverrunChart = if (frameOverrunMap.isNotEmpty()) {
             ChartData(
                 label = BenchmarkResult.KEY_FRAME_OVERRUN_MS,
                 dataSets = frameOverrunMap,
-                colorMap = colorMap
+                groupMap = groupMap
             )
         } else {
             null
@@ -35,9 +35,13 @@ fun List<BenchmarkResult>.toChartData(): Charts {
     )
 }
 
+class GroupMap(
+    val autoGroupMap : Map<String, String>,
+    val wordColorMap :  Map<String, String>
+)
 
-fun parseColorMap(benchmarkResults: List<BenchmarkResult>): Map<String, String> {
-    val colorMap = mutableMapOf<String, String>()
+fun parseGroupMap(benchmarkResults: List<BenchmarkResult>): GroupMap {
+    val autoGroupMap = mutableMapOf<String, String>()
     val titles = benchmarkResults.map { it.title }
     val wordColorMap = mutableMapOf<String, String>()
     // TODO: Add more colors
@@ -61,7 +65,11 @@ fun parseColorMap(benchmarkResults: List<BenchmarkResult>): Map<String, String> 
             lineColors.remove(newColor)
             newColor
         }
-        colorMap[title] = color
+        autoGroupMap[title] = color
     }
-    return colorMap
+    println("WordColorMap: $wordColorMap")
+    return GroupMap(
+        autoGroupMap = autoGroupMap,
+        wordColorMap = wordColorMap
+    )
 }

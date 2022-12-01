@@ -4,7 +4,7 @@ import BenchmarkResult
 import Charts
 import FormData
 import androidx.compose.runtime.*
-import core.toChartData
+import core.toCharts
 
 @Stable
 class HomeViewModel {
@@ -31,6 +31,27 @@ class HomeViewModel {
     var isAutoGroupEnabled by mutableStateOf(false)
         private set
 
+    var durationSummary by mutableStateOf(
+        listOf(
+            "P50 : After performed 25% better",
+            "P90 : After performed 25% worse",
+            "P95 : After performed 10% worse",
+            "P99 : After performed 30% worse",
+        )
+    )
+        private set
+
+    var overrunSummary by mutableStateOf(
+        listOf(
+            "P50 : After performed 25% better",
+            "P90 : After performed 25% worse",
+            "P95 : After performed 10% worse",
+            "P99 : After performed 30% worse",
+        )
+    )
+        private set
+
+
     // Normal fields
     private val fullBenchmarkResults = mutableListOf<BenchmarkResult>()
     var formData: FormData? = null
@@ -56,11 +77,26 @@ class HomeViewModel {
             } else {
                 fullBenchmarkResults
             }
-            charts = filteredBenchmarkResult.toChartData()
+            charts = filteredBenchmarkResult.toCharts().also {
+                updateSummary(it)
+            }
+
             errorMsg = ""
         } catch (e: Throwable) {
             e.printStackTrace()
             errorMsg = e.message ?: ERROR_GENERIC
+        }
+    }
+
+    private fun updateSummary(charts: Charts) {
+        // Calculating duration summary
+        println("WordMap: ${charts.frameDurationChart.groupMap.wordColorMap}")
+        println("GroupMap: ${charts.frameDurationChart.dataSets}")
+        val totalGroups = charts.frameDurationChart.groupMap.wordColorMap.size
+        if (totalGroups == 2) {
+            charts.frameDurationChart.dataSets?.forEach { (key, value) ->
+
+            }
         }
     }
 
@@ -72,7 +108,7 @@ class HomeViewModel {
             } else {
                 fullBenchmarkResults
             }
-            charts = filteredBenchmarkResult.toChartData()
+            charts = filteredBenchmarkResult.toCharts()
             errorMsg = ""
         } catch (e: Throwable) {
             e.printStackTrace()
@@ -84,7 +120,7 @@ class HomeViewModel {
         isEditableTitleEnabled = true
     }
 
-    fun onToggleColorMapClicked(){
+    fun onToggleAutoGroupClicked() {
         isAutoGroupEnabled = !isAutoGroupEnabled
     }
 }

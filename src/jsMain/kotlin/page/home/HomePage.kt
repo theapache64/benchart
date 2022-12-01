@@ -4,10 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import components.*
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Form
-import org.jetbrains.compose.web.dom.H3
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.*
 import kotlin.Error
 
 @Composable
@@ -44,6 +41,19 @@ fun HomePage(
                         viewModel.onFormChanged(form)
                     },
                 )
+
+                viewModel.durationSummary
+                    .takeIf { it.isNotEmpty() }
+                    ?.let { durationSummary ->
+                        Summary("Duration Summary", durationSummary)
+                    }
+
+                viewModel.overrunSummary
+                    .takeIf { it.isNotEmpty() }
+                    ?.let { overrunSummary ->
+                        Summary("Overrun Summary", overrunSummary)
+                    }
+
             }
 
             val hasOverrunMs = viewModel.charts?.frameOverrunChart?.dataSets?.isNotEmpty() ?: false
@@ -88,7 +98,7 @@ fun HomePage(
 
                         AutoGroup(
                             isAutoGroupEnabled = viewModel.isAutoGroupEnabled,
-                            onButtonClicked = viewModel::onToggleColorMapClicked
+                            onButtonClicked = viewModel::onToggleAutoGroupClicked
                         )
                     }
                 }

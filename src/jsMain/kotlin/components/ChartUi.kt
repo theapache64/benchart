@@ -38,7 +38,7 @@ fun ChartUi(
                         label = key
                         data = value
                         borderColor = if (isColorMapEnabled) {
-                            chartData.colorMap[label]
+                            chartData.groupMap.autoGroupMap[label]
                         } else {
                             arrayOf(
                                 "rgba(255, 99, 132, 1)",
