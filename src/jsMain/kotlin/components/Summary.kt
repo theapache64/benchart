@@ -5,21 +5,39 @@ import org.jetbrains.compose.web.dom.*
 
 // P50 : After performed 25% better (-30ms)
 data class SummaryNode(
-    val emoji :String,
+    val emoji: String,
     val segment: String,
     val label: String,
     val percentage: Int,
     val stateWord: String,
     val diff: Float,
-    val diffSymbol : String,
+    val diffSymbol: String,
 )
 
 @Composable
+fun SummaryContainer(
+    durationSummary: List<SummaryNode>,
+    overrunSummary: List<SummaryNode>
+) {
+    if(durationSummary.isNotEmpty()){
+        Summary("Duration Summary", durationSummary)
+    }
+
+    if(overrunSummary.isNotEmpty()){
+        Summary("Overrun Summary", overrunSummary)
+    }
+}
+
+@Composable
 fun Summary(title: String, summary: List<SummaryNode>) {
-    Div {
+    Div(
+        attrs = {
+            classes("row")
+        }
+    ) {
         H3 { Text(title) }
         Ul {
-            for (node in summary) {
+            summary.forEach { node ->
                 Li {
                     Text("${node.emoji} ${node.segment} : ${node.label} performed ${node.percentage}% ")
                     Span(

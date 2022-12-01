@@ -27,8 +27,8 @@ fun ChartUi(
                 width(100.percent)
                 maxWidth(100.percent)
 
-                height(800.px)
-                maxHeight(800.px)
+                height(700.px)
+                maxHeight(700.px)
             }
         }
     ) {

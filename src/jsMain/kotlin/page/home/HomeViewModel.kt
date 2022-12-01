@@ -8,6 +8,9 @@ import androidx.compose.runtime.*
 import components.SummaryNode
 import core.GroupMap
 import core.toCharts
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Stable
@@ -15,6 +18,83 @@ class HomeViewModel {
 
     companion object {
         private const val ERROR_GENERIC = "Something went wrong!"
+
+        private fun updateSummary(
+            groupMap: GroupMap,
+            chartData: ChartData,
+            onSummaryReady: (summaryList: List<SummaryNode>) -> Unit,
+            onSummaryFailed: () -> Unit,
+        ) {
+            try {
+                val totalGroups = groupMap.wordColorMap.size
+                if (totalGroups != 2) {
+                    onSummaryFailed()
+                    return
+                }
+                val combinedMap = mutableMapOf<String, Array<Float>>()
+                val words = groupMap.wordColorMap.keys.toList()
+                for (word in words) {
+                    combinedMap[word] = chartData
+                        .dataSets
+                        .filterKeys { it.startsWith(word) }
+                        .values
+                        .map { it.toFloatArray() }
+                        .let { arrays ->
+                            // Sum
+                            val newArray = arrayOf(0f, 0f, 0f, 0f)
+                            for (array in arrays) {
+                                for (i in newArray.indices) {
+                                    newArray[i] = newArray[i] + array[i]
+                                }
+                            }
+                            // Average
+                            for (i in newArray.indices) {
+                                newArray[i] = newArray[i] / arrays.size
+                            }
+                            newArray
+                        }
+                }
+                for ((key, value) in combinedMap) {
+                    println(key)
+                    println(value)
+                }
+                val summaryList = mutableListOf<SummaryNode>()
+                repeat(4) { index ->
+                    val segment = when (index) {
+                        0 -> "P50"
+                        1 -> "P90"
+                        2 -> "P95"
+                        3 -> "P99"
+                        else -> error("No segment found for index '$index'")
+                    }
+
+                    val after = combinedMap[words[1]]?.get(index) ?: 0f
+                    val before = combinedMap[words[0]]?.get(index) ?: 0f
+                    val diff = "${(after - before).asDynamic().toFixed(2)}".toFloat()
+                    val percDiff = (((before - after) / before) * 100).roundToInt()
+
+                    val resultWord = if (diff > 0) "worse" else "better"
+                    val symbol = if (diff > 0) "+" else ""
+                    val emoji = if (diff > 0) "❌" else "✅"
+
+                    summaryList.add(
+                        SummaryNode(
+                            emoji = emoji,
+                            segment = segment,
+                            label = words[1],
+                            percentage = percDiff,
+                            stateWord = resultWord,
+                            diff = diff,
+                            diffSymbol = symbol
+                        )
+                    )
+                }
+                onSummaryReady(summaryList)
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                onSummaryFailed()
+            }
+        }
     }
 
     // States
@@ -35,10 +115,10 @@ class HomeViewModel {
     var isAutoGroupEnabled by mutableStateOf(false)
         private set
 
-    var durationSummary by mutableStateOf(emptyList<SummaryNode>())
+    var durationSummary = mutableStateListOf<SummaryNode>()
         private set
 
-    var overrunSummary by mutableStateOf(emptyList<SummaryNode>())
+    var overrunSummary = mutableStateListOf<SummaryNode>()
         private set
 
 
@@ -67,12 +147,14 @@ class HomeViewModel {
             } else {
                 fullBenchmarkResults
             }
-            charts = filteredBenchmarkResult.toCharts().also {
-                updateSummary(it)
-            }
+            val newCharts = filteredBenchmarkResult.toCharts()
+            charts = newCharts
+            updateSummary(newCharts)
 
             errorMsg = ""
         } catch (e: Throwable) {
+            durationSummary.clear()
+            overrunSummary.clear()
             e.printStackTrace()
             errorMsg = e.message ?: ERROR_GENERIC
         }
@@ -84,86 +166,27 @@ class HomeViewModel {
             groupMap = charts.groupMap,
             chartData = charts.frameDurationChart,
             onSummaryReady = { summaryNodes ->
-                durationSummary = summaryNodes
+                durationSummary.clear()
+                durationSummary.addAll(summaryNodes)
+            },
+            onSummaryFailed = {
+                durationSummary.clear()
             }
         )
 
-        charts.frameOverrunChart?.let { frameOverrunChart ->
+        val frameOverrunChart = charts.frameOverrunChart
+        if (frameOverrunChart != null) {
             updateSummary(
                 groupMap = charts.groupMap,
                 chartData = frameOverrunChart,
                 onSummaryReady = { summaryNodes ->
-                    overrunSummary = summaryNodes
+                    overrunSummary.clear()
+                    overrunSummary.addAll(summaryNodes)
+                },
+                onSummaryFailed = {
+                    overrunSummary.clear()
                 }
             )
-        }
-    }
-
-    private fun updateSummary(
-        groupMap: GroupMap,
-        chartData: ChartData,
-        onSummaryReady: (summaryList: List<SummaryNode>) -> Unit
-    ) {
-        val totalGroups = groupMap.wordColorMap.size
-        if (totalGroups == 2) {
-            val combinedMap = mutableMapOf<String, Array<Float>>()
-            val words = groupMap.wordColorMap.keys.toList()
-            for (word in words) {
-                combinedMap[word] = chartData
-                    .dataSets
-                    .filterKeys { it.startsWith(word) }
-                    .values
-                    .map { it.toFloatArray() }
-                    .let { arrays ->
-                        // Sum
-                        val newArray = arrayOf(0f, 0f, 0f, 0f)
-                        for (array in arrays) {
-                            for (i in newArray.indices) {
-                                newArray[i] = newArray[i] + array[i]
-                            }
-                        }
-                        // Average
-                        for (i in newArray.indices) {
-                            newArray[i] = newArray[i] / arrays.size
-                        }
-                        newArray
-                    }
-            }
-            for ((key, value) in combinedMap) {
-                println(key)
-                println(value)
-            }
-            val summaryList = mutableListOf<SummaryNode>()
-            repeat(4) { index ->
-                val segment = when (index) {
-                    0 -> "P50"
-                    1 -> "P90"
-                    2 -> "P95"
-                    3 -> "P99"
-                    else -> error("No segment found for index '$index'")
-                }
-
-                val after = combinedMap[words[1]]?.get(index) ?: 0f
-                val before = combinedMap[words[0]]?.get(index) ?: 0f
-                val diff = "${(after - before).asDynamic().toFixed(2)}".toFloat()
-                val percDiff = (((before - after) / before) * 100).roundToInt()
-                println("diff $segment -> $diff ms")
-                val resultWord = if (diff > 0) "worse" else "better"
-                val symbol = if (diff > 0) "+" else ""
-                val emoji = if (diff > 0) "❌" else "✅"
-                summaryList.add(
-                    SummaryNode(
-                        emoji = emoji,
-                        segment = segment,
-                        label = words[1],
-                        percentage = percDiff,
-                        stateWord = resultWord,
-                        diff = diff,
-                        diffSymbol = symbol
-                    )
-                )
-                onSummaryReady(summaryList)
-            }
         }
     }
 
@@ -176,8 +199,11 @@ class HomeViewModel {
                 fullBenchmarkResults
             }
             charts = filteredBenchmarkResult.toCharts()
+            updateSummary(charts!!)
             errorMsg = ""
         } catch (e: Throwable) {
+            durationSummary.clear()
+            overrunSummary.clear()
             e.printStackTrace()
             errorMsg = e.message ?: ERROR_GENERIC
         }
@@ -190,4 +216,5 @@ class HomeViewModel {
     fun onToggleAutoGroupClicked() {
         isAutoGroupEnabled = !isAutoGroupEnabled
     }
+
 }

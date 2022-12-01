@@ -1,13 +1,11 @@
 package page.home
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import components.*
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Form
-import org.jetbrains.compose.web.dom.H3
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.*
 import kotlin.Error
 
 @Composable
@@ -33,127 +31,128 @@ fun HomePage(
         Div(attrs = {
             classes("row")
             style {
-                padding(40.px)
+                paddingLeft(40.px)
+                paddingRight(40.px)
+                paddingBottom(40.px)
             }
         }) {
             Div(attrs = {
                 classes("col-lg-4")
             }) {
-                FormUi(
-                    onFormChanged = { form ->
-                        viewModel.onFormChanged(form)
-                    },
+                Div(
+                    attrs = {
+                        classes("row")
+                    }
+                ) {
+                    FormUi(
+                        onFormChanged = { form ->
+                            viewModel.onFormChanged(form)
+                        },
+                    )
+                }
+
+                SummaryContainer(
+                    durationSummary = viewModel.durationSummary,
+                    overrunSummary = viewModel.overrunSummary
                 )
-
-                viewModel.durationSummary
-                    .takeIf { it.isNotEmpty() }
-                    ?.let { durationSummary ->
-                        Summary("Duration Summary", durationSummary)
-                    }
-
-                viewModel.overrunSummary
-                    .takeIf { it.isNotEmpty() }
-                    ?.let { overrunSummary ->
-                        Summary("Overrun Summary", overrunSummary)
-                    }
-
             }
 
-            val hasOverrunMs = viewModel.charts?.frameOverrunChart?.dataSets?.isNotEmpty() ?: false
-
-            Div(
-                attrs = {
-                    classes("col-lg-8")
-                }
-            ) {
-
-                if (viewModel.isEditableTitleEnabled) {
-                    EditableTitle()
-                } else {
-                    H3(
-                        attrs = {
-                            onDoubleClick {
-                                viewModel.onTitleDoubleClicked()
-                            }
-                        }
-                    ) {
-                        Text("🖥 Output")
-                    }
-                }
-
-                // 🧪 ToolBar
+            if (!viewModel.charts?.frameDurationChart?.dataSets.isNullOrEmpty()) {
+                val hasOverrunMs = viewModel.charts?.frameOverrunChart?.dataSets?.isNotEmpty() ?: false
                 Div(
                     attrs = {
-                        classes("row")
+                        classes("col-lg-8")
                     }
                 ) {
-                    Form(
+
+                    if (viewModel.isEditableTitleEnabled) {
+                        EditableTitle()
+                    } else {
+                        H3(
+                            attrs = {
+                                onDoubleClick {
+                                    viewModel.onTitleDoubleClicked()
+                                }
+                            }
+                        ) {
+                            Text("🖥 Output")
+                        }
+                    }
+
+                    // 🧪 ToolBar
+                    Div(
                         attrs = {
-                            classes("form-inline")
+                            classes("row")
                         }
                     ) {
-                        TestNames(
-                            testNames = viewModel.testNames,
-                            onTestNameChanged = { newTestName ->
-                                viewModel.onTestNameChanged(newTestName)
+                        Form(
+                            attrs = {
+                                classes("form-inline")
                             }
-                        )
+                        ) {
+                            TestNames(
+                                testNames = viewModel.testNames,
+                                onTestNameChanged = { newTestName ->
+                                    viewModel.onTestNameChanged(newTestName)
+                                }
+                            )
 
-                        AutoGroup(
-                            isAutoGroupEnabled = viewModel.isAutoGroupEnabled,
-                            onButtonClicked = viewModel::onToggleAutoGroupClicked
-                        )
+                            AutoGroup(
+                                isAutoGroupEnabled = viewModel.isAutoGroupEnabled,
+                                onButtonClicked = viewModel::onToggleAutoGroupClicked
+                            )
+                        }
                     }
-                }
 
 
-                // 📊 Charts
-                Div(
-                    attrs = {
-                        classes("row")
-                    }
-                ) {
-                    // 📊 duration chart
-                    Div(attrs = {
-                        classes(
-                            if (hasOverrunMs) {
-                                "col-lg-6"
-                            } else {
-                                "col-lg-12"
-                            },
-                        )
-                    }) {
-                        viewModel.charts?.let { charts ->
-                            // Rendering frameDurationMs
-                            charts.frameDurationChart.dataSets.isNotEmpty().let { hasData ->
-                                if (hasData) {
-                                    ChartUi(
-                                        isColorMapEnabled = viewModel.isAutoGroupEnabled,
-                                        groupMap = charts.groupMap,
-                                        chartData = charts.frameDurationChart
-                                    )
+                    // 📊 Charts
+                    Div(
+                        attrs = {
+                            classes("row")
+                        }
+                    ) {
+                        // 📊 duration chart
+                        Div(attrs = {
+                            classes(
+                                if (hasOverrunMs) {
+                                    "col-lg-6"
+                                } else {
+                                    "col-lg-12"
+                                },
+                            )
+                        }) {
+                            viewModel.charts?.let { charts ->
+                                // Rendering frameDurationMs
+                                charts.frameDurationChart.dataSets.isNotEmpty().let { hasData ->
+                                    if (hasData) {
+                                        ChartUi(
+                                            isColorMapEnabled = viewModel.isAutoGroupEnabled,
+                                            groupMap = charts.groupMap,
+                                            chartData = charts.frameDurationChart
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    // 📊 overrun chart
-                    if (hasOverrunMs) {
-                        Div(attrs = {
-                            classes(
-                                "col-lg-6"
-                            )
-                            style {
-                                position(Position.Sticky)
-                                top(0.px)
-                            }
-                        }) {
-                            viewModel.charts?.frameOverrunChart?.let { frameOverrunChart ->
-                                ChartUi(
-                                    viewModel.isAutoGroupEnabled,
-                                    viewModel.charts!!.groupMap,
-                                    frameOverrunChart
+                        // 📊 overrun chart
+                        if (hasOverrunMs) {
+                            Div(attrs = {
+                                classes(
+                                    "col-lg-6"
                                 )
+                                style {
+                                    position(Position.Sticky)
+                                    top(0.px)
+                                }
+                            }) {
+                                viewModel.charts?.frameOverrunChart?.let { frameOverrunChart ->
+                                    ChartUi(
+                                        viewModel.isAutoGroupEnabled,
+                                        viewModel.charts!!.groupMap,
+                                        frameOverrunChart
+                                    )
+                                }
                             }
                         }
                     }

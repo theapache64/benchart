@@ -66,7 +66,6 @@ fun parseGroupMap(benchmarkResults: List<BenchmarkResult>): GroupMap {
         }
         autoGroupMap[title] = color
     }
-    println("WordColorMap: $wordColorMap")
     return GroupMap(
         autoGroupMap = autoGroupMap,
         wordColorMap = wordColorMap
