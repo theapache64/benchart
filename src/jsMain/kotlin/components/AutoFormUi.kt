@@ -1,10 +1,14 @@
 package components
 
-import FormData
 import androidx.compose.runtime.*
 import kotlinx.browser.window
+import model.FormData
+import org.jetbrains.compose.web.attributes.ButtonType
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.attributes.rows
+import org.jetbrains.compose.web.attributes.type
+import org.jetbrains.compose.web.css.marginTop
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.*
 
 
@@ -46,6 +50,7 @@ private const val KEY_AUTO_FORM_INPUT = "auto_form_input"
 @Composable
 fun FormUi(
     onFormChanged: (form: FormData) -> Unit,
+    onSaveClicked: (form: FormData) -> Unit
 ) {
     var form by remember {
         mutableStateOf(
@@ -93,6 +98,24 @@ fun FormUi(
                         window.localStorage.setItem(KEY_AUTO_FORM_INPUT, textInput.value)
                         onFormChanged(form)
                     }
+                }
+
+                Button(
+                    attrs = {
+                        classes("btn", "btn-dark", "float-end")
+                        style {
+                            marginTop(10.px)
+                        }
+                        if (form.data.isBlank()) {
+                            attr("disabled", "true")
+                        }
+                        onClick {
+                            onSaveClicked(form)
+                        }
+                        type(ButtonType.Button)
+                    }
+                ) {
+                    Text("💾 SAVE")
                 }
             }
         }

@@ -1,8 +1,6 @@
-import core.GroupMap
+package model
 
-data class FormData(
-    val data: String
-)
+import core.GroupMap
 
 data class ChartData(
     val emoji :String,
@@ -15,3 +13,4 @@ data class Charts(
     val frameDurationChart: ChartData,
     val frameOverrunChart: ChartData?
 )
+
