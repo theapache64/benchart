@@ -178,7 +178,8 @@ class HomeViewModel(
         // Appending new benchmark
         val newList = savedBenchmarks.toMutableList().apply {
             add(
-                SavedBenchmarkNode(
+                index = 0,
+                element = SavedBenchmarkNode(
                     key = bName, value = formData.data
                 )
             )
@@ -205,6 +206,9 @@ class HomeViewModel(
 
     fun onSavedBenchmarkChanged(key: String) {
         shouldSelectUnsaved = key == KEY_UNSAVED_BENCHMARK
+        if (shouldSelectUnsaved) {
+            form = formRepo.getFormData() ?: FormData("")
+        }
     }
 
 }

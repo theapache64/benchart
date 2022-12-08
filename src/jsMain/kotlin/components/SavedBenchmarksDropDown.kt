@@ -70,7 +70,7 @@ fun SavedBenchmarksDropDown(
                         Option(
                             value = savedBenchmark.key,
                             attrs = {
-                                if (savedBenchmark.key == selectedBenchmark.key) {
+                                if (savedBenchmark.key == selectedBenchmark.key && !shouldSelectUnsaved) {
                                     selected()
                                 }
                             }
