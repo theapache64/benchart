@@ -1,8 +1,8 @@
 package page.home
 
 import androidx.compose.runtime.*
+import components.KEY_UNSAVED_BENCHMARK
 import components.SavedBenchmarkNode
-import components.SavedBenchmarks
 import components.SummaryNode
 import core.BenchmarkResult
 import core.toCharts
@@ -10,7 +10,6 @@ import kotlinx.browser.window
 import model.Charts
 import model.FormData
 import repo.BenchmarkRepo
-import repo.BenchmarkRepoImpl.Companion.KEY_SAVED_BENCHMARKS
 import repo.FormRepo
 import utils.DefaultValues
 import utils.SummaryUtils
@@ -48,6 +47,9 @@ class HomeViewModel(
     var isAutoGroupEnabled by mutableStateOf(false)
         private set
 
+    var shouldSelectUnsaved by mutableStateOf(false)
+        private set
+
     var durationSummary = mutableStateListOf<SummaryNode>()
         private set
 
@@ -60,11 +62,11 @@ class HomeViewModel(
         private set
 
     init {
-        refreshedBenchmarks()
+        refreshBenchmarks()
     }
 
 
-    private fun refreshedBenchmarks() {
+    private fun refreshBenchmarks() {
         savedBenchmarks = benchmarkRepo.getSavedBenchmarks()
     }
 
@@ -74,20 +76,17 @@ class HomeViewModel(
     fun onFormChanged(newForm: FormData) {
         form = newForm
         formRepo.saveFormData(newForm)
+        shouldSelectUnsaved = true
         try {
+            // clearing old data
             fullBenchmarkResults.clear()
-            fullBenchmarkResults.addAll(BenchmarkResult.parse(newForm))
             testNames.clear()
+
+            // refill
+            fullBenchmarkResults.addAll(BenchmarkResult.parse(newForm))
             testNames.addAll(fullBenchmarkResults.mapNotNull { it.testName }.toSet())
 
-            val hasCurrentTestName = testNames.find { it == currentTestName } != null
-            if (!hasCurrentTestName) {
-                currentTestName = null
-            }
-
-            if (currentTestName == null) {
-                currentTestName = testNames.firstOrNull()
-            }
+            val currentTestName = testNames.find { it == currentTestName } ?: testNames.firstOrNull()
             val filteredBenchmarkResult = if (currentTestName != null) {
                 fullBenchmarkResults.filter { it.testName == currentTestName }
             } else {
@@ -143,8 +142,9 @@ class HomeViewModel(
             } else {
                 fullBenchmarkResults
             }
-            charts = filteredBenchmarkResult.toCharts()
-            updateSummary(charts!!)
+            val newCharts = filteredBenchmarkResult.toCharts()
+            charts = newCharts
+            updateSummary(newCharts)
             errorMsg = ""
         } catch (e: Throwable) {
             durationSummary.clear()
@@ -163,32 +163,29 @@ class HomeViewModel(
     }
 
     fun onSaveClicked(formData: FormData) {
-        val bName = window.prompt("Name:")
+        val bName = window.prompt("Name: ")
         if (bName.isNullOrBlank()) {
             window.alert("Benchmark name can't be empty! 😕")
             return
         }
 
-        var savedBenchmarksString = window.localStorage.getItem(KEY_SAVED_BENCHMARKS)
-        val savedBenchmark = if (savedBenchmarksString == null) {
-            // Creating first saved benchmark
-            SavedBenchmarks(items = arrayOf())
-        } else {
-            JSON.parse(savedBenchmarksString)
+        val isExist = savedBenchmarks.find { it.key == bName } != null
+        if (isExist) {
+            window.alert("Bruhh.. $bName exists! Try something else")
+            return
         }
 
         // Appending new benchmark
-        val newList = savedBenchmark.items.toMutableList().apply {
+        val newList = savedBenchmarks.toMutableList().apply {
             add(
                 SavedBenchmarkNode(
                     key = bName, value = formData.data
                 )
             )
         }
-        savedBenchmark.items = newList.toTypedArray()
-        savedBenchmarksString = JSON.stringify(savedBenchmark)
-        window.localStorage.setItem(KEY_SAVED_BENCHMARKS, savedBenchmarksString)
-        this.savedBenchmarks = newList
+        benchmarkRepo.saveBenchmarks(newList)
+        shouldSelectUnsaved = false
+        refreshBenchmarks()
     }
 
     fun onLoadBenchmarkClicked(savedBenchmarkNode: SavedBenchmarkNode) {
@@ -196,23 +193,18 @@ class HomeViewModel(
     }
 
     fun onDeleteBenchmarkClicked(deletedBenchmarkNode: SavedBenchmarkNode) {
-        var savedBenchmarksString = window.localStorage.getItem(KEY_SAVED_BENCHMARKS)
-        val savedBenchmark = if (savedBenchmarksString == null) {
-            // Creating first saved benchmark
-            SavedBenchmarks(items = arrayOf())
-        } else {
-            JSON.parse(savedBenchmarksString)
-        }
+        val isYes = window.confirm(
+            "Do you want to delete `${deletedBenchmarkNode.key}` ?"
+        )
 
-        // Appending new benchmark
-        val newList = savedBenchmark.items.toMutableList().apply {
-            removeAll { it.key == deletedBenchmarkNode.key }
+        if (isYes) {
+            benchmarkRepo.delete(deletedBenchmarkNode)
+            refreshBenchmarks()
         }
-        savedBenchmark.items = newList.toTypedArray()
-        savedBenchmarksString = JSON.stringify(savedBenchmark)
-        window.localStorage.setItem(KEY_SAVED_BENCHMARKS, savedBenchmarksString)
-        this.savedBenchmarks = newList
-        println("final benchmark : $newList")
+    }
+
+    fun onSavedBenchmarkChanged(key: String) {
+        shouldSelectUnsaved = key == KEY_UNSAVED_BENCHMARK
     }
 
 }

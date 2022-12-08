@@ -14,9 +14,11 @@ import org.jetbrains.compose.web.dom.*
 @Composable
 fun FormUi(
     form: FormData,
+    shouldSelectUnsaved : Boolean,
     savedBenchmarks: List<SavedBenchmarkNode>,
     onFormChanged: (form: FormData) -> Unit,
     onSaveClicked: (form: FormData) -> Unit,
+    onSavedBenchmarkChanged: (key :String) -> Unit,
     onLoadBenchmarkClicked: (SavedBenchmarkNode) -> Unit,
     onDeleteBenchmarkClicked: (SavedBenchmarkNode) -> Unit,
 ) {
@@ -35,7 +37,9 @@ fun FormUi(
         key("inputForm") {
 
             SavedBenchmarksDropDown(
+                shouldSelectUnsaved = shouldSelectUnsaved,
                 savedBenchmarks = savedBenchmarks,
+                onSavedBenchmarkChanged =onSavedBenchmarkChanged,
                 onLoadBenchmarkClicked =  onLoadBenchmarkClicked,
                 onDeleteBenchmarkClicked = onDeleteBenchmarkClicked
             )

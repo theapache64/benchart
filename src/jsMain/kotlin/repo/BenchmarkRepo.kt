@@ -1,19 +1,25 @@
 package repo
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import components.SavedBenchmarkNode
 import components.SavedBenchmarks
 import kotlinx.browser.window
-import page.home.HomeViewModel
 
 interface BenchmarkRepo {
     fun getSavedBenchmarks(): List<SavedBenchmarkNode>
+    fun saveBenchmarks(newList: List<SavedBenchmarkNode>)
+    fun delete(deletedBenchmarkNode: SavedBenchmarkNode)
 }
 
 class BenchmarkRepoImpl : BenchmarkRepo {
 
     companion object {
-        val KEY_SAVED_BENCHMARKS = "savedBenchmarks"
+        private const val KEY_SAVED_BENCHMARKS = "savedBenchmarks"
     }
+
 
     override fun getSavedBenchmarks(): List<SavedBenchmarkNode> {
         val savedBenchmarksString = window.localStorage.getItem(KEY_SAVED_BENCHMARKS)
@@ -26,6 +32,19 @@ class BenchmarkRepoImpl : BenchmarkRepo {
         }
 
         return savedBenchmark.items.toList()
+    }
+
+    override fun saveBenchmarks(newList: List<SavedBenchmarkNode>) {
+        val savedBenchmarks = JSON.stringify(SavedBenchmarks(newList.toTypedArray()))
+        window.localStorage.setItem(KEY_SAVED_BENCHMARKS, savedBenchmarks)
+    }
+
+    override fun delete(deletedBenchmarkNode: SavedBenchmarkNode) {
+        // Appending new benchmark
+        val newList = getSavedBenchmarks().toMutableList().apply {
+            removeAll { it.key == deletedBenchmarkNode.key }
+        }
+       saveBenchmarks(newList)
     }
 
 }

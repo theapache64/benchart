@@ -6,11 +6,13 @@ import androidx.compose.runtime.remember
 import components.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import repo.BenchmarkRepoImpl
+import repo.FormRepoImpl
 import kotlin.Error
 
 @Composable
 fun HomePage(
-    viewModel: HomeViewModel = remember { HomeViewModel() }
+    viewModel: HomeViewModel = remember { HomeViewModel(BenchmarkRepoImpl(), FormRepoImpl()) }
 ) {
     Div(
         attrs = {
@@ -41,9 +43,11 @@ fun HomePage(
             }) {
                 FormUi(
                     form = viewModel.form,
+                    shouldSelectUnsaved = viewModel.shouldSelectUnsaved,
                     onFormChanged = viewModel::onFormChanged,
                     onSaveClicked = viewModel::onSaveClicked,
                     savedBenchmarks = viewModel.savedBenchmarks,
+                    onSavedBenchmarkChanged = viewModel::onSavedBenchmarkChanged,
                     onLoadBenchmarkClicked = viewModel::onLoadBenchmarkClicked,
                     onDeleteBenchmarkClicked = viewModel::onDeleteBenchmarkClicked,
                 )

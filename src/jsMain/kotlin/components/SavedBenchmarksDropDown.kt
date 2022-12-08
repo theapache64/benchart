@@ -2,15 +2,21 @@ package components
 
 import androidx.compose.runtime.*
 import org.jetbrains.compose.web.attributes.ButtonType
+import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.attributes.selected
 import org.jetbrains.compose.web.attributes.type
 import org.jetbrains.compose.web.css.marginRight
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.*
+import kotlin.js.Date
+
+val KEY_UNSAVED_BENCHMARK = "unsavedBenchmark_${Date().getMilliseconds()}"
 
 @Composable
 fun SavedBenchmarksDropDown(
+    shouldSelectUnsaved: Boolean,
     savedBenchmarks: List<SavedBenchmarkNode>,
+    onSavedBenchmarkChanged: (key : String) -> Unit,
     onLoadBenchmarkClicked: (SavedBenchmarkNode) -> Unit,
     onDeleteBenchmarkClicked: (SavedBenchmarkNode) -> Unit
 ) {
@@ -53,6 +59,7 @@ fun SavedBenchmarksDropDown(
                         id("savedBenchmarks")
                         onChange {
                             it.value?.let { benchmarkKey ->
+                                onSavedBenchmarkChanged(benchmarkKey)
                                 selectedBenchmark =
                                     savedBenchmarks.find { benchmark -> benchmark.key == benchmarkKey }!!
                             }
@@ -70,6 +77,17 @@ fun SavedBenchmarksDropDown(
                         ) {
                             Text(savedBenchmark.key)
                         }
+                    }
+
+                    Option(
+                        value = KEY_UNSAVED_BENCHMARK,
+                        attrs = {
+                            if (shouldSelectUnsaved) {
+                                selected()
+                            }
+                        }
+                    ) {
+                        Text("Unsaved benchmark")
                     }
                 }
             }
@@ -89,6 +107,10 @@ fun SavedBenchmarksDropDown(
                             onLoadBenchmarkClicked(selectedBenchmark)
                         }
                         type(ButtonType.Button)
+
+                        if (shouldSelectUnsaved) {
+                            disabled()
+                        }
                     }
                 ) {
                     Text("LOAD")
@@ -101,6 +123,10 @@ fun SavedBenchmarksDropDown(
                             onDeleteBenchmarkClicked(selectedBenchmark)
                         }
                         type(ButtonType.Button)
+
+                        if (shouldSelectUnsaved) {
+                            disabled()
+                        }
                     }
                 ) {
                     Text("DELETE")
