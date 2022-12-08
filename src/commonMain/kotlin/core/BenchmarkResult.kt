@@ -1,3 +1,7 @@
+package core
+
+import model.FormData
+
 class InvalidBenchmarkDataException(message: String?) : Throwable(message)
 class InvalidFrameDurationNodeException(message: String?) : Throwable(message)
 class InvalidFrameOverrunNodeException(message: String?) : Throwable(message)

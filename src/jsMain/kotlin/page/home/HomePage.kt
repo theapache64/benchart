@@ -40,8 +40,12 @@ fun HomePage(
                 classes("col-lg-4")
             }) {
                 FormUi(
+                    form = viewModel.form,
                     onFormChanged = viewModel::onFormChanged,
-                    onSaveClicked = viewModel::onSaveClicked
+                    onSaveClicked = viewModel::onSaveClicked,
+                    savedBenchmarks = viewModel.savedBenchmarks,
+                    onLoadBenchmarkClicked = viewModel::onLoadBenchmarkClicked,
+                    onDeleteBenchmarkClicked = viewModel::onDeleteBenchmarkClicked,
                 )
 
                 Br()

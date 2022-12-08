@@ -1,3 +1,5 @@
+import core.BenchmarkResult
+import core.InvalidBenchmarkDataException
 import junit.framework.TestCase.assertTrue
 import org.junit.Assert.assertEquals
 import org.junit.Test

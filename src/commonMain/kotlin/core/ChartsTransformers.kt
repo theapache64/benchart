@@ -1,8 +1,7 @@
 package core
 
-import BenchmarkResult
-import ChartData
-import Charts
+import model.ChartData
+import model.Charts
 
 fun List<BenchmarkResult>.toCharts(): Charts {
     val frameDurationMap = mutableMapOf<String, Array<Float>>()
