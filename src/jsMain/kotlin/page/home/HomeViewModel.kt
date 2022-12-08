@@ -201,6 +201,7 @@ class HomeViewModel(
 
         if (isYes) {
             benchmarkRepo.delete(deletedBenchmarkNode)
+            shouldSelectUnsaved = true
             refreshBenchmarks()
         }
     }
