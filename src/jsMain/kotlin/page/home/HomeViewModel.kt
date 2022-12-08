@@ -190,7 +190,8 @@ class HomeViewModel(
     }
 
     fun onLoadBenchmarkClicked(savedBenchmarkNode: SavedBenchmarkNode) {
-        form = form.copy(data = savedBenchmarkNode.value)
+        val newForm = form.copy(data = savedBenchmarkNode.value)
+        onFormChanged(newForm)
     }
 
     fun onDeleteBenchmarkClicked(deletedBenchmarkNode: SavedBenchmarkNode) {
@@ -207,7 +208,8 @@ class HomeViewModel(
     fun onSavedBenchmarkChanged(key: String) {
         shouldSelectUnsaved = key == KEY_UNSAVED_BENCHMARK
         if (shouldSelectUnsaved) {
-            form = formRepo.getFormData() ?: FormData("")
+            val newForm = formRepo.getFormData() ?: FormData("")
+            onFormChanged(newForm)
         }
     }
 

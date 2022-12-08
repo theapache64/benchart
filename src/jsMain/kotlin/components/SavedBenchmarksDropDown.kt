@@ -16,7 +16,7 @@ val KEY_UNSAVED_BENCHMARK = "unsavedBenchmark_${Date().getMilliseconds()}"
 fun SavedBenchmarksDropDown(
     shouldSelectUnsaved: Boolean,
     savedBenchmarks: List<SavedBenchmarkNode>,
-    onSavedBenchmarkChanged: (key : String) -> Unit,
+    onSavedBenchmarkChanged: (key: String) -> Unit,
     onLoadBenchmarkClicked: (SavedBenchmarkNode) -> Unit,
     onDeleteBenchmarkClicked: (SavedBenchmarkNode) -> Unit
 ) {
