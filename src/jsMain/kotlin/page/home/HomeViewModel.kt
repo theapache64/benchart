@@ -73,10 +73,10 @@ class HomeViewModel(
     // Normal fields
     private val fullBenchmarkResults = mutableListOf<BenchmarkResult>()
 
-    fun onFormChanged(newForm: FormData) {
+    fun onFormChanged(newForm: FormData, shouldSelectUnsaved : Boolean = true) {
         form = newForm
         formRepo.saveFormData(newForm)
-        shouldSelectUnsaved = true
+        this.shouldSelectUnsaved = shouldSelectUnsaved
         try {
             // clearing old data
             fullBenchmarkResults.clear()
@@ -191,7 +191,7 @@ class HomeViewModel(
 
     fun onLoadBenchmarkClicked(savedBenchmarkNode: SavedBenchmarkNode) {
         val newForm = form.copy(data = savedBenchmarkNode.value)
-        onFormChanged(newForm)
+        onFormChanged(newForm, shouldSelectUnsaved = false)
     }
 
     fun onDeleteBenchmarkClicked(deletedBenchmarkNode: SavedBenchmarkNode) {
@@ -209,7 +209,7 @@ class HomeViewModel(
         shouldSelectUnsaved = key == KEY_UNSAVED_BENCHMARK
         if (shouldSelectUnsaved) {
             val newForm = formRepo.getFormData() ?: FormData("")
-            onFormChanged(newForm)
+            onFormChanged(newForm, shouldSelectUnsaved = false)
         }
     }
 
