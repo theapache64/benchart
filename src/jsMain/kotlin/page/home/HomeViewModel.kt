@@ -73,7 +73,7 @@ class HomeViewModel(
     // Normal fields
     private val fullBenchmarkResults = mutableListOf<BenchmarkResult>()
 
-    fun onFormChanged(newForm: FormData, shouldSelectUnsaved : Boolean = true) {
+    fun onFormChanged(newForm: FormData, shouldSelectUnsaved: Boolean = true) {
         form = newForm
         formRepo.saveFormData(newForm)
         this.shouldSelectUnsaved = shouldSelectUnsaved
@@ -165,7 +165,6 @@ class HomeViewModel(
     fun onSaveClicked(formData: FormData) {
         val bName = window.prompt("Name: ")
         if (bName.isNullOrBlank()) {
-            window.alert("Benchmark name can't be empty! 😕")
             return
         }
 
