@@ -2,7 +2,11 @@ package components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
+import org.jetbrains.compose.web.attributes.AttrsScope
+import org.jetbrains.compose.web.css.StyleScope
+import org.jetbrains.compose.web.css.fontWeight
 import org.jetbrains.compose.web.dom.*
+import org.w3c.dom.HTMLSpanElement
 
 // P50 : After performed 25% better (-30ms)
 class SummaryNode(
@@ -17,26 +21,25 @@ class SummaryNode(
     val before: Float
 )
 
+data class Summary(
+    val title: String,
+    val nodes: List<SummaryNode>
+)
+
 @Composable
 fun SummaryContainer(
-    durationSummary: List<SummaryNode>,
-    overrunSummary: List<SummaryNode>
+    summaries: List<Summary>,
 ) {
-    if (durationSummary.isNotEmpty()) {
-        key("durationSum") {
-            Summary("⏱ Duration Summary", durationSummary)
-        }
-    }
-
-    if (overrunSummary.isNotEmpty()) {
-        key("overrunSum") {
-            Summary("🏃🏻‍♂️ Overrun Summary", overrunSummary)
+    for (summary in summaries) {
+        key(summary.title) {
+            SummaryUi(summary.title, summary.nodes)
+            Br()
         }
     }
 }
 
 @Composable
-fun Summary(title: String, summary: List<SummaryNode>) {
+fun SummaryUi(title: String, summary: List<SummaryNode>) {
     Div(
         attrs = {
             classes("row")
@@ -45,11 +48,27 @@ fun Summary(title: String, summary: List<SummaryNode>) {
         H3 { Text(title) }
         Ul {
             summary.forEach { node ->
-                Li{
-                    Text("${node.emoji} ${node.segment} : ${node.label} performed ${node.percentage}% ")
+                Li {
+                    Text("${node.emoji} ")
+                    // ${node.segment} : ${node.label} performed ${node.percentage}%
+                    BoldText(
+                        text = node.segment,
+                        style = {
+                            classes("text-capitalize")
+                        }
+                    )
+                    Text(" : ")
+                    BoldText(node.label)
+                    Text(" performed ")
+                    BoldText("${node.percentage}% ")
                     Span(
                         attrs = {
-                            classes("badge", "bg-${if (node.diff > 0) "danger" else "success"}")
+                            val badgeClass = when {
+                                node.diff == 0f -> "secondary"
+                                node.diff > 0 -> "danger"
+                                else -> "success"
+                            }
+                            classes("badge", "bg-$badgeClass")
 
                             attr("data-bs-toggle", "tooltip")
                             attr("data-bs-placement", "top")
@@ -62,5 +81,22 @@ fun Summary(title: String, summary: List<SummaryNode>) {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun BoldText(
+    text: String,
+    style: (AttrsScope<HTMLSpanElement>.() -> Unit)? = null
+) {
+    Span(
+        attrs = {
+            style?.invoke(this)
+            style {
+                fontWeight("bold")
+            }
+        }
+    ) {
+        Text(text)
     }
 }

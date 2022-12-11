@@ -3,11 +3,11 @@ package page.home
 import androidx.compose.runtime.*
 import components.KEY_UNSAVED_BENCHMARK
 import components.SavedBenchmarkNode
-import components.SummaryNode
+import components.Summary
 import core.BenchmarkResult
 import core.toCharts
 import kotlinx.browser.window
-import model.Charts
+import model.ChartsBundle
 import model.FormData
 import repo.BenchmarkRepo
 import repo.FormRepo
@@ -35,7 +35,7 @@ class HomeViewModel(
     var testNames = mutableStateListOf<String>()
         private set
 
-    var charts by mutableStateOf<Charts?>(null)
+    var chartsBundle by mutableStateOf<ChartsBundle?>(null)
         private set
 
     var errorMsg by mutableStateOf("")
@@ -50,10 +50,7 @@ class HomeViewModel(
     var shouldSelectUnsaved by mutableStateOf(false)
         private set
 
-    var durationSummary = mutableStateListOf<SummaryNode>()
-        private set
-
-    var overrunSummary = mutableStateListOf<SummaryNode>()
+    var summaries = mutableStateListOf<Summary>()
         private set
 
     var form by mutableStateOf(
@@ -93,45 +90,32 @@ class HomeViewModel(
                 fullBenchmarkResults
             }
             val newCharts = filteredBenchmarkResult.toCharts()
-            charts = newCharts
+            chartsBundle = newCharts
             updateSummary(newCharts)
 
             errorMsg = ""
         } catch (e: Throwable) {
-            durationSummary.clear()
-            overrunSummary.clear()
+            summaries.clear()
             e.printStackTrace()
             errorMsg = e.message ?: ERROR_GENERIC
         }
     }
 
-    private fun updateSummary(charts: Charts) {
+    private fun updateSummary(chartsBundle: ChartsBundle) {
         // Calculating duration summary
-        SummaryUtils.prepareSummary(groupMap = charts.groupMap,
-            chartData = charts.frameDurationChart,
-            onSummaryReady = { summaryNodes ->
-                durationSummary.clear()
-                durationSummary.addAll(summaryNodes)
-            },
-            onSummaryFailed = {
-                durationSummary.clear()
-            })
-
-        val frameOverrunChart = charts.frameOverrunChart
-        if (frameOverrunChart != null && frameOverrunChart.dataSets.isNotEmpty()) {
-            SummaryUtils.prepareSummary(
-                groupMap = charts.groupMap,
-                chartData = frameOverrunChart,
-                onSummaryReady = { summaryNodes ->
-                    overrunSummary.clear()
-                    overrunSummary.addAll(summaryNodes)
+        summaries.clear()
+        for (chartData in chartsBundle.charts) {
+            SummaryUtils.prepareSummary(groupMap = chartsBundle.groupMap,
+                chart = chartData,
+                onSummaryReady = { summary ->
+                    summaries.add(summary)
                 },
                 onSummaryFailed = {
-                    overrunSummary.clear()
-                })
-        } else {
-            overrunSummary.clear()
+                    error("Failed to parse `${chartData.label}`")
+                }
+            )
         }
+
     }
 
     fun onTestNameChanged(newTestName: String) {
@@ -143,12 +127,11 @@ class HomeViewModel(
                 fullBenchmarkResults
             }
             val newCharts = filteredBenchmarkResult.toCharts()
-            charts = newCharts
+            chartsBundle = newCharts
             updateSummary(newCharts)
             errorMsg = ""
         } catch (e: Throwable) {
-            durationSummary.clear()
-            overrunSummary.clear()
+            summaries.clear()
             e.printStackTrace()
             errorMsg = e.message ?: ERROR_GENERIC
         }

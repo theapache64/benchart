@@ -23,7 +23,6 @@ class BenchmarkRepoImpl : BenchmarkRepo {
 
     override fun getSavedBenchmarks(): List<SavedBenchmarkNode> {
         val savedBenchmarksString = window.localStorage.getItem(KEY_SAVED_BENCHMARKS)
-        println(savedBenchmarksString)
         val savedBenchmark = if (savedBenchmarksString == null) {
             // Creating first saved benchmark
             SavedBenchmarks(items = arrayOf())

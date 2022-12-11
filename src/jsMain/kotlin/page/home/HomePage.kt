@@ -1,10 +1,12 @@
 package page.home
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import components.*
-import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.css.paddingBottom
+import org.jetbrains.compose.web.css.paddingLeft
+import org.jetbrains.compose.web.css.paddingRight
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.*
 import repo.BenchmarkRepoImpl
 import repo.FormRepoImpl
@@ -53,15 +55,13 @@ fun HomePage(
                 )
 
                 Br()
+                Br()
 
-                SummaryContainer(
-                    durationSummary = viewModel.durationSummary,
-                    overrunSummary = viewModel.overrunSummary
-                )
+                SummaryContainer(summaries = viewModel.summaries)
             }
 
-            if (!viewModel.charts?.frameDurationChart?.dataSets.isNullOrEmpty()) {
-                val hasOverrunMs = viewModel.charts?.frameOverrunChart?.dataSets?.isNotEmpty() ?: false
+            viewModel.chartsBundle?.charts?.takeIf { it.isNotEmpty() }?.let { fullChartsList ->
+                val mainCharts = viewModel.chartsBundle ?: error("TSH")
                 Div(
                     attrs = {
                         classes("col-lg-8")
@@ -88,7 +88,7 @@ fun HomePage(
                             classes("row")
                         }
                     ) {
-                        Form{
+                        Form {
                             Div(
                                 attrs = {
                                     classes("row")
@@ -123,53 +123,24 @@ fun HomePage(
                     }
 
                     Br()
+                    val chunkedCharts = remember(fullChartsList) { fullChartsList.chunked(2) }
 
                     // 📊 Charts
-                    Div(
-                        attrs = {
-                            classes("row")
-                        }
-                    ) {
-                        // 📊 duration chart
-                        Div(attrs = {
-                            classes(
-                                if (hasOverrunMs) {
-                                    "col-lg-6"
-                                } else {
-                                    "col-lg-12"
-                                },
-                            )
-                        }) {
-                            viewModel.charts?.let { charts ->
-                                // Rendering frameDurationMs
-                                charts.frameDurationChart.dataSets.isNotEmpty().let { hasData ->
-                                    if (hasData) {
-                                        ChartUi(
-                                            isColorMapEnabled = viewModel.isAutoGroupEnabled,
-                                            groupMap = charts.groupMap,
-                                            chartData = charts.frameDurationChart
-                                        )
-                                    }
-                                }
+                    for (charts in chunkedCharts) {
+                        Div(
+                            attrs = {
+                                classes("row")
                             }
-                        }
-
-                        // 📊 overrun chart
-                        if (hasOverrunMs) {
-                            Div(attrs = {
-                                classes(
-                                    "col-lg-6"
-                                )
-                                style {
-                                    position(Position.Sticky)
-                                    top(0.px)
-                                }
-                            }) {
-                                viewModel.charts?.frameOverrunChart?.let { frameOverrunChart ->
+                        ) {
+                            for (chart in charts) {
+                                // 📊 duration chart
+                                Div(attrs = {
+                                    classes("col-lg-6")
+                                }) {
                                     ChartUi(
-                                        viewModel.isAutoGroupEnabled,
-                                        viewModel.charts!!.groupMap,
-                                        frameOverrunChart
+                                        isColorMapEnabled = viewModel.isAutoGroupEnabled,
+                                        groupMap = mainCharts.groupMap,
+                                        chart = chart
                                     )
                                 }
                             }
@@ -177,6 +148,7 @@ fun HomePage(
                     }
                 }
             }
+
 
         }
     }

@@ -3,20 +3,49 @@ package core
 import model.FormData
 
 class InvalidBenchmarkDataException(message: String?) : Throwable(message)
-class InvalidFrameDurationNodeException(message: String?) : Throwable(message)
-class InvalidFrameOverrunNodeException(message: String?) : Throwable(message)
+
+class BlockRow(
+    val title: String,
+    val data: Map<String, Float>
+)
+
+enum class SupportedMetrics(
+    val key: String,
+    val emoji : String,
+    val title: String
+) {
+    Duration(
+        emoji = "⏱",
+        key = "frameDurationCpuMs",
+        title = "Duration Summary"
+    ),
+    Overrun(
+        emoji = "🏃🏻‍♂️",
+        key = "frameOverrunMs",
+        title = "Overrun Summary"
+    ),
+    InitialDisplay(
+        emoji = "🌘",
+        key = "timeToInitialDisplayMs",
+        title = "Initial Display Summary"
+    ),
+    FullDisplay(
+        emoji = "🌕",
+        key = "timeToFullDisplayMs",
+        title = "Full Display Summary"
+    ),
+}
 
 data class BenchmarkResult(
     val title: String,
     val testName: String?,
-    val frameDurationMs: Map<String, Float>,
-    val frameOverrunMs: Map<String, Float>?,
+    val blockRows: List<BlockRow>,
 ) {
     companion object {
-        const val KEY_FRAME_DURATION_MS = "frameDurationCpuMs"
-        const val KEY_FRAME_OVERRUN_MS = "frameOverrunMs"
 
-        private val machineLineRegEx = "^(frameDurationCpuMs|frameOverrunMs|Traces).+".toRegex()
+        private val metricKeys = SupportedMetrics.values().map { it.key }
+
+        private val machineLineRegEx = "^(Traces|${metricKeys.joinToString(separator = "|")}).+".toRegex()
         private val titleStripRegEx = "\\W+".toRegex()
         private val testNameRegex = "[A-Z].*_[a-z].*".toRegex()
 
@@ -31,8 +60,7 @@ data class BenchmarkResult(
                 val lines = block.split("\n").map { it.trim() }
                 var title: String? = null
                 var testName: String? = null
-                var durationMs: Map<String, Float>? = null
-                var overrunMs: Map<String, Float>? = null
+                val blockRows = mutableListOf<BlockRow>()
                 for (line in lines) {
 
                     if (title == null && isHumanLine(line)) {
@@ -40,7 +68,7 @@ data class BenchmarkResult(
                     }
 
                     if (isTestName(line)) {
-                        if (testName != null && durationMs != null) {
+                        if (testName != null && blockRows.isNotEmpty()) {
 
                             if (title == null) {
                                 title = "benchmark $index $testName"
@@ -51,30 +79,28 @@ data class BenchmarkResult(
                                 BenchmarkResult(
                                     title = title,
                                     testName = testName,
-                                    frameDurationMs = durationMs,
-                                    frameOverrunMs = overrunMs
+                                    blockRows = blockRows
                                 )
                             )
 
-                            durationMs = null
-                            overrunMs = null
+                            blockRows.clear()
                         }
 
                         testName = line
                     }
 
-                    if (line.startsWith(KEY_FRAME_DURATION_MS)) {
-                        if (durationMs != null) {
-                            throw InvalidBenchmarkDataException("Two $KEY_FRAME_DURATION_MS found in block ${index + 1}. Expected only one")
+                    val metricName = line.findMetricKeyOrNull()
+                    if (metricName != null) {
+                        val isMetricAlreadyAdded = blockRows.find { it.title == metricName } != null
+                        if (isMetricAlreadyAdded) {
+                            throw InvalidBenchmarkDataException("Two $metricName found in block ${index + 1}. Expected only one")
                         }
-                        durationMs = parseDurationMs(line)
-                    }
-
-                    if (line.startsWith(KEY_FRAME_OVERRUN_MS)) {
-                        if (overrunMs != null) {
-                            throw InvalidBenchmarkDataException("Two $KEY_FRAME_OVERRUN_MS found in block ${index + 1}. Expected only one")
-                        }
-                        overrunMs = parseOverrunMs(line)
+                        blockRows.add(
+                            BlockRow(
+                                title = metricName,
+                                data = parseValues(metricName, line)
+                            )
+                        )
                     }
                 }
 
@@ -84,13 +110,12 @@ data class BenchmarkResult(
 
                 title = parseTitle(title)
 
-                if (durationMs != null) {
+                if (blockRows.isNotEmpty()) {
                     benchmarkResults.add(
                         BenchmarkResult(
                             title = title,
                             testName = testName,
-                            frameDurationMs = durationMs,
-                            frameOverrunMs = overrunMs
+                            blockRows = blockRows
                         )
                     )
                 }
@@ -118,34 +143,16 @@ data class BenchmarkResult(
             return line.matches(machineLineRegEx)
         }
 
-
-        private fun parseOverrunMs(frameOverrunMsData: String): Map<String, Float> {
-            try {
-                return parseBenchmarkValues(KEY_FRAME_OVERRUN_MS, frameOverrunMsData)
-            } catch (e: IllegalStateException) {
-                throw InvalidFrameOverrunNodeException(e.message)
-            }
-        }
-
-        private fun parseDurationMs(frameDurationMsData: String): Map<String, Float> {
-            try {
-                return parseBenchmarkValues(KEY_FRAME_DURATION_MS, frameDurationMsData)
-            } catch (e: IllegalStateException) {
-                throw InvalidFrameDurationNodeException(e.message)
-            }
-        }
-
-        private fun parseBenchmarkValues(key: String, data: String): Map<String, Float> {
+        private fun parseValues(key: String, data: String): Map<String, Float> {
             if (!data.startsWith(key)) {
                 error("Invalid $key. Expected to start with '$key' but found '$data'")
             }
 
             val transformedList = data.replace(key, "")
                 .replace("\\s+".toRegex(), " ")
-                .split(",")
-                .map {
-                    it.trim().split(" ")
-                }
+                .split(", ")
+                // remove commas in numbers
+                .map { it.replace(",", "").trim().split(" ") }
 
             val valueMap = mutableMapOf<String, Float>()
             for (item in transformedList) {
@@ -153,5 +160,11 @@ data class BenchmarkResult(
             }
             return valueMap
         }
+
+
+        private fun String.findMetricKeyOrNull(): String? {
+            return metricKeys.find { this.startsWith(it) }
+        }
     }
 }
+

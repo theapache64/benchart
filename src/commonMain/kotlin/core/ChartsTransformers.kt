@@ -1,39 +1,43 @@
 package core
 
-import model.ChartData
-import model.Charts
+import model.Chart
+import model.ChartsBundle
 
-fun List<BenchmarkResult>.toCharts(): Charts {
-    val frameDurationMap = mutableMapOf<String, Array<Float>>()
-    val frameOverrunMap = mutableMapOf<String, Array<Float>>()
-    for (item in this) {
-        frameDurationMap[item.title] = item.frameDurationMs.values.toTypedArray()
-        val frameOverrunMs = item.frameOverrunMs
-        if (frameOverrunMs != null) {
-            frameOverrunMap[item.title] = frameOverrunMs.values.toTypedArray()
+
+fun List<BenchmarkResult>.toCharts(): ChartsBundle {
+    val chartNames = this
+        .map { result ->
+            result.blockRows.map { dataPoint ->
+                dataPoint.title
+            }
         }
+        .flatten()
+        .toSet()
+
+    val charts = mutableListOf<Chart>()
+    for (chartName in chartNames) {
+        // before1 -> {P50=40.5, P90=45.8, P95=60.4, P99=80.4}
+        val dataSets = mutableMapOf<String, Map<String, Float>>()
+        for (item in this) {
+            dataSets[item.title] = item.blockRows.find { it.title == chartName }?.data ?: emptyMap()
+        }
+
+        charts.add(
+            Chart(
+                emoji = SupportedMetrics.values().find { it.key == chartName }?.emoji ?: "📊",
+                label = chartName, // frameDurationCpuMs, frameOverrunMs, etc
+                dataSets = dataSets
+            )
+        )
     }
 
     val groupMap = parseGroupMap(this)
-
-    return Charts(
-        frameDurationChart = ChartData(
-            emoji = "⏱",
-            label = BenchmarkResult.KEY_FRAME_DURATION_MS,
-            dataSets = frameDurationMap
-        ),
-        frameOverrunChart = if (frameOverrunMap.isNotEmpty()) {
-            ChartData(
-                emoji = "🏃🏻‍♂️",
-                label = BenchmarkResult.KEY_FRAME_OVERRUN_MS,
-                dataSets = frameOverrunMap
-            )
-        } else {
-            null
-        },
-        groupMap = groupMap
+    return ChartsBundle(
+        groupMap = groupMap,
+        charts = charts
     )
 }
+
 
 class GroupMap(
     val autoGroupMap: Map<String, String>,

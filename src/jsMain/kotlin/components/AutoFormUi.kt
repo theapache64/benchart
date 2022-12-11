@@ -32,62 +32,64 @@ fun FormUi(
         Text("⌨️ Input")
     }
 
-    Form {
+    Div {
+        Form {
 
-        key("inputForm") {
+            key("inputForm") {
 
-            SavedBenchmarksDropDown(
-                shouldSelectUnsaved = shouldSelectUnsaved,
-                savedBenchmarks = savedBenchmarks,
-                onSavedBenchmarkChanged =onSavedBenchmarkChanged,
-                onLoadBenchmarkClicked =  onLoadBenchmarkClicked,
-                onDeleteBenchmarkClicked = onDeleteBenchmarkClicked
-            )
+                SavedBenchmarksDropDown(
+                    shouldSelectUnsaved = shouldSelectUnsaved,
+                    savedBenchmarks = savedBenchmarks,
+                    onSavedBenchmarkChanged =onSavedBenchmarkChanged,
+                    onLoadBenchmarkClicked =  onLoadBenchmarkClicked,
+                    onDeleteBenchmarkClicked = onDeleteBenchmarkClicked
+                )
 
-            Div(
-                attrs = {
-                    classes("form-group")
-                }
-            ) {
-
-                Label(
-                    forId = "benchmark",
+                Div(
                     attrs = {
-                        classes("form-label")
+                        classes("form-group")
                     }
                 ) {
-                    Text("Benchmark :")
+
+                    Label(
+                        forId = "benchmark",
+                        attrs = {
+                            classes("form-label")
+                        }
+                    ) {
+                        Text("Benchmark :")
+                    }
+
+                    TextArea(
+                        value = form.data
+                    ) {
+                        id("benchmark")
+                        classes("form-control")
+                        placeholder(value = "Benchmark data")
+                        rows(20)
+                        onInput { textInput ->
+                            onFormChanged(form.copy(data = textInput.value))
+                        }
+                    }
                 }
 
-                TextArea(
-                    value = form.data
+                Button(
+                    attrs = {
+                        classes("btn", "btn-dark", "float-end")
+                        style {
+                            marginTop(10.px)
+                        }
+                        if (form.data.isBlank()) {
+                            attr("disabled", "true")
+                        }
+                        onClick {
+                            onSaveClicked(form)
+                        }
+                        type(ButtonType.Button)
+                    }
                 ) {
-                    id("benchmark")
-                    classes("form-control")
-                    placeholder(value = "Benchmark data")
-                    rows(20)
-                    onInput { textInput ->
-                        onFormChanged(form.copy(data = textInput.value))
-                    }
+                    Text("💾 SAVE")
                 }
-            }
-
-            Button(
-                attrs = {
-                    classes("btn", "btn-dark", "float-end")
-                    style {
-                        marginTop(10.px)
-                    }
-                    if (form.data.isBlank()) {
-                        attr("disabled", "true")
-                    }
-                    onClick {
-                        onSaveClicked(form)
-                    }
-                    type(ButtonType.Button)
-                }
-            ) {
-                Text("💾 SAVE")
             }
         }
     }

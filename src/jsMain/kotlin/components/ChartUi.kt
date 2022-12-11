@@ -6,7 +6,6 @@ import androidx.compose.runtime.DisposableEffect
 import chartjs.Type
 import core.GroupMap
 import jso
-import model.ChartData
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Canvas
 import org.jetbrains.compose.web.dom.H3
@@ -16,9 +15,9 @@ import org.jetbrains.compose.web.dom.Text
 fun ChartUi(
     isColorMapEnabled: Boolean,
     groupMap: GroupMap,
-    chartData: ChartData,
+    chart: model.Chart,
 ) {
-    H3 { Text("${chartData.emoji} ${chartData.label}") }
+    H3 { Text("${chart.emoji} ${chart.label}") }
 
     // Charts
     Canvas(
@@ -32,13 +31,14 @@ fun ChartUi(
             }
         }
     ) {
-        DisposableEffect(chartData, isColorMapEnabled) {
+        DisposableEffect(chart, isColorMapEnabled) {
             val dataSets = mutableListOf<Chart.ChartDataSets>()
-            for ((key, value) in chartData.dataSets) {
+            for ((legend, values) in chart.dataSets) {
+
                 dataSets.add(
                     jso {
-                        label = key
-                        data = value
+                        label = legend
+                        data = values.values.toTypedArray()
                         borderColor = if (isColorMapEnabled) {
                             groupMap.autoGroupMap[label]
                         } else {
@@ -58,9 +58,8 @@ fun ChartUi(
             val chart = Chart(scopeElement, jso {
                 type = Type.line
                 this.data = jso {
-                    labels = arrayOf("P50", "P90", "P95", "P99")
+                    labels = chart.dataSets.values.first().keys.toTypedArray()
                     datasets = dataSets.toTypedArray()
-
                 }
                 this.options = jso {
                     plugins = jso {

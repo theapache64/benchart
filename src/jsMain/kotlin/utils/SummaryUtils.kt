@@ -1,16 +1,18 @@
 package utils
 
+import components.Summary
 import components.SummaryNode
 import core.GroupMap
-import model.ChartData
+import core.SupportedMetrics
+import model.Chart
 import kotlin.math.absoluteValue
 
 object SummaryUtils {
 
     fun prepareSummary(
         groupMap: GroupMap,
-        chartData: ChartData,
-        onSummaryReady: (summaryList: List<SummaryNode>) -> Unit,
+        chart: Chart,
+        onSummaryReady: (summary: Summary) -> Unit,
         onSummaryFailed: () -> Unit,
     ) {
         try {
@@ -23,7 +25,7 @@ object SummaryUtils {
             val words = groupMap.wordColorMap.keys.toList()
             for (word in words) {
                 combinedMap[word] =
-                    chartData.dataSets.filterKeys { it.startsWith(word) }.values.map { it.toFloatArray() }
+                    chart.dataSets.filterKeys { it.startsWith(word) }.values.map { it.values.toFloatArray() }
                         .let { arrays ->
                             // Sum
                             val newArray = arrayOf(0f, 0f, 0f, 0f)
@@ -39,20 +41,11 @@ object SummaryUtils {
                             newArray
                         }
             }
-            for ((key, value) in combinedMap) {
-                println(key)
-                println(value)
-            }
-            val summaryList = mutableListOf<SummaryNode>()
-            repeat(4) { index ->
-                val segment = when (index) {
-                    0 -> "P50"
-                    1 -> "P90"
-                    2 -> "P95"
-                    3 -> "P99"
-                    else -> error("No segment found for index '$index'")
-                }
 
+            val summaryNodes = mutableListOf<SummaryNode>()
+            val segments = chart.dataSets.values.first().keys.toList()
+            repeat(segments.size) { index ->
+                val segment = segments[index]
                 val after = combinedMap[words[1]]?.get(index) ?: 0f
                 val before = combinedMap[words[0]]?.get(index) ?: 0f
                 val diff = "${(after - before).asDynamic().toFixed(2)}".toFloat()
@@ -63,7 +56,7 @@ object SummaryUtils {
                 val symbol = if (diff > 0) "+" else ""
                 val emoji = if (diff > 0) "❌" else "✅"
 
-                summaryList.add(
+                summaryNodes.add(
                     SummaryNode(
                         emoji = emoji,
                         segment = segment,
@@ -77,7 +70,10 @@ object SummaryUtils {
                     )
                 )
             }
-            onSummaryReady(summaryList)
+            val metricConfig = SupportedMetrics.values().find { it.key == chart.label }
+                ?: error("Unsupported metric name `${chart.label}`")
+            val title = "${metricConfig.emoji} ${metricConfig.title}"
+            onSummaryReady(Summary(title = title, summaryNodes))
         } catch (e: Throwable) {
             e.printStackTrace()
             onSummaryFailed()
