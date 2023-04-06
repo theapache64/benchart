@@ -1264,15 +1264,18 @@ external class Chart {
         var ticks: TickOptions?
             get() = definedExternally
             set(value) = definedExternally
-        var xAxes: Array<ChartXAxe>?
+        var x: ChartXAxe?
             get() = definedExternally
             set(value) = definedExternally
-        var yAxes: Array<ChartYAxe>?
+        var y: ChartYAxe?
             get() = definedExternally
             set(value) = definedExternally
     }
 
     interface CommonAxe {
+        var beginAtZero: Boolean?
+            get() = definedExternally
+            set(value) = definedExternally
         var bounds: String?
             get() = definedExternally
             set(value) = definedExternally

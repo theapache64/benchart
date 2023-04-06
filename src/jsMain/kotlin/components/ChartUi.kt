@@ -67,6 +67,11 @@ fun ChartUi(
                             display = true
                         }
                     }
+                    scales = jso<Chart.ChartScales> {
+                        y = jso { 
+                            beginAtZero = true
+                        }
+                    }
                 }
             })
             onDispose {
