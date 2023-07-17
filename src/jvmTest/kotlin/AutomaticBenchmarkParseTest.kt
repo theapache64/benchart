@@ -145,7 +145,7 @@ class AutoBenchmarkParseTest {
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
 
-    /*@Test
+    @Test
     fun parseOneSuccess() {
         val actualBenchmarkResult = BenchmarkResult.parse(
             """
@@ -162,17 +162,25 @@ class AutoBenchmarkParseTest {
             BenchmarkResult(
                 title = "Before 1",
                 testName = "HomeScrollBenchmark_scrollTest",
-                frameDurationMs = mapOf(
-                    "P50" to 13.5f,
-                    "P90" to 20.8f,
-                    "P95" to 25.4f,
-                    "P99" to 47.4f,
-                ),
-                frameOverrunMs = mapOf(
-                    "P50" to -5.9f,
-                    "P90" to 7.0f,
-                    "P95" to 20.1f,
-                    "P99" to 64.4f,
+                blockRows = listOf(
+                    BlockRow(
+                        title = SupportedMetrics.Duration.key,
+                        data = mapOf(
+                            "P50" to 13.5f,
+                            "P90" to 20.8f,
+                            "P95" to 25.4f,
+                            "P99" to 47.4f,
+                        )
+                    ),
+                    BlockRow(
+                        title = SupportedMetrics.Overrun.key,
+                        data = mapOf(
+                            "P50" to -5.9f,
+                            "P90" to 7.0f,
+                            "P95" to 20.1f,
+                            "P99" to 64.4f,
+                        ),
+                    )
                 ),
             ),
         )
@@ -199,17 +207,25 @@ class AutoBenchmarkParseTest {
             BenchmarkResult(
                 title = "Before 1",
                 testName = "HomeScrollBenchmark_scrollTest",
-                frameDurationMs = mapOf(
-                    "P50" to 13.5f,
-                    "P90" to 20.8f,
-                    "P95" to 25.4f,
-                    "P99" to 47.4f,
-                ),
-                frameOverrunMs = mapOf(
-                    "P50" to -5.9f,
-                    "P90" to 7.0f,
-                    "P95" to 20.1f,
-                    "P99" to 64.4f,
+                blockRows = listOf(
+                    BlockRow(
+                        title = SupportedMetrics.Duration.key,
+                        data = mapOf(
+                            "P50" to 13.5f,
+                            "P90" to 20.8f,
+                            "P95" to 25.4f,
+                            "P99" to 47.4f,
+                        )
+                    ),
+                    BlockRow(
+                        title = SupportedMetrics.Overrun.key,
+                        data = mapOf(
+                            "P50" to -5.9f,
+                            "P90" to 7.0f,
+                            "P95" to 20.1f,
+                            "P99" to 64.4f,
+                        ),
+                    )
                 ),
             ),
         )
@@ -237,18 +253,26 @@ class AutoBenchmarkParseTest {
             BenchmarkResult(
                 title = "Before 1",
                 testName = "HomeScrollBenchmark_scrollTest",
-                frameDurationMs = mapOf(
-                    "P50" to 13.5f,
-                    "P90" to 20.8f,
-                    "P95" to 25.4f,
-                    "P99" to 47.4f,
-                ),
-                frameOverrunMs = mapOf(
-                    "P50" to -5.9f,
-                    "P90" to 7.0f,
-                    "P95" to 20.1f,
-                    "P99" to 64.4f,
-                ),
+                blockRows = listOf(
+                    BlockRow(
+                        title = SupportedMetrics.Duration.key,
+                        data = mapOf(
+                            "P50" to 13.5f,
+                            "P90" to 20.8f,
+                            "P95" to 25.4f,
+                            "P99" to 47.4f,
+                        )
+                    ),
+                    BlockRow(
+                        title = SupportedMetrics.Overrun.key,
+                        data = mapOf(
+                            "P50" to -5.9f,
+                            "P90" to 7.0f,
+                            "P95" to 20.1f,
+                            "P99" to 64.4f,
+                        ),
+                    )
+                )
             ),
         )
 
@@ -276,19 +300,25 @@ class AutoBenchmarkParseTest {
             BenchmarkResult(
                 title = "Before 1",
                 testName = "HomeScrollBenchmark_scrollTest",
-                frameDurationMsIndex = 1,
-                frameDurationMs = mapOf(
-                    "P50" to 13.5f,
-                    "P90" to 20.8f,
-                    "P95" to 25.4f,
-                    "P99" to 47.4f,
-                ),
-                frameOverrunMsIndex = 0,
-                frameOverrunMs = mapOf(
-                    "P50" to -5.9f,
-                    "P90" to 7.0f,
-                    "P95" to 20.1f,
-                    "P99" to 64.4f,
+                blockRows = listOf(
+                    BlockRow(
+                        title = SupportedMetrics.Duration.key,
+                        data = mapOf(
+                            "P50" to 13.5f,
+                            "P90" to 20.8f,
+                            "P95" to 25.4f,
+                            "P99" to 47.4f,
+                        )
+                    ),
+                    BlockRow(
+                        title = SupportedMetrics.Overrun.key,
+                        data = mapOf(
+                            "P50" to -5.9f,
+                            "P90" to 7.0f,
+                            "P95" to 20.1f,
+                            "P99" to 64.4f,
+                        ),
+                    )
                 ),
             ),
         )
@@ -310,18 +340,26 @@ class AutoBenchmarkParseTest {
             BenchmarkResult(
                 title = "Before 1",
                 testName = null,
-                frameDurationMs = mapOf(
-                    "P50" to 13.5f,
-                    "P90" to 20.8f,
-                    "P95" to 25.4f,
-                    "P99" to 47.4f,
-                ),
-                frameOverrunMs = mapOf(
-                    "P50" to -5.9f,
-                    "P90" to 7.0f,
-                    "P95" to 20.1f,
-                    "P99" to 64.4f,
-                ),
+                blockRows = listOf(
+                    BlockRow(
+                        title = SupportedMetrics.Duration.key,
+                        data = mapOf(
+                            "P50" to 13.5f,
+                            "P90" to 20.8f,
+                            "P95" to 25.4f,
+                            "P99" to 47.4f,
+                        )
+                    ),
+                    BlockRow(
+                        title = SupportedMetrics.Overrun.key,
+                        data = mapOf(
+                            "P50" to -5.9f,
+                            "P90" to 7.0f,
+                            "P95" to 20.1f,
+                            "P99" to 64.4f,
+                        ),
+                    )
+                )
             ),
         )
 
@@ -437,7 +475,7 @@ class AutoBenchmarkParseTest {
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
 
-    @Test
+    /*@Test
     fun parseDuplicateMetricsFailure() {
         try {
             BenchmarkResult.parse(

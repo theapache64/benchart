@@ -41,6 +41,17 @@ data class BenchmarkResult(
     val testName: String?,
     val blockRows: List<BlockRow>,
 ) {
+
+
+    constructor(
+        title: String,
+        testName: String?,
+        frameDurationMs: Map<String, Float>,
+        frameOverrunMs: Map<String, Float>
+    ) : this(
+        title, testName, generateBlockRows(frameDurationMs, frameOverrunMs)
+    )
+
     companion object {
 
         private val metricKeys = SupportedMetrics.values().map { it.key }
@@ -48,6 +59,28 @@ data class BenchmarkResult(
         private val machineLineRegEx = "^(Traces|${metricKeys.joinToString(separator = "|")}).+".toRegex()
         private val titleStripRegEx = "\\W+".toRegex()
         private val testNameRegex = "[A-Z].*_[a-z].*".toRegex()
+
+        fun generateBlockRows(
+            frameDurationMs: Map<String, Float>,
+            frameOverrunMs: Map<String, Float>
+        ): List<BlockRow> {
+            return mutableListOf<BlockRow>().apply {
+                // frameDurationMs
+                add(
+                    BlockRow(
+                        SupportedMetrics.Duration.key,
+                        frameDurationMs
+                    )
+                )
+
+                add(
+                    BlockRow(
+                        SupportedMetrics.Overrun.key,
+                        frameOverrunMs
+                    )
+                )
+            }
+        }
 
         fun parse(form: FormData): List<BenchmarkResult> {
             val benchmarkResults = mutableListOf<BenchmarkResult>()
