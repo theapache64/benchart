@@ -4,14 +4,14 @@ import model.FormData
 
 class InvalidBenchmarkDataException(message: String?) : Throwable(message)
 
-class BlockRow(
+data class BlockRow(
     val title: String,
     val data: Map<String, Float>
 )
 
 enum class SupportedMetrics(
     val key: String,
-    val emoji : String,
+    val emoji: String,
     val title: String
 ) {
     Duration(

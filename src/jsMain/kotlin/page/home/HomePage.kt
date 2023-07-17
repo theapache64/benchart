@@ -2,15 +2,25 @@ package page.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import components.*
+import components.AutoGroup
+import components.ChartUi
+import components.EditableTitle
+import components.ErrorUi
+import components.FormUi
+import components.Heading
+import components.SummaryContainer
+import components.TestNames
 import org.jetbrains.compose.web.css.paddingBottom
 import org.jetbrains.compose.web.css.paddingLeft
 import org.jetbrains.compose.web.css.paddingRight
 import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.Br
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Form
+import org.jetbrains.compose.web.dom.H3
+import org.jetbrains.compose.web.dom.Text
 import repo.BenchmarkRepoImpl
 import repo.FormRepoImpl
-import kotlin.Error
 
 @Composable
 fun HomePage(
@@ -27,7 +37,7 @@ fun HomePage(
 
         // Error
         if (viewModel.errorMsg.isNotBlank()) {
-            Error(viewModel.errorMsg)
+            ErrorUi(viewModel.errorMsg)
         }
 
 

@@ -6,7 +6,7 @@ import org.jetbrains.compose.web.dom.H4
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
-fun Error(message: String) {
+fun ErrorUi(message: String) {
     Div(attrs = {
         classes("row")
     }) {

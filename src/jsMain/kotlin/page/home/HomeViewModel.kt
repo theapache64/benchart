@@ -71,6 +71,7 @@ class HomeViewModel(
     private val fullBenchmarkResults = mutableListOf<BenchmarkResult>()
 
     fun onFormChanged(newForm: FormData, shouldSelectUnsaved: Boolean = true) {
+        console.log("formData", newForm)
         form = newForm
         formRepo.saveFormData(newForm)
         this.shouldSelectUnsaved = shouldSelectUnsaved
