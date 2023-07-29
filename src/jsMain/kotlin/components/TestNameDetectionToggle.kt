@@ -8,7 +8,7 @@ import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.*
 
 @Composable
-fun AutoGroup(
+fun TestNameDetectionToggle(
     isEnabled: Boolean,
     onButtonClicked: () -> Unit
 ) {
@@ -23,17 +23,17 @@ fun AutoGroup(
         // 🖌 Color map
 
         Label(
-            forId = "colorMap",
+            forId = "testNameDetection",
             attrs = {
                 classes("form-label")
             }
         ) {
-            Text("Auto Group:")
+            Text("Test Name Detection:")
         }
         Br()
         Button(
             attrs = {
-                id("colorMap")
+                id("testNameDetection")
                 classes("btn", if (isEnabled) "btn-success" else "btn-secondary")
                 onClick {
                     onButtonClicked()

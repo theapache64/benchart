@@ -528,6 +528,36 @@ class AutoBenchmarkParseTest {
     }
 
     @Test
+    fun parseGenericInput() {
+        val actualResult = BenchmarkResult.parse(
+            """
+                # PNG + Image
+                SplashContent: image took ms to render = 18.625
+
+                # PNG + HsImage
+                SplashContent: image took ms to render = 120.625
+            """.trimIndent().toAutoFormData()
+        )
+
+        val expectedBenchmarkResult = listOf<BenchmarkResult>(
+            BenchmarkResult(
+                title = "",
+                testName = "",
+                blockRows = listOf(
+                    BlockRow(
+                        title = "",
+                        data = mapOf(
+
+                        )
+                    )
+                )
+            )
+        )
+
+        assertEquals(expectedBenchmarkResult, actualResult)
+    }
+
+    @Test
     fun parseTitleTestSuccess() {
         val actualResult = BenchmarkResult.parse(
             """

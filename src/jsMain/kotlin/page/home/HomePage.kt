@@ -9,6 +9,7 @@ import components.ErrorUi
 import components.FormUi
 import components.Heading
 import components.SummaryContainer
+import components.TestNameDetectionToggle
 import components.TestNames
 import org.jetbrains.compose.web.css.paddingBottom
 import org.jetbrains.compose.web.css.paddingLeft
@@ -123,8 +124,19 @@ fun HomePage(
                                     }
                                 ) {
                                     AutoGroup(
-                                        isAutoGroupEnabled = viewModel.isAutoGroupEnabled,
+                                        isEnabled = viewModel.isAutoGroupEnabled,
                                         onButtonClicked = viewModel::onToggleAutoGroupClicked
+                                    )
+                                }
+
+                                Div(
+                                    attrs = {
+                                        classes("col-md-2")
+                                    }
+                                ) {
+                                    TestNameDetectionToggle(
+                                        isEnabled = viewModel.isTestNameDetectionEnabled,
+                                        onButtonClicked = viewModel::onToggleTestNameDetectionClicked
                                     )
                                 }
 

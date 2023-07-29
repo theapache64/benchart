@@ -54,7 +54,7 @@ class HomeViewModel(
         private set
 
     var form by mutableStateOf(
-        formRepo.getFormData() ?: FormData(DefaultValues.form)
+        formRepo.getFormData() ?: FormData(DefaultValues.form, isTestNameDetectionEnabled = false)
     )
         private set
 
@@ -71,7 +71,6 @@ class HomeViewModel(
     private val fullBenchmarkResults = mutableListOf<BenchmarkResult>()
 
     fun onFormChanged(newForm: FormData, shouldSelectUnsaved: Boolean = true) {
-        console.log("formData", newForm)
         form = newForm
         formRepo.saveFormData(newForm)
         this.shouldSelectUnsaved = shouldSelectUnsaved
@@ -146,6 +145,10 @@ class HomeViewModel(
         isAutoGroupEnabled = !isAutoGroupEnabled
     }
 
+    fun onToggleTestNameDetectionClicked() {
+        onFormChanged(form.copy(isTestNameDetectionEnabled = !form.isTestNameDetectionEnabled))
+    }
+
     fun onSaveClicked(formData: FormData) {
         val bName = window.prompt("Name: ")
         if (bName.isNullOrBlank()) {
@@ -192,7 +195,7 @@ class HomeViewModel(
     fun onSavedBenchmarkChanged(key: String) {
         shouldSelectUnsaved = key == KEY_UNSAVED_BENCHMARK
         if (shouldSelectUnsaved) {
-            val newForm = formRepo.getFormData() ?: FormData("")
+            val newForm = formRepo.getFormData() ?: form
             onFormChanged(newForm, shouldSelectUnsaved = false)
         }
     }

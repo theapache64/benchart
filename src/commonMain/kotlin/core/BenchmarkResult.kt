@@ -67,7 +67,7 @@ data class BenchmarkResult(
                         title = line
                     }
 
-                    if (isTestName(line)) {
+                    if (form.isTestNameDetectionEnabled && isTestName(line)) {
                         if (testName != null && blockRows.isNotEmpty()) {
 
                             if (title == null) {
