@@ -151,6 +151,7 @@ fun HomePage(
                     Br()
                     val chunkedCharts = remember(fullChartsList) { fullChartsList.chunked(2) }
 
+
                     // 📊 Charts
                     for (charts in chunkedCharts) {
                         Div(
