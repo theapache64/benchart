@@ -24,7 +24,7 @@ import repo.BenchmarkRepoImpl
 import repo.FormRepoImpl
 
 @Composable
-fun HomePage(
+fun HomePageUi(
     viewModel: HomeViewModel = remember { HomeViewModel(BenchmarkRepoImpl(), FormRepoImpl()) }
 ) {
     Div(

@@ -1,5 +1,5 @@
 import org.jetbrains.compose.web.renderComposable
-import page.home.HomePage
+import page.home.HomePageUi
 
 const val IS_INJECT_DUMMY = true
 
@@ -7,7 +7,7 @@ fun main() {
 
     initChartSettings()
     renderComposable(rootElementId = "root") {
-        HomePage()
+        HomePageUi()
     }
 }
 
