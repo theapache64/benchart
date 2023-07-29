@@ -97,6 +97,8 @@ fabric.properties
 .idea/**/markdown-navigator-enh.xml
 .idea/**/markdown-navigator/
 
+.DS_Store
+
 # Cache file creation bug
 # See https://youtrack.jetbrains.com/issue/JBR-2257
 .idea/$CACHE_FILE$

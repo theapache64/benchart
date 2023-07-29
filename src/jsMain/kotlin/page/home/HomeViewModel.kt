@@ -44,9 +44,6 @@ class HomeViewModel(
     var isEditableTitleEnabled by mutableStateOf(false)
         private set
 
-    var isAutoGroupEnabled by mutableStateOf(false)
-        private set
-
     var shouldSelectUnsaved by mutableStateOf(false)
         private set
 
@@ -54,7 +51,7 @@ class HomeViewModel(
         private set
 
     var form by mutableStateOf(
-        formRepo.getFormData() ?: FormData(DefaultValues.form, isTestNameDetectionEnabled = false)
+        formRepo.getFormData() ?: FormData(DefaultValues.form, isTestNameDetectionEnabled = false, isAutoGroupEnabled = false)
     )
         private set
 
@@ -142,7 +139,7 @@ class HomeViewModel(
     }
 
     fun onToggleAutoGroupClicked() {
-        isAutoGroupEnabled = !isAutoGroupEnabled
+        onFormChanged(form.copy(isAutoGroupEnabled = !form.isAutoGroupEnabled))
     }
 
     fun onToggleTestNameDetectionClicked() {

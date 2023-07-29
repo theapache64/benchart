@@ -112,7 +112,7 @@ fun HomePageUi(
                                     }
                                 ) {
                                     AutoGroup(
-                                        isEnabled = viewModel.isAutoGroupEnabled,
+                                        isEnabled = viewModel.form.isAutoGroupEnabled,
                                         onButtonClicked = viewModel::onToggleAutoGroupClicked
                                     )
                                 }
@@ -165,7 +165,7 @@ fun HomePageUi(
                                     classes("col-lg-6")
                                 }) {
                                     ChartUi(
-                                        isColorMapEnabled = viewModel.isAutoGroupEnabled,
+                                        isColorMapEnabled = viewModel.form.isAutoGroupEnabled,
                                         groupMap = mainCharts.groupMap,
                                         chart = chart
                                     )
