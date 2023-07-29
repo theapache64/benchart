@@ -105,22 +105,10 @@ fun HomePage(
                                     classes("row")
                                 }
                             ) {
-                                Div(
-                                    attrs = {
-                                        classes("col-md-4")
-                                    }
-                                ) {
-                                    TestNames(
-                                        testNames = viewModel.testNames,
-                                        onTestNameChanged = { newTestName ->
-                                            viewModel.onTestNameChanged(newTestName)
-                                        }
-                                    )
-                                }
 
                                 Div(
                                     attrs = {
-                                        classes("col-md-2")
+                                        classes("col-md-1")
                                     }
                                 ) {
                                     AutoGroup(
@@ -135,9 +123,25 @@ fun HomePage(
                                     }
                                 ) {
                                     TestNameDetectionToggle(
-                                        isEnabled = viewModel.isTestNameDetectionEnabled,
+                                        isEnabled = viewModel.form.isTestNameDetectionEnabled,
                                         onButtonClicked = viewModel::onToggleTestNameDetectionClicked
                                     )
+                                }
+
+                                if(viewModel.testNames.isNotEmpty()){
+                                    Div(
+                                        attrs = {
+                                            classes("col-md-4")
+                                        }
+                                    ) {
+                                        TestNames(
+                                            testNames = viewModel.testNames,
+                                            onTestNameChanged = { newTestName ->
+                                                viewModel.onTestNameChanged(newTestName)
+                                            }
+                                        )
+                                    }
+
                                 }
 
                             }
