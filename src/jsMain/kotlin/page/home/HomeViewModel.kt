@@ -1,6 +1,10 @@
 package page.home
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import components.KEY_UNSAVED_BENCHMARK
 import components.SavedBenchmarkNode
 import components.Summary
@@ -13,6 +17,10 @@ import repo.BenchmarkRepo
 import repo.FormRepo
 import utils.DefaultValues
 import utils.SummaryUtils
+
+external fun setTimeout(handler: dynamic, timeout: Int): Int
+external fun clearTimeout(timeoutId: Int)
+
 
 @Stable
 class HomeViewModel(
@@ -51,7 +59,11 @@ class HomeViewModel(
         private set
 
     var form by mutableStateOf(
-        formRepo.getFormData() ?: FormData(DefaultValues.form, isTestNameDetectionEnabled = false, isAutoGroupEnabled = false)
+        formRepo.getFormData() ?: FormData(
+            DefaultValues.form,
+            isTestNameDetectionEnabled = false,
+            isAutoGroupEnabled = false
+        )
     )
         private set
 
@@ -67,35 +79,52 @@ class HomeViewModel(
     // Normal fields
     private val fullBenchmarkResults = mutableListOf<BenchmarkResult>()
 
+
+    var timeoutId: Int? = null
+    fun <T> debounce(func: () -> Unit, delay: Int) {
+        timeoutId?.let { clearTimeout(it) }
+        timeoutId = setTimeout({
+            func()
+        }, delay)
+    }
+
     fun onFormChanged(newForm: FormData, shouldSelectUnsaved: Boolean = true) {
         form = newForm
         formRepo.saveFormData(newForm)
-        this.shouldSelectUnsaved = shouldSelectUnsaved
-        try {
-            // clearing old data
-            fullBenchmarkResults.clear()
-            testNames.clear()
 
-            // refill
-            fullBenchmarkResults.addAll(BenchmarkResult.parse(newForm))
-            testNames.addAll(fullBenchmarkResults.mapNotNull { it.testName }.toSet())
+        println("onFormChanged body")
+        debounce<Unit>(
+            func = {
+                println("onFormChanged func")
+                this.shouldSelectUnsaved = shouldSelectUnsaved
+                try {
+                    // clearing old data
+                    fullBenchmarkResults.clear()
+                    testNames.clear()
 
-            val currentTestName = testNames.find { it == currentTestName } ?: testNames.firstOrNull()
-            val filteredBenchmarkResult = if (currentTestName != null) {
-                fullBenchmarkResults.filter { it.testName == currentTestName }
-            } else {
-                fullBenchmarkResults
-            }
-            val newCharts = filteredBenchmarkResult.toCharts()
-            chartsBundle = newCharts
-            updateSummary(newCharts)
+                    // refill
+                    fullBenchmarkResults.addAll(BenchmarkResult.parse(newForm))
+                    testNames.addAll(fullBenchmarkResults.mapNotNull { it.testName }.toSet())
 
-            errorMsg = ""
-        } catch (e: Throwable) {
-            summaries.clear()
-            e.printStackTrace()
-            errorMsg = e.message ?: ERROR_GENERIC
-        }
+                    val currentTestName = testNames.find { it == currentTestName } ?: testNames.firstOrNull()
+                    val filteredBenchmarkResult = if (currentTestName != null) {
+                        fullBenchmarkResults.filter { it.testName == currentTestName }
+                    } else {
+                        fullBenchmarkResults
+                    }
+                    val newCharts = filteredBenchmarkResult.toCharts()
+                    chartsBundle = newCharts
+                    updateSummary(newCharts)
+
+                    errorMsg = ""
+                } catch (e: Throwable) {
+                    summaries.clear()
+                    e.printStackTrace()
+                    errorMsg = e.message ?: ERROR_GENERIC
+                }
+            },
+            300
+        )
     }
 
     private fun updateSummary(chartsBundle: ChartsBundle) {
