@@ -40,7 +40,7 @@ fun List<BenchmarkResult>.toCharts(): ChartsBundle {
 
 
 fun List<BenchmarkResult>.toGenericChart(): ChartsBundle {
-    println(this.first())
+    // Generic chart will be always 1
     val result = this.first()
 
     val chart = Chart(
@@ -50,6 +50,8 @@ fun List<BenchmarkResult>.toGenericChart(): ChartsBundle {
             for(blockRow in result.blockRows){
                 put(blockRow.title, blockRow.data)
             }
+        }.also {
+            println("chartSet -> $it")
         },
         bsClass = "col-lg-12"
     )

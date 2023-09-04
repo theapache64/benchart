@@ -10,15 +10,16 @@ import kotlin.math.absoluteValue
 object SummaryUtils {
 
     fun prepareSummary(
+        isGeneric: Boolean,
         groupMap: GroupMap,
         chart: Chart,
         onSummaryReady: (summary: Summary) -> Unit,
-        onSummaryFailed: () -> Unit,
+        onSummaryFailed: (reason: String) -> Unit,
     ) {
         try {
             val totalGroups = groupMap.wordColorMap.size
             if (totalGroups != 2) {
-                onSummaryFailed()
+                println("impossible to summarize. expected group size = 2, but found $totalGroups")
                 return
             }
             val combinedMap = mutableMapOf<String, Array<Float>>()
@@ -58,6 +59,7 @@ object SummaryUtils {
 
                 summaryNodes.add(
                     SummaryNode(
+                        isGeneric = isGeneric,
                         emoji = emoji,
                         segment = segment,
                         label = words[1],
@@ -70,13 +72,17 @@ object SummaryUtils {
                     )
                 )
             }
-            val metricConfig = SupportedMetrics.values().find { it.key == chart.label }
-                ?: error("Unsupported metric name `${chart.label}`")
-            val title = "${metricConfig.emoji} ${metricConfig.title}"
+            val title = if (isGeneric) {
+                "📊Summary"
+            } else {
+                val metricConfig = SupportedMetrics.values().find { it.key == chart.label }
+                    ?: error("Unsupported metric name `${chart.label}`")
+                "${metricConfig.emoji} ${metricConfig.title}"
+            }
             onSummaryReady(Summary(title = title, summaryNodes))
         } catch (e: Throwable) {
             e.printStackTrace()
-            onSummaryFailed()
+            onSummaryFailed(e.message ?: "unknown")
         }
     }
 }

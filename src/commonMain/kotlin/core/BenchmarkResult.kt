@@ -163,9 +163,9 @@ data class BenchmarkResult(
         }
 
         private fun createChartTitle(blockRows: MutableList<BlockRow>): String {
-            return if(blockRows.size == 2){
-                 "${blockRows[0].title} vs ${blockRows[1].title}"
-            }else {
+            return if (blockRows.size == 2) {
+                "${blockRows[0].title} vs ${blockRows[1].title}"
+            } else {
                 "Comparison"
             }
         }
@@ -204,6 +204,8 @@ data class BenchmarkResult(
                 )
             }
 
+            checkDataIntegrity(blockRows)
+
             val chartTitle = createChartTitle(blockRows)
 
             benchmarkResults.add(
@@ -215,6 +217,21 @@ data class BenchmarkResult(
             )
 
             return benchmarkResults
+        }
+
+        private fun checkDataIntegrity(blockRows: List<BlockRow>) {
+            if (blockRows.size >= 2) {
+                val originalValueOrder = blockRows.first().data.keys.toList()
+                for ((index, blockRow) in blockRows.withIndex()) {
+                    if (index == 0) {
+                        continue
+                    }
+                    val currentValueOrder = blockRow.data.keys.toList()
+                    if (originalValueOrder != currentValueOrder) {
+                        error("Invalid order. Expected '$originalValueOrder', but found '$currentValueOrder'")
+                    }
+                }
+            }
         }
 
         private fun parseSingleLineGenericInput(blocks: List<String>): List<BenchmarkResult> {

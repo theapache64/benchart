@@ -116,7 +116,7 @@ class HomeViewModel(
                             val newCharts = fullBenchmarkResults.toGenericChart()
                             chartsBundle = newCharts
 
-                            updateSummary(newCharts)
+                            updateSummary(isGeneric = true, newCharts   )
                         }
 
                         InputType.NORMAL_BENCHMARK -> {
@@ -131,7 +131,7 @@ class HomeViewModel(
                             }
                             val newCharts = filteredBenchmarkResult.toCharts()
                             chartsBundle = newCharts
-                            updateSummary(newCharts)
+                            updateSummary(isGeneric = false, newCharts)
                         }
                     }
                     errorMsg = ""
@@ -145,17 +145,17 @@ class HomeViewModel(
         )
     }
 
-    private fun updateSummary(chartsBundle: ChartsBundle) {
+    private fun updateSummary(isGeneric: Boolean, chartsBundle: ChartsBundle) {
         // Calculating duration summary
         summaries.clear()
         for (chartData in chartsBundle.charts) {
-            SummaryUtils.prepareSummary(groupMap = chartsBundle.groupMap,
+            SummaryUtils.prepareSummary(isGeneric = isGeneric, groupMap = chartsBundle.groupMap,
                 chart = chartData,
                 onSummaryReady = { summary ->
                     summaries.add(summary)
                 },
-                onSummaryFailed = {
-                    error("Failed to summarize `${chartData.label}`")
+                onSummaryFailed = { reason ->
+                    error("Failed to summarize `${chartData.label}`: $reason")
                 }
             )
         }
@@ -172,7 +172,7 @@ class HomeViewModel(
             }
             val newCharts = filteredBenchmarkResult.toCharts()
             chartsBundle = newCharts
-            updateSummary(newCharts)
+            updateSummary(isGeneric = false, newCharts)
             errorMsg = ""
         } catch (e: Throwable) {
             summaries.clear()

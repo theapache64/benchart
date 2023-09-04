@@ -10,6 +10,7 @@ import org.w3c.dom.HTMLSpanElement
 
 // P50 : After performed 25% better (-30ms)
 class SummaryNode(
+    val isGeneric : Boolean,
     val emoji: String,
     val segment: String,
     val label: String,
@@ -59,8 +60,9 @@ fun SummaryUi(title: String, summary: List<SummaryNode>) {
                     )
                     Text(" : ")
                     BoldText(node.label)
-                    Text(" performed ")
+                    Text(if(node.isGeneric) " spiked " else " performed " )
                     BoldText("${node.percentage}% ")
+                    val postfix = if(node.isGeneric) "" else "ms"
                     Span(
                         attrs = {
                             val badgeClass = when {
@@ -72,12 +74,13 @@ fun SummaryUi(title: String, summary: List<SummaryNode>) {
 
                             attr("data-bs-toggle", "tooltip")
                             attr("data-bs-placement", "top")
-                            attr("title", "${node.before}ms to ${node.after}ms")
+
+                            attr("title", "${node.before}$postfix to ${node.after}$postfix")
                         }
                     ) {
                         Text(node.stateWord)
                     }
-                    Text(" (${node.diffSymbol}${node.diff}ms)")
+                    Text(" (${node.diffSymbol}${node.diff}$postfix)")
                 }
             }
         }
