@@ -115,6 +115,8 @@ class HomeViewModel(
                         InputType.SINGLE_LINE_GENERIC, InputType.MULTI_LINE_GENERIC -> {
                             val newCharts = fullBenchmarkResults.toGenericChart()
                             chartsBundle = newCharts
+
+                            updateSummary(newCharts)
                         }
 
                         InputType.NORMAL_BENCHMARK -> {
@@ -153,7 +155,7 @@ class HomeViewModel(
                     summaries.add(summary)
                 },
                 onSummaryFailed = {
-                    error("Failed to parse `${chartData.label}`")
+                    error("Failed to summarize `${chartData.label}`")
                 }
             )
         }

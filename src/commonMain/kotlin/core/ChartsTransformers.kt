@@ -31,7 +31,7 @@ fun List<BenchmarkResult>.toCharts(): ChartsBundle {
         )
     }
 
-    val groupMap = parseGroupMap(this)
+    val groupMap = parseGroupMap(this, isGeneric = false)
     return ChartsBundle(
         groupMap = groupMap,
         charts = charts
@@ -55,7 +55,7 @@ fun List<BenchmarkResult>.toGenericChart(): ChartsBundle {
     )
 
     return ChartsBundle(
-        groupMap = parseGroupMap(this),
+        groupMap = parseGroupMap(this, isGeneric = true),
         charts = listOf(
             chart
         )
@@ -63,14 +63,21 @@ fun List<BenchmarkResult>.toGenericChart(): ChartsBundle {
 }
 
 
-class GroupMap(
+data class GroupMap(
     val autoGroupMap: Map<String, String>,
     val wordColorMap: Map<String, String>
 )
 
-fun parseGroupMap(benchmarkResults: List<BenchmarkResult>): GroupMap {
+fun parseGroupMap(
+    benchmarkResults: List<BenchmarkResult>,
+    isGeneric : Boolean
+): GroupMap {
     val autoGroupMap = mutableMapOf<String, String>()
-    val titles = benchmarkResults.map { it.title }
+    val titles = if(isGeneric){
+        benchmarkResults.flatMap { it.blockRows.map { blockRow -> blockRow.title } }
+    }else {
+        benchmarkResults.map { it.title }
+    }
     val wordColorMap = mutableMapOf<String, String>()
     // TODO: Add more colors
     val lineColors = mutableListOf(
@@ -98,5 +105,7 @@ fun parseGroupMap(benchmarkResults: List<BenchmarkResult>): GroupMap {
     return GroupMap(
         autoGroupMap = autoGroupMap,
         wordColorMap = wordColorMap
-    )
+    ).also {
+        println("groupMap: $it")
+    }
 }
