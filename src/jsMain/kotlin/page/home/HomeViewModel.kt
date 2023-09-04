@@ -60,6 +60,9 @@ class HomeViewModel(
     var summaries = mutableStateListOf<Summary>()
         private set
 
+    var inputType by mutableStateOf<InputType?>(null)
+        private set
+
     var form by mutableStateOf(
         formRepo.getFormData() ?: FormData(
             DefaultValues.form,
@@ -105,6 +108,7 @@ class HomeViewModel(
 
                     // refill
                     val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm)
+                    this.inputType = inputType
                     fullBenchmarkResults.addAll(benchmarkResults)
 
                     when (inputType) {

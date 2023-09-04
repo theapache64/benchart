@@ -209,7 +209,7 @@ data class BenchmarkResult(
             benchmarkResults.add(
                 BenchmarkResult(
                     title = chartTitle,
-                    testName = "sample test name",
+                    testName = "",
                     blockRows = blockRows
                 )
             )
