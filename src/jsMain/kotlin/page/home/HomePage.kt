@@ -11,6 +11,7 @@ import components.Heading
 import components.SummaryContainer
 import components.TestNameDetectionToggle
 import components.TestNames
+import core.InputType
 import org.jetbrains.compose.web.css.paddingBottom
 import org.jetbrains.compose.web.css.paddingLeft
 import org.jetbrains.compose.web.css.paddingRight
@@ -117,18 +118,20 @@ fun HomePageUi(
                                     )
                                 }
 
-                                Div(
-                                    attrs = {
-                                        classes("col-md-2")
+                                if (viewModel.inputType == InputType.NORMAL_BENCHMARK) {
+                                    Div(
+                                        attrs = {
+                                            classes("col-md-2")
+                                        }
+                                    ) {
+                                        TestNameDetectionToggle(
+                                            isEnabled = viewModel.form.isTestNameDetectionEnabled,
+                                            onButtonClicked = viewModel::onToggleTestNameDetectionClicked
+                                        )
                                     }
-                                ) {
-                                    TestNameDetectionToggle(
-                                        isEnabled = viewModel.form.isTestNameDetectionEnabled,
-                                        onButtonClicked = viewModel::onToggleTestNameDetectionClicked
-                                    )
                                 }
 
-                                if(viewModel.testNames.isNotEmpty()){
+                                if (viewModel.testNames.isNotEmpty()) {
                                     Div(
                                         attrs = {
                                             classes("col-md-4")
@@ -162,7 +165,7 @@ fun HomePageUi(
                             for (chart in charts) {
                                 // 📊 duration chart
                                 Div(attrs = {
-                                    classes("col-lg-6")
+                                    classes(chart.bsClass)
                                 }) {
                                     ChartUi(
                                         isColorMapEnabled = viewModel.form.isAutoGroupEnabled,

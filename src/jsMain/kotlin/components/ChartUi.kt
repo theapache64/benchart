@@ -58,7 +58,9 @@ fun ChartUi(
             val chart = Chart(scopeElement, jso {
                 type = Type.line
                 this.data = jso {
-                    labels = chart.dataSets.values.first().keys.toTypedArray()
+                    labels = chart.dataSets.values.flatMap { it.keys }.toSet().toTypedArray().also {
+                        println("labels: ${it.toList()}")
+                    }
                     datasets = dataSets.toTypedArray()
                 }
                 this.options = jso {

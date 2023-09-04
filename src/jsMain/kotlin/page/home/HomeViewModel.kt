@@ -9,7 +9,9 @@ import components.KEY_UNSAVED_BENCHMARK
 import components.SavedBenchmarkNode
 import components.Summary
 import core.BenchmarkResult
+import core.InputType
 import core.toCharts
+import core.toGenericChart
 import kotlinx.browser.window
 import model.ChartsBundle
 import model.FormData
@@ -58,6 +60,9 @@ class HomeViewModel(
     var summaries = mutableStateListOf<Summary>()
         private set
 
+    var inputType by mutableStateOf<InputType?>(null)
+        private set
+
     var form by mutableStateOf(
         formRepo.getFormData() ?: FormData(
             DefaultValues.form,
@@ -92,10 +97,9 @@ class HomeViewModel(
         form = newForm
         formRepo.saveFormData(newForm)
 
-        println("onFormChanged body")
         debounce<Unit>(
             func = {
-                println("onFormChanged func")
+
                 this.shouldSelectUnsaved = shouldSelectUnsaved
                 try {
                     // clearing old data
@@ -103,19 +107,33 @@ class HomeViewModel(
                     testNames.clear()
 
                     // refill
-                    fullBenchmarkResults.addAll(BenchmarkResult.parse(newForm))
-                    testNames.addAll(fullBenchmarkResults.mapNotNull { it.testName }.toSet())
+                    val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm)
+                    this.inputType = inputType
+                    fullBenchmarkResults.addAll(benchmarkResults)
 
-                    val currentTestName = testNames.find { it == currentTestName } ?: testNames.firstOrNull()
-                    val filteredBenchmarkResult = if (currentTestName != null) {
-                        fullBenchmarkResults.filter { it.testName == currentTestName }
-                    } else {
-                        fullBenchmarkResults
+                    when (inputType) {
+                        InputType.SINGLE_LINE_GENERIC, InputType.MULTI_LINE_GENERIC -> {
+                            val newCharts = fullBenchmarkResults.toGenericChart()
+                            chartsBundle = newCharts
+
+                            updateSummary(isGeneric = true, newCharts   )
+                        }
+
+                        InputType.NORMAL_BENCHMARK -> {
+
+                            testNames.addAll(fullBenchmarkResults.mapNotNull { it.testName }.toSet())
+
+                            val currentTestName = testNames.find { it == currentTestName } ?: testNames.firstOrNull()
+                            val filteredBenchmarkResult = if (currentTestName != null) {
+                                fullBenchmarkResults.filter { it.testName == currentTestName }
+                            } else {
+                                fullBenchmarkResults
+                            }
+                            val newCharts = filteredBenchmarkResult.toCharts()
+                            chartsBundle = newCharts
+                            updateSummary(isGeneric = false, newCharts)
+                        }
                     }
-                    val newCharts = filteredBenchmarkResult.toCharts()
-                    chartsBundle = newCharts
-                    updateSummary(newCharts)
-
                     errorMsg = ""
                 } catch (e: Throwable) {
                     summaries.clear()
@@ -127,17 +145,17 @@ class HomeViewModel(
         )
     }
 
-    private fun updateSummary(chartsBundle: ChartsBundle) {
+    private fun updateSummary(isGeneric: Boolean, chartsBundle: ChartsBundle) {
         // Calculating duration summary
         summaries.clear()
         for (chartData in chartsBundle.charts) {
-            SummaryUtils.prepareSummary(groupMap = chartsBundle.groupMap,
+            SummaryUtils.prepareSummary(isGeneric = isGeneric, groupMap = chartsBundle.groupMap,
                 chart = chartData,
                 onSummaryReady = { summary ->
                     summaries.add(summary)
                 },
-                onSummaryFailed = {
-                    error("Failed to parse `${chartData.label}`")
+                onSummaryFailed = { reason ->
+                    error("Failed to summarize `${chartData.label}`: $reason")
                 }
             )
         }
@@ -154,7 +172,7 @@ class HomeViewModel(
             }
             val newCharts = filteredBenchmarkResult.toCharts()
             chartsBundle = newCharts
-            updateSummary(newCharts)
+            updateSummary(isGeneric = false, newCharts)
             errorMsg = ""
         } catch (e: Throwable) {
             summaries.clear()

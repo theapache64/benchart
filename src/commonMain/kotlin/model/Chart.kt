@@ -12,6 +12,7 @@ data class Chart(
     val label: String,
     // eg format:  (before1 -> map { p50 -> 20, p90 -> 30 })
     val dataSets: Map<String, Map<String, Float>>,
+    val bsClass : String = "col-lg-6"
 )
 
 
