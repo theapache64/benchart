@@ -50,7 +50,8 @@ fun List<BenchmarkResult>.toGenericChart(): ChartsBundle {
             for(blockRow in result.blockRows){
                 put(blockRow.title, blockRow.data)
             }
-        }
+        },
+        bsClass = "col-lg-12"
     )
 
     return ChartsBundle(

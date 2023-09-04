@@ -162,6 +162,14 @@ data class BenchmarkResult(
             return true
         }
 
+        private fun createChartTitle(blockRows: MutableList<BlockRow>): String {
+            return if(blockRows.size == 2){
+                 "${blockRows[0].title} vs ${blockRows[1].title}"
+            }else {
+                "Comparison"
+            }
+        }
+
         private fun parseMultiLineGenericInput(blocks: List<String>): List<BenchmarkResult> {
             val benchmarkResults = mutableListOf<BenchmarkResult>()
             val blockRows = mutableListOf<BlockRow>()
@@ -196,9 +204,11 @@ data class BenchmarkResult(
                 )
             }
 
+            val chartTitle = createChartTitle(blockRows)
+
             benchmarkResults.add(
                 BenchmarkResult(
-                    title = "test title",
+                    title = chartTitle,
                     testName = "sample test name",
                     blockRows = blockRows
                 )

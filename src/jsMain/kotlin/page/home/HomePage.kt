@@ -162,7 +162,7 @@ fun HomePageUi(
                             for (chart in charts) {
                                 // 📊 duration chart
                                 Div(attrs = {
-                                    classes("col-lg-6")
+                                    classes(chart.bsClass)
                                 }) {
                                     ChartUi(
                                         isColorMapEnabled = viewModel.form.isAutoGroupEnabled,
