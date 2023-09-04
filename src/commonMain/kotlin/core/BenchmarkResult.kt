@@ -38,6 +38,12 @@ enum class SupportedMetrics(
     ),
 }
 
+enum class InputType {
+    SINGLE_LINE_GENERIC,
+    MULTI_LINE_GENERIC,
+    NORMAL_BENCHMARK
+}
+
 data class BenchmarkResult(
     val title: String,
     val testName: String?,
@@ -51,9 +57,11 @@ data class BenchmarkResult(
         private val titleStripRegEx = "\\W+".toRegex()
         private val testNameRegex = "[A-Z].*_[a-z].*".toRegex()
 
-        fun parse(form: FormData): List<BenchmarkResult> {
-            if (form.isGenericInput()) return parseSingleLineGenericInput(form)
+        fun parse(form: FormData): Pair<InputType, List<BenchmarkResult>> {
+            println("parsing input...")
+            if (form.isGenericInput()) return parseGenericInput(form)
 
+            println("parsing machine generated benchmark input...")
             val benchmarkResults = mutableListOf<BenchmarkResult>()
 
             val blocks = form.data
@@ -125,16 +133,81 @@ data class BenchmarkResult(
                 }
             }
 
-            return benchmarkResults
+            return Pair(InputType.NORMAL_BENCHMARK, benchmarkResults)
         }
 
-        private fun parseSingleLineGenericInput(form: FormData): List<BenchmarkResult> {
+        private fun parseGenericInput(form: FormData): Pair<InputType, List<BenchmarkResult>> {
 
             val blocks = form.data
                 .split("\n").joinToString(separator = "\n") { it.trim() }
                 .split("^\\s+".toRegex(RegexOption.MULTILINE)).map { it.trim() }
 
+            return if (blocks.areSingleLineGenericInput()) {
+                println("parsing single line generic input")
+                Pair(InputType.SINGLE_LINE_GENERIC, parseSingleLineGenericInput(blocks))
+            } else {
+                println("parsing multi line generic input")
+                Pair(InputType.MULTI_LINE_GENERIC, parseMultiLineGenericInput(blocks))
+            }
+        }
 
+
+        private fun List<String>.areSingleLineGenericInput(): Boolean {
+            for (block in this) {
+                val lines = block.split("\n").map { it.trim() }.filter { it.isNotBlank() }
+                if (lines.size > 2) { // 2 = 1 for title and 1 for value
+                    return false
+                }
+            }
+            return true
+        }
+
+        private fun parseMultiLineGenericInput(blocks: List<String>): List<BenchmarkResult> {
+            val benchmarkResults = mutableListOf<BenchmarkResult>()
+            val blockRows = mutableListOf<BlockRow>()
+            for ((index, block) in blocks.withIndex()) {
+                val lines = block.split("\n").map { it.trim() }
+                var title: String? = null
+                val values = mutableMapOf<String, Float>()
+                for (line in lines) {
+
+                    if (title == null && isHumanLine(line)) {
+                        title = line
+                        continue
+                    }
+
+                    val textNumberLine = TextNumberLine.parse(line)
+                    values[parseGenericTitleForMultiLine(textNumberLine.text)] = textNumberLine.number
+                }
+
+
+
+                if (title == null) {
+                    title = "benchmark $index"
+                }
+
+                title = parseGenericTitleForMultiLine(title)
+
+                blockRows.add(
+                    BlockRow(
+                        title = title,
+                        data = values
+                    )
+                )
+            }
+
+            benchmarkResults.add(
+                BenchmarkResult(
+                    title = "test title",
+                    testName = "sample test name",
+                    blockRows = blockRows
+                )
+            )
+
+            return benchmarkResults
+        }
+
+        private fun parseSingleLineGenericInput(blocks: List<String>): List<BenchmarkResult> {
             val values = mutableMapOf<String, Float>()
             for ((index, block) in blocks.withIndex()) {
                 val lines = block.split("\n").map { it.trim() }
@@ -142,7 +215,7 @@ data class BenchmarkResult(
 
                 for (line in lines) {
                     if (title == null && isHumanLine(line)) {
-                        title = parseGenericTitle(line)
+                        title = parseGenericTitleForSingleLine(line)
                         continue
                     }
 
@@ -180,11 +253,17 @@ data class BenchmarkResult(
                 .trim()
         }
 
-        private fun parseGenericTitle(title: String): String {
+        private fun parseGenericTitleForSingleLine(title: String): String {
             return title
                 .replace("#", "")
                 .replace("\\s{2,}".toRegex(), " ")
                 .trim()
+        }
+
+        private fun parseGenericTitleForMultiLine(title: String): String {
+            return parseTitle(title).also {
+                println("$title -> $it")
+            }
         }
 
         private fun isHumanLine(line: String): Boolean {
@@ -218,6 +297,8 @@ data class BenchmarkResult(
             return metricKeys.find { this.startsWith(it) }
         }
     }
+
+
 }
 
 private val digitRegex = "\\d+(.\\d+)?".toRegex()

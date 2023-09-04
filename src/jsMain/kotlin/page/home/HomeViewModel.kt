@@ -9,7 +9,9 @@ import components.KEY_UNSAVED_BENCHMARK
 import components.SavedBenchmarkNode
 import components.Summary
 import core.BenchmarkResult
+import core.InputType
 import core.toCharts
+import core.toGenericChart
 import kotlinx.browser.window
 import model.ChartsBundle
 import model.FormData
@@ -102,19 +104,30 @@ class HomeViewModel(
                     testNames.clear()
 
                     // refill
-                    fullBenchmarkResults.addAll(BenchmarkResult.parse(newForm))
-                    testNames.addAll(fullBenchmarkResults.mapNotNull { it.testName }.toSet())
+                    val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm)
+                    fullBenchmarkResults.addAll(benchmarkResults)
 
-                    val currentTestName = testNames.find { it == currentTestName } ?: testNames.firstOrNull()
-                    val filteredBenchmarkResult = if (currentTestName != null) {
-                        fullBenchmarkResults.filter { it.testName == currentTestName }
-                    } else {
-                        fullBenchmarkResults
+                    when (inputType) {
+                        InputType.SINGLE_LINE_GENERIC, InputType.MULTI_LINE_GENERIC -> {
+                            val newCharts = fullBenchmarkResults.toGenericChart()
+                            chartsBundle = newCharts
+                        }
+
+                        InputType.NORMAL_BENCHMARK -> {
+
+                            testNames.addAll(fullBenchmarkResults.mapNotNull { it.testName }.toSet())
+
+                            val currentTestName = testNames.find { it == currentTestName } ?: testNames.firstOrNull()
+                            val filteredBenchmarkResult = if (currentTestName != null) {
+                                fullBenchmarkResults.filter { it.testName == currentTestName }
+                            } else {
+                                fullBenchmarkResults
+                            }
+                            val newCharts = filteredBenchmarkResult.toCharts()
+                            chartsBundle = newCharts
+                            updateSummary(newCharts)
+                        }
                     }
-                    val newCharts = filteredBenchmarkResult.toCharts()
-                    chartsBundle = newCharts
-                    updateSummary(newCharts)
-
                     errorMsg = ""
                 } catch (e: Throwable) {
                     summaries.clear()

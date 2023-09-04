@@ -602,22 +602,6 @@ class AutoBenchmarkParseTest {
         assertEquals(expectedBenchmarkResult, actualResult)
     }
 
-    /**
-     * Parse multi generic input
-     *
-     * Sample data:
-     *
-     * # first
-     * x: 1
-     * y: 2
-     * z: 3
-     *
-     * # second
-     * x: 5
-     * y: 4
-     * z: 3
-     */
-
     @Test
     fun parseTitleTestSuccess() {
         val actualResult = BenchmarkResult.parse(

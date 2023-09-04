@@ -39,6 +39,29 @@ fun List<BenchmarkResult>.toCharts(): ChartsBundle {
 }
 
 
+fun List<BenchmarkResult>.toGenericChart(): ChartsBundle {
+    println(this.first())
+    val result = this.first()
+
+    val chart = Chart(
+        emoji = "📊",
+        label = result.title,
+        dataSets = mutableMapOf<String, Map<String, Float>>().apply {
+            for(blockRow in result.blockRows){
+                put(blockRow.title, blockRow.data)
+            }
+        }
+    )
+
+    return ChartsBundle(
+        groupMap = parseGroupMap(this),
+        charts = listOf(
+            chart
+        )
+    )
+}
+
+
 class GroupMap(
     val autoGroupMap: Map<String, String>,
     val wordColorMap: Map<String, String>
