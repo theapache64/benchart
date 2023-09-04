@@ -92,10 +92,9 @@ class HomeViewModel(
         form = newForm
         formRepo.saveFormData(newForm)
 
-        println("onFormChanged body")
         debounce<Unit>(
             func = {
-                println("onFormChanged func")
+
                 this.shouldSelectUnsaved = shouldSelectUnsaved
                 try {
                     // clearing old data

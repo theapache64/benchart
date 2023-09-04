@@ -37,7 +37,7 @@ class AutoBenchmarkParseTest {
                 frameDurationCpuMs   P50   13.8,   P90   21.9,   P95   27.3,   P99   53.4
                 frameOverrunMs   P50   -5.7,   P90    7.4,   P95   22.4,   P99   63.2
                 Traces: Iteration 0 1 2 3 4
-            """.trimIndent().toAutoFormData()
+            """.trimIndent().toFormData()
         )
 
         val expectedBenchmarkResult = listOf(
@@ -155,7 +155,7 @@ class AutoBenchmarkParseTest {
                 frameOverrunMs   P50   -5.9,   P90    7.0,   P95   20.1,   P99   64.4
                 Traces: Iteration 0 1 2 3 4
   
-            """.trimIndent().toAutoFormData()
+            """.trimIndent().toFormData()
         )
 
         val expectedBenchmarkResult = listOf(
@@ -200,7 +200,7 @@ class AutoBenchmarkParseTest {
                 this is also some weird shit
                 Traces: Iteration 0 1 2 3 4
   
-            """.trimIndent().toAutoFormData()
+            """.trimIndent().toFormData()
         )
 
         val expectedBenchmarkResult = listOf(
@@ -246,7 +246,7 @@ class AutoBenchmarkParseTest {
                 this is also some weird shit
                 Traces: Iteration 0 1 2 3 4
   
-            """.trimIndent().toAutoFormData()
+            """.trimIndent().toFormData()
         )
 
         val expectedBenchmarkResult = listOf(
@@ -293,7 +293,7 @@ class AutoBenchmarkParseTest {
                 this is also some weird shit
                 Traces: Iteration 0 1 2 3 4
   
-            """.trimIndent().toAutoFormData()
+            """.trimIndent().toFormData()
         )
 
         val expectedBenchmarkResult = listOf(
@@ -333,7 +333,7 @@ class AutoBenchmarkParseTest {
                 ### Before 1
                 frameDurationCpuMs   P50   13.5,   P90   20.8,   P95   25.4,   P99   47.4 
                 frameOverrunMs   P50   -5.9,   P90    7.0,   P95   20.1,   P99   64.4
-            """.trimIndent().toAutoFormData()
+            """.trimIndent().toFormData()
         )
 
         val expectedBenchmarkResult = listOf(
@@ -399,7 +399,7 @@ class AutoBenchmarkParseTest {
                 frameOverrunMs   P50   -5.7,   P90    7.4,   P95   22.4,   P99   63.2
                 Traces: Iteration 0 1 2 3 4
                 
-            """.trimIndent().toAutoFormData()
+            """.trimIndent().toFormData()
         )
 
         val expectedBenchmarkResult = listOf(
@@ -519,7 +519,7 @@ class AutoBenchmarkParseTest {
                 this is also some weird shit
                 Traces: Iteration 0 1 2 3 4
   
-            """.trimIndent().toAutoFormData()
+            """.trimIndent().toFormData()
             )
             assertTrue(false)
         } catch (e: InvalidBenchmarkDataException) {
@@ -528,18 +528,18 @@ class AutoBenchmarkParseTest {
     }
 
     @Test
-    fun parseGenericInput() {
+    fun parseSingleGenericInput() {
         val actualResult = BenchmarkResult.parse(
             """
                 # PNG + Image
-                SplashContent: image took ms to render = 18.625
+                SplashContent: image took ms to render = 18
 
                 # PNG + HsImage
                 SplashContent: image took ms to render = 120.625
-            """.trimIndent().toAutoFormData()
+            """.trimIndent().toFormData()
         )
 
-        val expectedBenchmarkResult = listOf<BenchmarkResult>(
+        val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "",
                 testName = "",
@@ -547,7 +547,8 @@ class AutoBenchmarkParseTest {
                     BlockRow(
                         title = "",
                         data = mapOf(
-
+                            "PNG + Image" to 18f,
+                            "PNG + HsImage" to 120.625f
                         )
                     )
                 )
@@ -556,6 +557,66 @@ class AutoBenchmarkParseTest {
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
+
+    @Test
+    fun parseMultiGenericInput() {
+        val actualResult = BenchmarkResult.parse(
+            """
+                 # first
+                 x: 1
+                 y: 2.5
+                 z: 3
+                 
+                 # second
+                 x: 5
+                 y: 4
+                 z: 3
+            """.trimIndent().toFormData()
+        )
+
+        val expectedBenchmarkResult = listOf(
+            BenchmarkResult(
+                title = "",
+                testName = "",
+                blockRows = listOf(
+                    BlockRow(
+                        title = "first",
+                        data = mapOf(
+                            "x" to 1f,
+                            "y" to 2.5f,
+                            "z" to 3f
+                        )
+                    ),
+                    BlockRow(
+                        title = "second",
+                        data = mapOf(
+                            "x" to 5f,
+                            "y" to 4f,
+                            "z" to 3f
+                        )
+                    ),
+                )
+            )
+        )
+
+        assertEquals(expectedBenchmarkResult, actualResult)
+    }
+
+    /**
+     * Parse multi generic input
+     *
+     * Sample data:
+     *
+     * # first
+     * x: 1
+     * y: 2
+     * z: 3
+     *
+     * # second
+     * x: 5
+     * y: 4
+     * z: 3
+     */
 
     @Test
     fun parseTitleTestSuccess() {
@@ -590,7 +651,7 @@ class AutoBenchmarkParseTest {
                 see.. am some random text
                 frameOverrunMs   P50   -5.7,   P90    7.4,   P95   22.4,   P99   63.2
                 Traces: Iteration 0 1 2 3 4
-            """.trimIndent().toAutoFormData()
+            """.trimIndent().toFormData()
         )
 
         val expectedBenchmarkResult = listOf(
@@ -689,6 +750,6 @@ class AutoBenchmarkParseTest {
 
 }
 
-private fun String.toAutoFormData(): FormData {
-    return FormData(data = this)
+private fun String.toFormData(): FormData {
+    return FormData(data = this, isTestNameDetectionEnabled = true, isAutoGroupEnabled = false)
 }

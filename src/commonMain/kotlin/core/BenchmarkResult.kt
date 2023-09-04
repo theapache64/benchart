@@ -2,7 +2,9 @@ package core
 
 import model.FormData
 
-class InvalidBenchmarkDataException(message: String?) : Throwable(message)
+open class InvalidDataException(message: String?) : Throwable(message)
+class InvalidBenchmarkDataException(message: String?) : InvalidDataException(message)
+class InvalidGenericDataException(message: String?) : InvalidDataException(message)
 
 data class BlockRow(
     val title: String,
@@ -50,6 +52,8 @@ data class BenchmarkResult(
         private val testNameRegex = "[A-Z].*_[a-z].*".toRegex()
 
         fun parse(form: FormData): List<BenchmarkResult> {
+            if (form.isGenericInput()) return parseSingleLineGenericInput(form)
+
             val benchmarkResults = mutableListOf<BenchmarkResult>()
 
             val blocks = form.data
@@ -124,6 +128,47 @@ data class BenchmarkResult(
             return benchmarkResults
         }
 
+        private fun parseSingleLineGenericInput(form: FormData): List<BenchmarkResult> {
+
+            val blocks = form.data
+                .split("\n").joinToString(separator = "\n") { it.trim() }
+                .split("^\\s+".toRegex(RegexOption.MULTILINE)).map { it.trim() }
+
+
+            val values = mutableMapOf<String, Float>()
+            for ((index, block) in blocks.withIndex()) {
+                val lines = block.split("\n").map { it.trim() }
+                var title: String? = null
+
+                for (line in lines) {
+                    if (title == null && isHumanLine(line)) {
+                        title = parseGenericTitle(line)
+                        continue
+                    }
+
+                    val value = TextNumberLine.parse(line)
+                    values[title ?: "key $index"] = value.number
+                }
+            }
+
+            if (values.isEmpty()) {
+                throw InvalidGenericDataException("Couldn't parse generic data")
+            }
+
+            return listOf(
+                BenchmarkResult(
+                    title = "",
+                    testName = "",
+                    blockRows = listOf(
+                        BlockRow(
+                            title = "",
+                            data = values
+                        )
+                    )
+                )
+            )
+        }
+
         private fun isTestName(line: String): Boolean {
             return testNameRegex.matches(line)
         }
@@ -131,6 +176,13 @@ data class BenchmarkResult(
         private fun parseTitle(title: String): String {
             return title
                 .replace(titleStripRegEx, " ")
+                .replace("\\s{2,}".toRegex(), " ")
+                .trim()
+        }
+
+        private fun parseGenericTitle(title: String): String {
+            return title
+                .replace("#", "")
                 .replace("\\s{2,}".toRegex(), " ")
                 .trim()
         }
@@ -166,5 +218,30 @@ data class BenchmarkResult(
             return metricKeys.find { this.startsWith(it) }
         }
     }
+}
+
+private val digitRegex = "\\d+(.\\d+)?".toRegex()
+
+private data class TextNumberLine(
+    val text: String,
+    val number: Float
+) {
+    companion object {
+        fun parse(line: String): TextNumberLine {
+            val number = digitRegex.findAll(line)
+                .firstOrNull()
+                ?.groupValues
+                ?.firstOrNull()
+                ?: error("$line deosn't have numbers in it")
+            val newLine = line.replaceFirst(number, "")
+            return TextNumberLine(newLine, number.toFloat())
+        }
+    }
+}
+
+private fun FormData.isGenericInput(): Boolean {
+    return !this.data.contains(
+        SupportedMetrics.values().joinToString(separator = "|", prefix = "(", postfix = ")") { it.key }.toRegex()
+    )
 }
 
