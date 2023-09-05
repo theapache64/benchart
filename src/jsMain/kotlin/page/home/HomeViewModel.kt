@@ -112,7 +112,7 @@ class HomeViewModel(
                     fullBenchmarkResults.addAll(benchmarkResults)
 
                     when (inputType) {
-                        InputType.SINGLE_LINE_GENERIC, InputType.GENERIC -> {
+                        InputType.GENERIC -> {
                             val newCharts = fullBenchmarkResults.toGenericChart()
                             chartsBundle = newCharts
 

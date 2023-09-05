@@ -60,7 +60,7 @@ fun SummaryUi(title: String, summary: List<SummaryNode>) {
                     )
                     Text(" : ")
                     BoldText(node.label)
-                    Text(if(node.isGeneric) " spiked " else " performed " )
+                    Text(if(node.isGeneric) " looks " else " performed " )
                     BoldText("${node.percentage}% ")
                     val postfix = if(node.isGeneric) "" else "ms"
                     Span(
