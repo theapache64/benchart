@@ -239,7 +239,7 @@ data class BenchmarkResult(
 
         private fun parseValues(key: String, data: String): Map<String, Float> {
             if (!data.startsWith(key)) {
-                error("Invalid $key. Expected to start with '$key' but found '$data'")
+                error("Invalid $key.Expected to start with '$key' but found '$data'")
             }
 
             val transformedList = data.replace(key, "")
