@@ -260,8 +260,6 @@ data class BenchmarkResult(
             return metricKeys.find { this.startsWith(it) }
         }
     }
-
-
 }
 
 private val digitRegex = "\\d+(.\\d+)?$".toRegex()
