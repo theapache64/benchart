@@ -1,5 +1,6 @@
 import core.BenchmarkResult
 import core.BlockRow
+import core.InputType
 import core.InvalidBenchmarkDataException
 import core.SupportedMetrics
 import model.FormData
@@ -140,7 +141,7 @@ class AutoBenchmarkParseTest {
                     )
                 ),
             ),
-        )
+        ).typify(InputType.NORMAL_BENCHMARK)
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -183,7 +184,7 @@ class AutoBenchmarkParseTest {
                     )
                 ),
             ),
-        )
+        ).typify(InputType.NORMAL_BENCHMARK)
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -228,7 +229,7 @@ class AutoBenchmarkParseTest {
                     )
                 ),
             ),
-        )
+        ).typify(InputType.NORMAL_BENCHMARK)
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -274,7 +275,7 @@ class AutoBenchmarkParseTest {
                     )
                 )
             ),
-        )
+        ).typify(InputType.NORMAL_BENCHMARK)
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -321,7 +322,7 @@ class AutoBenchmarkParseTest {
                     ),
                 ),
             ),
-        )
+        ).typify(InputType.NORMAL_BENCHMARK)
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -361,7 +362,7 @@ class AutoBenchmarkParseTest {
                     )
                 )
             ),
-        )
+        ).typify(InputType.NORMAL_BENCHMARK)
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -490,7 +491,7 @@ class AutoBenchmarkParseTest {
                     )
                 )
             ),
-        )
+        ).typify(InputType.NORMAL_BENCHMARK)
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -541,19 +542,24 @@ class AutoBenchmarkParseTest {
 
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
-                title = "",
+                title = "PNG Image vs PNG HsImage",
                 testName = "",
                 blockRows = listOf(
                     BlockRow(
-                        title = "",
+                        title = "PNG Image",
                         data = mapOf(
-                            "PNG + Image" to 18f,
-                            "PNG + HsImage" to 120.625f
+                            "SplashContent image took ms to render" to 18f,
+                        )
+                    ),
+                    BlockRow(
+                        title = "PNG HsImage",
+                        data = mapOf(
+                            "SplashContent image took ms to render" to 120.625f
                         )
                     )
                 )
             )
-        )
+        ).typify(InputType.GENERIC)
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -576,7 +582,7 @@ class AutoBenchmarkParseTest {
 
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
-                title = "",
+                title = "first vs second",
                 testName = "",
                 blockRows = listOf(
                     BlockRow(
@@ -597,7 +603,7 @@ class AutoBenchmarkParseTest {
                     ),
                 )
             )
-        )
+        ).typify(InputType.GENERIC)
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -726,12 +732,16 @@ class AutoBenchmarkParseTest {
                     )
                 )
             ),
-        )
+        ).typify(InputType.NORMAL_BENCHMARK)
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
 
 
+}
+
+private fun List<BenchmarkResult>.typify(type: InputType): Pair<InputType, List<BenchmarkResult>> {
+    return Pair(type, this)
 }
 
 private fun String.toFormData(): FormData {

@@ -80,6 +80,7 @@ fun parseGroupMap(
     }else {
         benchmarkResults.map { it.title }
     }
+    println("titles: $titles -> ${benchmarkResults.map { it.blockRows }}")
     val wordColorMap = mutableMapOf<String, String>()
     // TODO: Add more colors
     val lineColors = mutableListOf(

@@ -19,7 +19,7 @@ object SummaryUtils {
         try {
             val totalGroups = groupMap.wordColorMap.size
             if (totalGroups != 2) {
-                println("impossible to summarize. expected group size = 2, but found $totalGroups")
+                println("impossible to summarize. expected group size = 2, but found $totalGroups -> ${groupMap.wordColorMap}")
                 return
             }
             val combinedMap = mutableMapOf<String, List<Float>>()

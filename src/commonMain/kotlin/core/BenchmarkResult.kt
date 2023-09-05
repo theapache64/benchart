@@ -39,8 +39,7 @@ enum class SupportedMetrics(
 }
 
 enum class InputType {
-    SINGLE_LINE_GENERIC,
-    MULTI_LINE_GENERIC,
+    GENERIC,
     NORMAL_BENCHMARK
 }
 
@@ -58,17 +57,20 @@ data class BenchmarkResult(
         private val testNameRegex = "[A-Z].*_[a-z].*".toRegex()
 
         fun parse(form: FormData): Pair<InputType, List<BenchmarkResult>> {
-            println("parsing input...")
-            if (form.isGenericInput()) return parseGenericInput(form)
-
-            println("parsing machine generated benchmark input...")
-            val benchmarkResults = mutableListOf<BenchmarkResult>()
 
             val blocks = form.data
                 .split("\n").joinToString(separator = "\n") { it.trim() }
                 .split("^\\s+".toRegex(RegexOption.MULTILINE)).map { it.trim() }
+                .filter { it.isNotBlank() }
+
+            println("parsing input...")
+            if (form.isGenericInput()) return parseGenericInput(blocks)
+
+            println("parsing machine generated benchmark input...")
+            val benchmarkResults = mutableListOf<BenchmarkResult>()
 
             for ((index, block) in blocks.withIndex()) {
+                println("block: '$block'")
                 val lines = block.split("\n").map { it.trim() }
                 var title: String? = null
                 var testName: String? = null
@@ -136,38 +138,12 @@ data class BenchmarkResult(
             return Pair(InputType.NORMAL_BENCHMARK, benchmarkResults)
         }
 
-        private fun parseGenericInput(form: FormData): Pair<InputType, List<BenchmarkResult>> {
-
-            val blocks = form.data
-                .split("\n").joinToString(separator = "\n") { it.trim() }
-                .split("^\\s+".toRegex(RegexOption.MULTILINE)).map { it.trim() }
-
-            return if (blocks.areSingleLineGenericInput()) {
-                println("parsing single line generic input")
-                Pair(InputType.SINGLE_LINE_GENERIC, parseSingleLineGenericInput(blocks))
-            } else {
-                println("parsing multi line generic input")
-                Pair(InputType.MULTI_LINE_GENERIC, parseMultiLineGenericInput(blocks))
-            }
-        }
-
-
-        private fun List<String>.areSingleLineGenericInput(): Boolean {
-            for (block in this) {
-                val lines = block.split("\n").map { it.trim() }.filter { it.isNotBlank() }
-                if (lines.size > 2) { // 2 = 1 for title and 1 for value
-                    return false
-                }
-            }
-            return true
+        private fun parseGenericInput(blocks: List<String>): Pair<InputType, List<BenchmarkResult>> {
+            return Pair(InputType.GENERIC, parseMultiLineGenericInput(blocks))
         }
 
         private fun createChartTitle(blockRows: MutableList<BlockRow>): String {
-            return if (blockRows.size == 2) {
-                "${blockRows[0].title} vs ${blockRows[1].title}"
-            } else {
-                "Comparison"
-            }
+            return blockRows.joinToString(separator = " vs ") { it.title }
         }
 
         private fun parseMultiLineGenericInput(blocks: List<String>): List<BenchmarkResult> {
@@ -234,40 +210,6 @@ data class BenchmarkResult(
             }
         }
 
-        private fun parseSingleLineGenericInput(blocks: List<String>): List<BenchmarkResult> {
-            val values = mutableMapOf<String, Float>()
-            for ((index, block) in blocks.withIndex()) {
-                val lines = block.split("\n").map { it.trim() }
-                var title: String? = null
-
-                for (line in lines) {
-                    if (title == null && isHumanLine(line)) {
-                        title = parseGenericTitleForSingleLine(line)
-                        continue
-                    }
-
-                    val value = TextNumberLine.parse(line)
-                    values[title ?: "key $index"] = value.number
-                }
-            }
-
-            if (values.isEmpty()) {
-                throw InvalidGenericDataException("Couldn't parse generic data")
-            }
-
-            return listOf(
-                BenchmarkResult(
-                    title = "",
-                    testName = "",
-                    blockRows = listOf(
-                        BlockRow(
-                            title = "",
-                            data = values
-                        )
-                    )
-                )
-            )
-        }
 
         private fun isTestName(line: String): Boolean {
             return testNameRegex.matches(line)
@@ -276,13 +218,6 @@ data class BenchmarkResult(
         private fun parseTitle(title: String): String {
             return title
                 .replace(titleStripRegEx, " ")
-                .replace("\\s{2,}".toRegex(), " ")
-                .trim()
-        }
-
-        private fun parseGenericTitleForSingleLine(title: String): String {
-            return title
-                .replace("#", "")
                 .replace("\\s{2,}".toRegex(), " ")
                 .trim()
         }

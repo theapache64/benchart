@@ -109,7 +109,7 @@ fun HomePageUi(
 
                                 Div(
                                     attrs = {
-                                        classes("col-md-1")
+                                        classes("col-md-2")
                                     }
                                 ) {
                                     AutoGroup(
