@@ -264,7 +264,7 @@ data class BenchmarkResult(
 
 }
 
-private val digitRegex = "\\d+(.\\d+)?".toRegex()
+private val digitRegex = "\\d+(.\\d+)?$".toRegex()
 
 private data class TextNumberLine(
     val text: String,
