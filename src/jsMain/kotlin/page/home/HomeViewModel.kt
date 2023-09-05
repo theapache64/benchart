@@ -107,7 +107,7 @@ class HomeViewModel(
                     testNames.clear()
 
                     // refill
-                    val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm)
+                    val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm) ?: return@debounce
                     this.inputType = inputType
                     fullBenchmarkResults.addAll(benchmarkResults)
 

@@ -56,7 +56,7 @@ data class BenchmarkResult(
         private val titleStripRegEx = "\\W+".toRegex()
         private val testNameRegex = "[A-Z].*_[a-z].*".toRegex()
 
-        fun parse(form: FormData): Pair<InputType, List<BenchmarkResult>> {
+        fun parse(form: FormData): Pair<InputType, List<BenchmarkResult>>? {
 
             val blocks = form.data
                 .split("\n").joinToString(separator = "\n") { it.trim() }
@@ -64,6 +64,7 @@ data class BenchmarkResult(
                 .filter { it.isNotBlank() }
 
             println("parsing input...")
+            if(blocks.isEmpty()) return null
             if (form.isGenericInput()) return parseGenericInput(blocks)
 
             println("parsing machine generated benchmark input...")
