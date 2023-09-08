@@ -2,11 +2,21 @@ package components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
+import kotlinx.browser.document
 import org.jetbrains.compose.web.attributes.AttrsScope
+import org.jetbrains.compose.web.attributes.ButtonType
+import org.jetbrains.compose.web.attributes.selected
+import org.jetbrains.compose.web.attributes.type
 import org.jetbrains.compose.web.css.StyleScope
 import org.jetbrains.compose.web.css.fontWeight
+import org.jetbrains.compose.web.css.marginLeft
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.*
+import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLParagraphElement
 import org.w3c.dom.HTMLSpanElement
+import utils.DefaultValues.form
 
 // P50 : After performed 25% better (-30ms)
 class SummaryNode(
@@ -31,6 +41,10 @@ data class Summary(
 fun SummaryContainer(
     summaries: List<Summary>,
 ) {
+    SummarySelector()
+
+    Br()
+
     for (summary in summaries) {
         key(summary.title) {
             SummaryUi(summary.title, summary.nodes)
@@ -38,6 +52,147 @@ fun SummaryContainer(
         }
     }
 }
+
+@Composable
+fun SummarySelector(){
+
+    Div (
+        attrs = {
+            classes("row", "mb-3")
+        }
+    ) {
+
+        Div(
+            attrs = {
+                classes("col-auto")
+            }
+        ) {
+            // Best
+            Button(
+                attrs = {
+                    classes("btn", "btn-outline-dark", "btn-sm")
+                    onClick {
+
+                    }
+                    type(ButtonType.Button)
+                }
+            ) {
+                Text("BEST")
+            }
+
+        }
+        Div(
+            attrs = {
+                classes("col-auto")
+            }
+        ) {
+            // Best
+            Button(
+                attrs = {
+                    classes("btn", "btn-outline-dark", "btn-sm")
+                    onClick {
+
+                    }
+                    type(ButtonType.Button)
+                }
+            ) {
+                Text("WORST")
+            }
+        }
+
+    }
+
+    Div(
+        attrs = {
+            classes("row")
+        }
+    ) {
+        Div(
+            attrs = {
+                classes("col")
+            }
+        ) {
+            Select(
+                attrs = {
+                    classes("form-select")
+                    onInput {
+                        // TODO
+                    }
+                }
+            ) {
+                for (testName in arrayOf("A", "B", "C")) {
+                    Option(
+                        value = testName,
+                        attrs = {
+                            /*if (testName == currentTestName) {
+                                selected()
+                            }*/
+                        }
+                    ) {
+                        Text(testName)
+                    }
+                }
+            }
+        }
+
+        Div(
+            attrs = {
+                classes("col-auto")
+            }
+        ) {
+            P {
+                Strong {
+                    Text("vs")
+                }
+            }
+        }
+
+
+        Div(
+            attrs = {
+                classes("col")
+            }
+        ) {
+            Select(
+                attrs = {
+                    classes("form-select")
+                    onInput {
+                        // TODO
+                    }
+                }
+            ) {
+                for (testName in arrayOf("A", "B", "C")) {
+                    Option(
+                        value = testName,
+                        attrs = {
+                            /*if (testName == currentTestName) {
+                                selected()
+                            }*/
+                        }
+                    ) {
+                        Text(testName)
+                    }
+                }
+            }
+        }
+    }
+
+
+}
+
+private open class ElementBuilderImplementation<TElement : Element>(private val tagName: String) : ElementBuilder<TElement> {
+    private val el: Element by lazy { document.createElement(tagName) }
+    @Suppress("UNCHECKED_CAST")
+    override fun create(): TElement = el.cloneNode() as TElement
+}
+
+private val Strong: ElementBuilder<HTMLElement> = ElementBuilderImplementation("strong")
+
+@Composable
+fun Strong(
+    attrs: AttrBuilderContext<HTMLElement>? = null,
+    content: ContentBuilder<HTMLElement>? = null
+) = TagElement(elementBuilder = Strong, applyAttrs = attrs, content = content)
 
 @Composable
 fun SummaryUi(title: String, summary: List<SummaryNode>) {
