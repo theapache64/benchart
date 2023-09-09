@@ -58,7 +58,7 @@ object SummaryUtils {
                 val percDiff =
                     "${(((before - after) / before) * 100).asDynamic().toFixed(2)}".toFloat().absoluteValue
 
-                val resultWord = if (diff > 0) "worse" else "better"
+                val resultWord = if (diff > 0) "worse!" else "better"
                 val symbol = if (diff > 0) "+" else ""
                 val emoji = if (diff > 0) "❌" else "✅"
 
