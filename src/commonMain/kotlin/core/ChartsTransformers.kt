@@ -89,14 +89,14 @@ fun parseGroupMap(
         "rgba(255, 206, 86, 1)",
         "rgba(75, 192, 192, 1)",
         "rgba(153, 102, 255, 1)",
-        "rgba(255, 159, 64, 1)"
+        "rgba(255, 159, 64, 1)",
     )
     for (title in titles) {
         val firstWord = title.split(" ")[0]
         val color = wordColorMap.getOrPut(firstWord) {
 
             if (lineColors.isEmpty()) {
-                throw IllegalStateException("lineColors exhausted")
+                lineColors.add("rgba(${randomRgb()}, ${randomRgb()}, ${randomRgb()}, 1)")
             }
 
             val newColor = lineColors.first()
@@ -112,3 +112,5 @@ fun parseGroupMap(
         println("groupMap: $it")
     }
 }
+
+private fun randomRgb() = (0..255).random()

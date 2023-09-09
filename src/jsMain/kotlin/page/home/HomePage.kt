@@ -9,6 +9,7 @@ import components.ErrorUi
 import components.FormUi
 import components.Heading
 import components.SummaryContainer
+import components.SummarySelector
 import components.TestNameDetectionToggle
 import components.TestNames
 import core.InputType
@@ -69,7 +70,25 @@ fun HomePageUi(
                 Br()
                 Br()
 
-                SummaryContainer(summaries = viewModel.summaries)
+                SummaryContainer(
+                    selector = {
+                        println("block size ${viewModel.blockNames.size}")
+                        if (viewModel.blockNames.size > 2) {
+                            SummarySelector(
+                                bestButtonLabel = "BEST (-${viewModel.bestAggSummary?.sumOfGreen}${viewModel.unit})",
+                                worstButtonLabel = "WORST (+${viewModel.worstAggSummary?.sumOfRed}${viewModel.unit})",
+                                onBestClicked = viewModel::onBestClicked,
+                                onWorstClicked = viewModel::onWorstClicked,
+                                blockNames = viewModel.blockNames,
+                                selectedBlockNameOne = viewModel.selectedBlockNameOne,
+                                selectedBlockNameTwo = viewModel.selectedBlockNameTwo,
+                                onBlockOneSelected = viewModel::onBlockNameOneChanged,
+                                onBlockTwoSelected = viewModel::onBlockNameTwoChanged
+                            )
+                        }
+                    },
+                    summaries = viewModel.summaries
+                )
             }
 
             viewModel.chartsBundle?.charts?.takeIf { it.isNotEmpty() }?.let { fullChartsList ->

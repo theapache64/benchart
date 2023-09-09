@@ -57,10 +57,28 @@ class HomeViewModel(
     var shouldSelectUnsaved by mutableStateOf(false)
         private set
 
+    var selectedBlockNameOne by mutableStateOf<String?>(null)
+        private set
+
+    var selectedBlockNameTwo by mutableStateOf<String?>(null)
+        private set
+
+    var blockNames = mutableStateListOf<String>()
+        private set
+
     var summaries = mutableStateListOf<Summary>()
         private set
 
     var inputType by mutableStateOf<InputType?>(null)
+        private set
+
+    var unit by mutableStateOf("")
+        private set
+
+    var bestAggSummary by mutableStateOf<AggSummary?>(null)
+        private set
+
+    var worstAggSummary by mutableStateOf<AggSummary?>(null)
         private set
 
     var form by mutableStateOf(
@@ -107,7 +125,12 @@ class HomeViewModel(
                     testNames.clear()
 
                     // refill
-                    val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm) ?: return@debounce
+                    val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm) ?: run {
+                        selectedBlockNameOne = null
+                        selectedBlockNameTwo = null
+                        updateSummary()
+                        return@debounce
+                    }
                     this.inputType = inputType
                     fullBenchmarkResults.addAll(benchmarkResults)
 
@@ -115,8 +138,8 @@ class HomeViewModel(
                         InputType.GENERIC -> {
                             val newCharts = fullBenchmarkResults.toGenericChart()
                             chartsBundle = newCharts
-
-                            updateSummary(isGeneric = true, newCharts   )
+                            onChartsBundleUpdated(newCharts)
+                            unit = ""
                         }
 
                         InputType.NORMAL_BENCHMARK -> {
@@ -131,9 +154,13 @@ class HomeViewModel(
                             }
                             val newCharts = filteredBenchmarkResult.toCharts()
                             chartsBundle = newCharts
-                            updateSummary(isGeneric = false, newCharts)
+                            onChartsBundleUpdated(newCharts)
+                            unit = "ms"
                         }
                     }
+
+
+                    calcAggSummary()
                     errorMsg = ""
                 } catch (e: Throwable) {
                     summaries.clear()
@@ -145,21 +172,72 @@ class HomeViewModel(
         )
     }
 
-    private fun updateSummary(isGeneric: Boolean, chartsBundle: ChartsBundle) {
-        // Calculating duration summary
-        summaries.clear()
-        for (chartData in chartsBundle.charts) {
-            SummaryUtils.prepareSummary(isGeneric = isGeneric, groupMap = chartsBundle.groupMap,
-                chart = chartData,
-                onSummaryReady = { summary ->
-                    summaries.add(summary)
-                },
-                onSummaryFailed = { reason ->
-                    error("Failed to summarize `${chartData.label}`: $reason")
+    private fun calcAggSummary() {
+        val isGeneric = inputType == InputType.GENERIC
+        val newAggSums = mutableListOf<AggSummary>()
+        for (blockNameOuter in blockNames) {
+            for (blockNameInner in blockNames) {
+                if(blockNameOuter==blockNameInner){
+                    continue
                 }
-            )
+                chartsBundle?.charts?.mapNotNull { chart ->
+                    SummaryUtils.getSummaryOrThrow(
+                        isGeneric = isGeneric,
+                        chart = chart,
+                        selectedBlockNameOne = blockNameOuter,
+                        selectedBlockNameTwo = blockNameInner
+                    )
+                }?.let { summaries ->
+                    var greenSum = 0
+                    var redSum = 0
+                    for (summary in summaries) {
+                        for (node in summary.nodes) {
+                            when {
+                                node.diff > 0 -> {
+                                    // bad
+                                    redSum += node.diff.toInt()
+                                }
+                                node.diff < 0 -> {
+                                    // green
+                                    greenSum -= node.diff.toInt()
+                                }
+                            }
+                        }
+                    }
+                    newAggSums.add(AggSummary(blockNameOuter, blockNameInner, sumOfGreen = greenSum, sumOfRed = redSum))
+                }
+            }
         }
 
+        bestAggSummary = newAggSums.maxByOrNull { it.sumOfGreen }
+        worstAggSummary = newAggSums.maxByOrNull { it.sumOfRed }
+    }
+
+    private fun onChartsBundleUpdated(chartsBundle: ChartsBundle) {
+        blockNames.clear()
+        val blockNames = chartsBundle.groupMap.wordColorMap.keys.toList()
+        this.blockNames.addAll(blockNames)
+        if (blockNames.size >= 2) {
+            selectedBlockNameOne = blockNames[0]
+            selectedBlockNameTwo = blockNames[1]
+        }
+        updateSummary()
+    }
+
+    private fun updateSummary() {
+        // Calculating duration summary
+        summaries.clear()
+
+        val isGeneric = inputType == InputType.GENERIC
+        val allSummaries = chartsBundle?.charts?.mapNotNull { chart ->
+            SummaryUtils.getSummaryOrThrow(
+                isGeneric = isGeneric,
+                chart = chart,
+                selectedBlockNameOne = selectedBlockNameOne,
+                selectedBlockNameTwo = selectedBlockNameTwo
+            )
+        }
+        summaries.addAll(allSummaries ?: emptyList())
     }
 
     fun onTestNameChanged(newTestName: String) {
@@ -172,7 +250,7 @@ class HomeViewModel(
             }
             val newCharts = filteredBenchmarkResult.toCharts()
             chartsBundle = newCharts
-            updateSummary(isGeneric = false, newCharts)
+            updateSummary()
             errorMsg = ""
         } catch (e: Throwable) {
             summaries.clear()
@@ -244,4 +322,32 @@ class HomeViewModel(
         }
     }
 
+    fun onBlockNameOneChanged(newBlockName: String) {
+        selectedBlockNameOne = newBlockName
+        updateSummary()
+    }
+
+    fun onBlockNameTwoChanged(newBlockName: String) {
+        selectedBlockNameTwo = newBlockName
+        updateSummary()
+    }
+
+    fun onBestClicked() {
+        selectedBlockNameOne = bestAggSummary?.blockOneName
+        selectedBlockNameTwo = bestAggSummary?.blockTwoName
+        updateSummary()
+    }
+
+    fun onWorstClicked() {
+        selectedBlockNameOne = worstAggSummary?.blockOneName
+        selectedBlockNameTwo = worstAggSummary?.blockTwoName
+        updateSummary()
+    }
 }
+
+data class AggSummary(
+    val blockOneName: String,
+    val blockTwoName: String,
+    val sumOfGreen: Int,
+    val sumOfRed: Int
+)
