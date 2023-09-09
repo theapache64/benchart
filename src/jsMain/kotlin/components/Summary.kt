@@ -51,6 +51,8 @@ fun SummaryContainer(
 
 @Composable
 fun SummarySelector(
+    bestButtonLabel  : String,
+    worstButtonLabel : String,
     onBestClicked: () -> Unit,
     onWorstClicked: () -> Unit,
     blockNames: List<String>,
@@ -81,7 +83,7 @@ fun SummarySelector(
                     type(ButtonType.Button)
                 }
             ) {
-                Text("BEST")
+                Text(bestButtonLabel)
             }
 
         }
@@ -100,7 +102,7 @@ fun SummarySelector(
                     type(ButtonType.Button)
                 }
             ) {
-                Text("WORST")
+                Text(worstButtonLabel)
             }
         }
 
