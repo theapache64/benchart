@@ -27,13 +27,14 @@ class BenchmarkRepoImpl : BenchmarkRepo {
             SavedBenchmarks(items = listOf())
         } else {
             println("JSON is '$savedBenchmarksString'")
-            JsonUtils.json.decodeFromString(savedBenchmarksString)
+            try {
+                JsonUtils.json.decodeFromString(savedBenchmarksString)
+            }catch (e: Exception){
+                e.printStackTrace()
+                saveBenchmarks(listOf()) // reset
+                SavedBenchmarks(items = listOf())
+            }
         }
-
-     /*   if ("${savedBenchmark.items}" == "undefined") {
-            saveBenchmarks(listOf())
-            return emptyList()
-        }*/
 
         return savedBenchmark.items.toList()
     }
