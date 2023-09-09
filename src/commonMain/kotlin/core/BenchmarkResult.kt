@@ -165,8 +165,6 @@ data class BenchmarkResult(
                     values[parseGenericTitleForMultiLine(textNumberLine.text)] = textNumberLine.number
                 }
 
-
-
                 if (title == null) {
                     title = "benchmark $index"
                 }
@@ -225,7 +223,7 @@ data class BenchmarkResult(
 
         private fun parseGenericTitleForMultiLine(title: String): String {
             return parseTitle(title).also {
-                println("$title -> $it")
+                println("genericTitleParsing : '$title' -> '$it'")
             }
         }
 
@@ -274,8 +272,8 @@ private data class TextNumberLine(
                 .firstOrNull()
                 ?.groupValues
                 ?.firstOrNull()
-                ?: error("$line deosn't have numbers in it")
-            val newLine = line.replaceFirst(number, "")
+                ?: error("$line doesn't have numbers in it")
+            val newLine = line.replace("$number$".toRegex(), "")
             return TextNumberLine(newLine, number.toFloat())
         }
     }
