@@ -75,8 +75,8 @@ fun HomePageUi(
                         println("block size ${viewModel.blockNames.size}")
                         if (viewModel.blockNames.size > 2) {
                             SummarySelector(
-                                bestButtonLabel = "BEST (${viewModel.bestAggSummary?.score}${viewModel.unit})",
-                                worstButtonLabel = "WORST (+${viewModel.worstAggSummary?.score}${viewModel.unit})",
+                                bestButtonLabel = "BEST (-${viewModel.bestAggSummary?.sumOfGreen}${viewModel.unit})",
+                                worstButtonLabel = "WORST (+${viewModel.worstAggSummary?.sumOfRed}${viewModel.unit})",
                                 onBestClicked = viewModel::onBestClicked,
                                 onWorstClicked = viewModel::onWorstClicked,
                                 blockNames = viewModel.blockNames,

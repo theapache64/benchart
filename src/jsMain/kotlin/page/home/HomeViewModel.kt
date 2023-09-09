@@ -134,7 +134,6 @@ class HomeViewModel(
                     this.inputType = inputType
                     fullBenchmarkResults.addAll(benchmarkResults)
 
-
                     when (inputType) {
                         InputType.GENERIC -> {
                             val newCharts = fullBenchmarkResults.toGenericChart()
@@ -178,6 +177,9 @@ class HomeViewModel(
         val newAggSums = mutableListOf<AggSummary>()
         for (blockNameOuter in blockNames) {
             for (blockNameInner in blockNames) {
+                if(blockNameOuter==blockNameInner){
+                    continue
+                }
                 chartsBundle?.charts?.mapNotNull { chart ->
                     SummaryUtils.getSummaryOrThrow(
                         isGeneric = isGeneric,
@@ -190,12 +192,15 @@ class HomeViewModel(
                     var redSum = 0
                     for (summary in summaries) {
                         for (node in summary.nodes) {
-                            if (node.diff > 0) {
-                                // bad
-                                redSum += node.diff.toInt()
-                            } else if (node.diff < 0) {
-                                // green
-                                greenSum += node.diff.toInt()
+                            when {
+                                node.diff > 0 -> {
+                                    // bad
+                                    redSum += node.diff.toInt()
+                                }
+                                node.diff < 0 -> {
+                                    // green
+                                    greenSum -= node.diff.toInt()
+                                }
                             }
                         }
                     }
