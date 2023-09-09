@@ -1,9 +1,5 @@
 package repo
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import components.SavedBenchmarkNode
 import components.SavedBenchmarks
 import kotlinx.browser.window
@@ -28,12 +24,13 @@ class BenchmarkRepoImpl : BenchmarkRepo {
             SavedBenchmarks(items = arrayOf())
         } else {
             println("JSON is '$savedBenchmarksString'")
-            JSON.parse<SavedBenchmarks>(savedBenchmarksString)
+            JSON.parse(savedBenchmarksString)
         }
 
-        println("savedBenchmark is `$savedBenchmark`")
-        println("savedBenchmarkList is ${savedBenchmark.items}")
-        println("savedBenchmarkList toList is ${savedBenchmark.items.toList()}")
+        if ("${savedBenchmark.items}" == "undefined") {
+            saveBenchmarks(listOf())
+            return emptyList()
+        }
 
         return savedBenchmark.items.toList()
     }
@@ -48,7 +45,7 @@ class BenchmarkRepoImpl : BenchmarkRepo {
         val newList = getSavedBenchmarks().toMutableList().apply {
             removeAll { it.key == deletedBenchmarkNode.key }
         }
-       saveBenchmarks(newList)
+        saveBenchmarks(newList)
     }
 
 }
