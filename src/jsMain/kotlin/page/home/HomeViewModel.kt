@@ -72,7 +72,7 @@ class HomeViewModel(
     var inputType by mutableStateOf<InputType?>(null)
         private set
 
-    var unit by mutableStateOf<String>("")
+    var unit by mutableStateOf("")
         private set
 
     var bestAggSummary by mutableStateOf<AggSummary?>(null)
@@ -186,16 +186,26 @@ class HomeViewModel(
                         selectedBlockNameTwo = blockNameInner
                     )
                 }?.let { summaries ->
-                    val score = summaries.sumOf {
-                        it.nodes.sumOf { node -> node.diff.toLong() }
+                    var greenSum = 0
+                    var redSum = 0
+                    for (summary in summaries) {
+                        for (node in summary.nodes) {
+                            if (node.diff > 0) {
+                                // bad
+                                redSum += node.diff.toInt()
+                            } else if (node.diff < 0) {
+                                // green
+                                greenSum += node.diff.toInt()
+                            }
+                        }
                     }
-                    newAggSums.add(AggSummary(blockNameOuter, blockNameInner, score))
+                    newAggSums.add(AggSummary(blockNameOuter, blockNameInner, sumOfGreen = greenSum, sumOfRed = redSum))
                 }
             }
         }
 
-        bestAggSummary = newAggSums.minByOrNull { it.score }
-        worstAggSummary = newAggSums.maxByOrNull { it.score }
+        bestAggSummary = newAggSums.maxByOrNull { it.sumOfGreen }
+        worstAggSummary = newAggSums.maxByOrNull { it.sumOfRed }
     }
 
     private fun onChartsBundleUpdated(chartsBundle: ChartsBundle) {
@@ -333,5 +343,6 @@ class HomeViewModel(
 data class AggSummary(
     val blockOneName: String,
     val blockTwoName: String,
-    val score: Long
+    val sumOfGreen: Int,
+    val sumOfRed: Int
 )
