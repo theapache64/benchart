@@ -609,6 +609,35 @@ class AutoBenchmarkParseTest {
     }
 
     @Test
+    fun parseNumericKeys() {
+        val actualResult = BenchmarkResult.parse(
+            """
+                # orange price
+                2019 = 20
+                2020 = 30
+            """.trimIndent().toFormData()
+        )
+
+        val expectedBenchmarkResult = listOf(
+            BenchmarkResult(
+                title = "orange price",
+                testName = "",
+                blockRows = listOf(
+                    BlockRow(
+                        title = "orange price",
+                        data = mapOf(
+                            "2019" to 20f,
+                            "2020" to 30f,
+                        )
+                    ),
+                )
+            )
+        ).typify(InputType.GENERIC)
+
+        assertEquals(expectedBenchmarkResult, actualResult)
+    }
+
+    @Test
     fun parseTitleTestSuccess() {
         val actualResult = BenchmarkResult.parse(
             """
