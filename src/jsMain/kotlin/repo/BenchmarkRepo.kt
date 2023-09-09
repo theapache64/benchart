@@ -27,8 +27,13 @@ class BenchmarkRepoImpl : BenchmarkRepo {
             // Creating first saved benchmark
             SavedBenchmarks(items = arrayOf())
         } else {
-            JSON.parse(savedBenchmarksString)
+            println("JSON is '$savedBenchmarksString'")
+            JSON.parse<SavedBenchmarks>(savedBenchmarksString)
         }
+
+        println("savedBenchmark is `$savedBenchmark`")
+        println("savedBenchmarkList is ${savedBenchmark.items}")
+        println("savedBenchmarkList toList is ${savedBenchmark.items.toList()}")
 
         return savedBenchmark.items.toList()
     }
