@@ -2,6 +2,7 @@
 plugins {
     kotlin("multiplatform") version "1.7.20"
     id("org.jetbrains.compose") version "1.2.1"
+    kotlin("plugin.serialization") version "1.7.20"
 }
 group = "com.theapache64.benchart"
 version = "1.0.0-beta01"
@@ -24,6 +25,8 @@ kotlin {
                 implementation(compose.web.core)
                 implementation(compose.runtime)
                 implementation(npm("chart.js", "3.9.1", generateExternals = false))
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+
             }
         }
 

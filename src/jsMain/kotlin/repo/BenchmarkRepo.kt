@@ -3,6 +3,9 @@ package repo
 import components.SavedBenchmarkNode
 import components.SavedBenchmarks
 import kotlinx.browser.window
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import utils.JsonUtils
 
 interface BenchmarkRepo {
     fun getSavedBenchmarks(): List<SavedBenchmarkNode>
@@ -21,22 +24,22 @@ class BenchmarkRepoImpl : BenchmarkRepo {
         val savedBenchmarksString = window.localStorage.getItem(KEY_SAVED_BENCHMARKS)
         val savedBenchmark = if (savedBenchmarksString == null) {
             // Creating first saved benchmark
-            SavedBenchmarks(items = arrayOf())
+            SavedBenchmarks(items = listOf())
         } else {
             println("JSON is '$savedBenchmarksString'")
-            JSON.parse(savedBenchmarksString)
+            JsonUtils.json.decodeFromString(savedBenchmarksString)
         }
 
-        if ("${savedBenchmark.items}" == "undefined") {
+     /*   if ("${savedBenchmark.items}" == "undefined") {
             saveBenchmarks(listOf())
             return emptyList()
-        }
+        }*/
 
         return savedBenchmark.items.toList()
     }
 
     override fun saveBenchmarks(newList: List<SavedBenchmarkNode>) {
-        val savedBenchmarks = JSON.stringify(SavedBenchmarks(newList.toTypedArray()))
+        val savedBenchmarks = JsonUtils.json.encodeToString(SavedBenchmarks(newList))
         window.localStorage.setItem(KEY_SAVED_BENCHMARKS, savedBenchmarks)
     }
 
