@@ -96,7 +96,12 @@ class HomeViewModel(
 
 
     private fun refreshBenchmarks() {
-        savedBenchmarks = benchmarkRepo.getSavedBenchmarks()
+        try{
+            savedBenchmarks = benchmarkRepo.getSavedBenchmarks()
+        }catch (e: Exception){
+            e.printStackTrace()
+            println("error : ${e.message}")
+        }
     }
 
     // Normal fields
