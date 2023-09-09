@@ -11,19 +11,16 @@ object SummaryUtils {
 
     fun prepareSummary(
         isGeneric: Boolean,
-        groupMap: GroupMap,
         chart: Chart,
+        selectedBlockNameOne : String,
+        selectedBlockNameTwo : String,
         onSummaryReady: (summary: Summary) -> Unit,
         onSummaryFailed: (reason: String) -> Unit,
     ) {
         try {
-            val totalGroups = groupMap.wordColorMap.size
-            if (totalGroups != 2) {
-                println("impossible to summarize. expected group size = 2, but found $totalGroups -> ${groupMap.wordColorMap}")
-                return
-            }
+
             val combinedMap = mutableMapOf<String, List<Float>>()
-            val words = groupMap.wordColorMap.keys.toList()
+            val words = listOf(selectedBlockNameOne, selectedBlockNameTwo)
             println("words : $words")
             for (word in words) {
                 combinedMap[word] =
@@ -81,7 +78,7 @@ object SummaryUtils {
                 )
             }
             val title = if (isGeneric) {
-                "📊Summary"
+                "📊$selectedBlockNameOne vs $selectedBlockNameTwo"
             } else {
                 val metricConfig = SupportedMetrics.values().find { it.key == chart.label }
                     ?: error("Unsupported metric name `${chart.label}`")

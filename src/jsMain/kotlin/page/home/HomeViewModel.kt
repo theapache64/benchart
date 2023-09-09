@@ -57,6 +57,15 @@ class HomeViewModel(
     var shouldSelectUnsaved by mutableStateOf(false)
         private set
 
+    var selectedBlockNameOne by mutableStateOf<String?>(null)
+        private set
+
+    var selectedBlockNameTwo by mutableStateOf<String?>(null)
+        private set
+
+    var blockNames = mutableStateListOf<String>()
+        private set
+
     var summaries = mutableStateListOf<Summary>()
         private set
 
@@ -107,16 +116,21 @@ class HomeViewModel(
                     testNames.clear()
 
                     // refill
-                    val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm) ?: return@debounce
+                    val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm) ?: run {
+                        selectedBlockNameOne = null
+                        selectedBlockNameTwo = null
+                        updateSummary()
+                        return@debounce
+                    }
                     this.inputType = inputType
                     fullBenchmarkResults.addAll(benchmarkResults)
+
 
                     when (inputType) {
                         InputType.GENERIC -> {
                             val newCharts = fullBenchmarkResults.toGenericChart()
                             chartsBundle = newCharts
-
-                            updateSummary(isGeneric = true, newCharts   )
+                            onChartsBundleUpdated(newCharts)
                         }
 
                         InputType.NORMAL_BENCHMARK -> {
@@ -131,7 +145,7 @@ class HomeViewModel(
                             }
                             val newCharts = filteredBenchmarkResult.toCharts()
                             chartsBundle = newCharts
-                            updateSummary(isGeneric = false, newCharts)
+                            onChartsBundleUpdated(newCharts)
                         }
                     }
                     errorMsg = ""
@@ -145,21 +159,43 @@ class HomeViewModel(
         )
     }
 
-    private fun updateSummary(isGeneric: Boolean, chartsBundle: ChartsBundle) {
+    private fun onChartsBundleUpdated(chartsBundle: ChartsBundle) {
+        blockNames.clear()
+        val blockNames = chartsBundle.groupMap.wordColorMap.keys.toList()
+        this.blockNames.addAll(blockNames)
+        if (blockNames.size >= 2) {
+            selectedBlockNameOne = blockNames[0]
+            selectedBlockNameTwo = blockNames[1]
+        }
+        updateSummary()
+    }
+
+    private fun updateSummary() {
         // Calculating duration summary
         summaries.clear()
-        for (chartData in chartsBundle.charts) {
-            SummaryUtils.prepareSummary(isGeneric = isGeneric, groupMap = chartsBundle.groupMap,
-                chart = chartData,
-                onSummaryReady = { summary ->
-                    summaries.add(summary)
-                },
-                onSummaryFailed = { reason ->
-                    error("Failed to summarize `${chartData.label}`: $reason")
-                }
-            )
+        val selectedBlockNameOne = selectedBlockNameOne
+        val selectedBlockNameTwo = selectedBlockNameTwo
+        if (selectedBlockNameOne == null || selectedBlockNameTwo == null) {
+            println("blank block name detected. skipping summary")
+            return
         }
 
+        val isGeneric = inputType == InputType.GENERIC
+        chartsBundle?.let { chartsBundle ->
+            for (chartData in chartsBundle.charts) {
+                SummaryUtils.prepareSummary(isGeneric = isGeneric,
+                    selectedBlockNameOne = selectedBlockNameOne,
+                    selectedBlockNameTwo = selectedBlockNameTwo,
+                    chart = chartData,
+                    onSummaryReady = { summary ->
+                        summaries.add(summary)
+                    },
+                    onSummaryFailed = { reason ->
+                        error("Failed to summarize `${chartData.label}`: $reason")
+                    }
+                )
+            }
+        }
     }
 
     fun onTestNameChanged(newTestName: String) {
@@ -172,7 +208,7 @@ class HomeViewModel(
             }
             val newCharts = filteredBenchmarkResult.toCharts()
             chartsBundle = newCharts
-            updateSummary(isGeneric = false, newCharts)
+            updateSummary()
             errorMsg = ""
         } catch (e: Throwable) {
             summaries.clear()
@@ -242,6 +278,16 @@ class HomeViewModel(
             val newForm = formRepo.getFormData() ?: form
             onFormChanged(newForm, shouldSelectUnsaved = false)
         }
+    }
+
+    fun onBlockNameOneChanged(newBlockName: String) {
+        selectedBlockNameOne = newBlockName
+        updateSummary()
+    }
+
+    fun onBlockNameTwoChanged(newBlockName: String) {
+        selectedBlockNameTwo = newBlockName
+        updateSummary()
     }
 
 }
