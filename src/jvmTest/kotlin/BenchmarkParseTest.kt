@@ -643,7 +643,7 @@ class BenchmarkParseTest {
         val actualResult = BenchmarkResult.parse(
             """
                 # before
-                apple = 100 rs
+                apple = 100
                 orange = 150 rs
 
                 # after

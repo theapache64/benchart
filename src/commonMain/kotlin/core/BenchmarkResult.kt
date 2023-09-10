@@ -54,6 +54,7 @@ data class BenchmarkResult(
 
         private val machineLineRegEx = "^(Traces|${metricKeys.joinToString(separator = "|")}).+".toRegex()
         private val titleStripRegEx = "\\W+".toRegex()
+        private val genericTitleStripRegEx = "\\W+".toRegex()
         private val testNameRegex = "[A-Z].*_[a-z].*".toRegex()
 
         fun parse(form: FormData): Pair<InputType, List<BenchmarkResult>>? {
@@ -162,14 +163,14 @@ data class BenchmarkResult(
                     }
 
                     val textNumberLine = TextNumberLine.parse(line)
-                    values[parseGenericTitleForMultiLine(textNumberLine.text)] = textNumberLine.number
+                    values[parseGenericTitle(textNumberLine.text)] = textNumberLine.number
                 }
 
                 if (title == null) {
                     title = "benchmark $index"
                 }
 
-                title = parseGenericTitleForMultiLine(title)
+                title = parseGenericTitle(title)
 
                 blockRows.add(
                     BlockRow(
@@ -221,10 +222,11 @@ data class BenchmarkResult(
                 .trim()
         }
 
-        private fun parseGenericTitleForMultiLine(title: String): String {
-            return parseTitle(title).also {
-                println("genericTitleParsing : '$title' -> '$it'")
-            }
+        private fun parseGenericTitle(title: String): String {
+            return title
+                .replace(genericTitleStripRegEx, " ")
+                .replace("\\s{2,}".toRegex(), " ")
+                .trim()
         }
 
         private fun isHumanLine(line: String): Boolean {
@@ -260,27 +262,7 @@ data class BenchmarkResult(
     }
 }
 
-private val digitRegex = "\\d+(.\\d+)?".toRegex()
 
-private data class TextNumberLine(
-    val text: String,
-    val number: Float
-) {
-    companion object {
-        fun parse(line: String): TextNumberLine {
-            val number = digitRegex.findAll(line)
-                .lastOrNull()
-                ?.groupValues
-                .also {
-                    println("group: ${it}")
-                }
-                ?.firstOrNull()
-                ?: error("$line doesn't match the regex '${digitRegex.pattern}'")
-            val newLine = line.replace("$number$".toRegex(), "")
-            return TextNumberLine(newLine, number.toFloat())
-        }
-    }
-}
 
 private fun FormData.isGenericInput(): Boolean {
     return !this.data.contains(
