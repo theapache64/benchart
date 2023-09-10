@@ -123,17 +123,13 @@ class HomeViewModel(
                     // clearing old data
                     fullBenchmarkResults.clear()
                     testNames.clear()
+                    blockNames.clear()
 
                     // refill
                     val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm) ?: run {
-                        selectedBlockNameOne = null
-                        selectedBlockNameTwo = null
-                        blockNames.clear()
-                        chartsBundle = null
-                        updateSummary()
-                        summaries.clear()
-                        bestAggSummary = null
-                        worstAggSummary = null
+                        println("failed to parse form")
+                        reset()
+                        errorMsg = ""
                         return@debounce
                     }
                     this.inputType = inputType
@@ -168,13 +164,24 @@ class HomeViewModel(
                     calcAggSummary()
                     errorMsg = ""
                 } catch (e: Throwable) {
-                    summaries.clear()
                     e.printStackTrace()
                     errorMsg = e.message ?: ERROR_GENERIC
+                    reset()
                 }
             },
             300
         )
+    }
+
+    private fun reset() {
+        selectedBlockNameOne = null
+        selectedBlockNameTwo = null
+        blockNames.clear()
+        chartsBundle = null
+        summaries.clear()
+        bestAggSummary = null
+        worstAggSummary = null
+        updateSummary()
     }
 
     private fun calcAggSummary() {
@@ -225,6 +232,9 @@ class HomeViewModel(
         if (blockNames.size >= 2) {
             selectedBlockNameOne = blockNames[0]
             selectedBlockNameTwo = blockNames[1]
+        }else {
+            selectedBlockNameOne = null
+            selectedBlockNameTwo = null
         }
         updateSummary()
     }

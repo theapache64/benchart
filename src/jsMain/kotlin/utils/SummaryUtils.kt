@@ -23,6 +23,7 @@ object SummaryUtils {
         val words = listOf(selectedBlockNameOne, selectedBlockNameTwo)
         println("words : $words")
         for (word in words) {
+
             combinedMap[word] =
                 chart.dataSets.filterKeys { it.startsWith(word) }.values.map { it.values.toFloatArray() }
                     .let { arrays ->

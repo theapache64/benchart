@@ -11,6 +11,7 @@ import org.junit.Test
 
 class BenchmarkParseTest {
 
+
     @Test
     fun parseFullSuccess() {
         val actualBenchmarkResult = BenchmarkResult.parse(
@@ -628,6 +629,46 @@ class BenchmarkParseTest {
                         data = mapOf(
                             "2019" to 20f,
                             "2020" to 30f,
+                        )
+                    ),
+                )
+            )
+        ).typify(InputType.GENERIC)
+
+        assertEquals(expectedBenchmarkResult, actualResult)
+    }
+
+    @Test
+    fun parseWithUnit() {
+        val actualResult = BenchmarkResult.parse(
+            """
+                # before
+                apple = 100 rs
+                orange = 150 rs
+
+                # after
+                apple = 130 rs
+                orange = 110 rs
+            """.trimIndent().toFormData()
+        )
+
+        val expectedBenchmarkResult = listOf(
+            BenchmarkResult(
+                title = "before vs after",
+                testName = "",
+                blockRows = listOf(
+                    BlockRow(
+                        title = "before",
+                        data = mapOf(
+                            "apple" to 100f,
+                            "orange" to 150f,
+                        )
+                    ),
+                    BlockRow(
+                        title = "after",
+                        data = mapOf(
+                            "apple" to 130f,
+                            "orange" to 110f,
                         )
                     ),
                 )
