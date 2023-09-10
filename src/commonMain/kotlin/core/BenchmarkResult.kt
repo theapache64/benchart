@@ -260,7 +260,7 @@ data class BenchmarkResult(
     }
 }
 
-private val digitRegex = "\\d+(.\\d+)?$".toRegex()
+private val digitRegex = "\\d+(.\\d+)?".toRegex()
 
 private data class TextNumberLine(
     val text: String,
@@ -269,10 +269,13 @@ private data class TextNumberLine(
     companion object {
         fun parse(line: String): TextNumberLine {
             val number = digitRegex.findAll(line)
-                .firstOrNull()
+                .lastOrNull()
                 ?.groupValues
+                .also {
+                    println("group: ${it}")
+                }
                 ?.firstOrNull()
-                ?: error("$line doesn't have numbers in it")
+                ?: error("$line doesn't match the regex '${digitRegex.pattern}'")
             val newLine = line.replace("$number$".toRegex(), "")
             return TextNumberLine(newLine, number.toFloat())
         }

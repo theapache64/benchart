@@ -128,7 +128,12 @@ class HomeViewModel(
                     val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm) ?: run {
                         selectedBlockNameOne = null
                         selectedBlockNameTwo = null
+                        blockNames.clear()
+                        chartsBundle = null
                         updateSummary()
+                        summaries.clear()
+                        bestAggSummary = null
+                        worstAggSummary = null
                         return@debounce
                     }
                     this.inputType = inputType
