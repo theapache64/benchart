@@ -7,7 +7,7 @@
 <img alt="Twitter: theapache64" src="https://img.shields.io/twitter/follow/theapache64.svg?style=social" />
 </a>
 
-> A web tool to visualise and compare your android benchmark result
+> A web tool to visualise and compare your Android benchmark result and other text data
 
 ![image](https://user-images.githubusercontent.com/9678279/204081081-bbe0d38b-6fe0-4f2c-b360-930fbfe20cf6.png)
 
