@@ -161,7 +161,6 @@ class HomeViewModel(
                     }
 
 
-                    calcAggSummary()
                     errorMsg = ""
                 } catch (e: Throwable) {
                     e.printStackTrace()
@@ -253,6 +252,7 @@ class HomeViewModel(
             )
         }
         summaries.addAll(allSummaries ?: emptyList())
+        calcAggSummary()
     }
 
     fun onTestNameChanged(newTestName: String) {
