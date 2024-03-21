@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id="benchart:jsMain" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="com.theapache64.benchart" external.system.module.type="sourceSet" external.system.module.version="1.0.0-beta01" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
-    <facet type="kotlin-language" name="Kotlin">
+    <facet external-system-id="GRADLE" type="kotlin-language" name="Kotlin">
       <configuration version="5" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="false" externalProjectId="benchart" isHmppProject="true">
         <dependsOnModuleNames>benchart:commonMain</dependsOnModuleNames>
         <sourceSets>
@@ -9,7 +9,7 @@
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <compilerSettings>
-          <option name="additionalArguments" value="-Xir-module-name=com.theapache64.benchart:benchart -Xir-only -Xir-per-module-output-name=benchart -Xir-produce-klib-dir" />
+          <option name="additionalArguments" value="-Xir-module-name=com.theapache64.benchart:benchart -Xir-only -Xir-per-module-output-name=benchart -Xir-produce-klib-dir -main call" />
         </compilerSettings>
         <compilerArguments>
           <flagArguments>
@@ -19,7 +19,6 @@
             <flagArg name="multiPlatform" arg="true" />
           </flagArguments>
           <stringArguments>
-            <stringArg name="main" arg="call" />
             <stringArg name="moduleKind" arg="umd" />
             <stringArg name="outputFile" arg="$MODULE_DIR$/../../build/classes/kotlin/js/main" />
             <stringArg name="sourceMapEmbedSources" arg="never" />

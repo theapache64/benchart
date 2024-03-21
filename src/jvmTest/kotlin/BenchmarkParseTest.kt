@@ -679,6 +679,35 @@ class BenchmarkParseTest {
     }
 
     @Test
+    fun parseAvgizerResposne() {
+        val actualResult = BenchmarkResult.parse(
+            """
+                # before
+                splash time is: = 846.3 (input count : 10)
+                startup time is: = 1356 (input count : 10)
+            """.trimIndent().toFormData()
+        )
+
+        val expectedBenchmarkResult = listOf(
+            BenchmarkResult(
+                title = "before",
+                testName = "",
+                blockRows = listOf(
+                    BlockRow(
+                        title = "before",
+                        data = mapOf(
+                            "splash time is" to 846.3f,
+                            "startup time is" to 1356f,
+                        )
+                    ),
+                )
+            )
+        ).typify(InputType.GENERIC)
+
+        assertEquals(expectedBenchmarkResult, actualResult)
+    }
+
+    @Test
     fun parseTitleTestSuccess() {
         val actualResult = BenchmarkResult.parse(
             """

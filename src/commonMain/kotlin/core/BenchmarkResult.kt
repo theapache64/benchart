@@ -83,6 +83,8 @@ data class BenchmarkResult(
                         title = line
                     }
 
+
+
                     if (form.isTestNameDetectionEnabled && isTestName(line)) {
                         if (testName != null && blockRows.isNotEmpty()) {
 

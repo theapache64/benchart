@@ -7,7 +7,16 @@ data class TextNumberLine(
     val number: Float
 ) {
     companion object {
-        fun parse(line: String): TextNumberLine {
+        private val AVGIZER_REGEX = "\\(input count : \\d+\\)\$".toRegex()
+        fun parse(iLine: String): TextNumberLine {
+            // Quick support for https://theapache64.github.io/avgizer/
+            val match = AVGIZER_REGEX.find(iLine)
+            val line = if (match != null){
+                iLine.replace(match.groupValues.first(), "")
+            } else {
+                iLine
+            }
+
             val number = digitRegex.findAll(line)
                 .lastOrNull()
                 ?.groupValues

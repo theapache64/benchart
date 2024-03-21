@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id="benchart:jsTest" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="com.theapache64.benchart" external.system.module.type="sourceSet" external.system.module.version="1.0.0-beta01" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
-    <facet type="kotlin-language" name="Kotlin">
+    <facet external-system-id="GRADLE" type="kotlin-language" name="Kotlin">
       <configuration version="5" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="true" externalProjectId="benchart" isHmppProject="true">
         <dependsOnModuleNames>benchart:commonTest</dependsOnModuleNames>
         <sourceSets>
@@ -9,10 +9,10 @@
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <externalSystemTestTasks>
-          <externalSystemTestTask>jsBrowserTest|:|js</externalSystemTestTask>
+          <externalSystemTestTask>jsBrowserTest|:|js|js</externalSystemTestTask>
         </externalSystemTestTasks>
         <compilerSettings>
-          <option name="additionalArguments" value="-Xir-module-name=com.theapache64.benchart:benchart_test -Xir-only -Xir-per-module-output-name=benchart-test -Xir-produce-klib-dir" />
+          <option name="additionalArguments" value="-Xir-module-name=com.theapache64.benchart:benchart_test -Xir-only -Xir-per-module-output-name=benchart-test -Xir-produce-klib-dir -main call" />
         </compilerSettings>
         <compilerArguments>
           <flagArguments>
@@ -22,7 +22,6 @@
             <flagArg name="multiPlatform" arg="true" />
           </flagArguments>
           <stringArguments>
-            <stringArg name="main" arg="call" />
             <stringArg name="moduleKind" arg="umd" />
             <stringArg name="outputFile" arg="$MODULE_DIR$/../../build/classes/kotlin/js/test" />
             <stringArg name="sourceMapEmbedSources" arg="never" />
@@ -67,7 +66,15 @@
     <orderEntry type="module" module-name="benchart.commonMain" scope="TEST" />
     <orderEntry type="module" module-name="benchart.commonTest" scope="TEST" production-on-test="" />
     <orderEntry type="module" module-name="benchart.jsMain" scope="TEST" />
-    <orderEntry type="module" module-name="benchart.jsMain" scope="RUNTIME" />
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library name="Gradle: com.theapache64.benchart:benchart">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../build/classes/kotlin/js/main" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
