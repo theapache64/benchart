@@ -4,7 +4,7 @@ import kotlinx.browser.window
 import model.FormData
 
 interface FormRepo {
-    fun saveFormData(newForm: FormData)
+    fun storeFormData(newForm: FormData)
     fun getFormData(): FormData?
 }
 
@@ -15,7 +15,7 @@ class FormRepoImpl : FormRepo {
         private const val KEY_IS_AUTO_GROUP_ENABLED = "is_auto_group_enabled"
     }
 
-    override fun saveFormData(newForm: FormData) {
+    override fun storeFormData(newForm: FormData) {
         window.localStorage.apply {
             setItem(KEY_AUTO_FORM_INPUT, newForm.data)
             setItem(KEY_IS_TEST_NAME_DETECTION_ENABLED, newForm.isTestNameDetectionEnabled.toString())

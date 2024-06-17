@@ -837,6 +837,52 @@ class BenchmarkParseTest {
     }
 
 
+    @Test
+    fun parseAverageResponse() {
+        val actualResult = BenchmarkResult.parse(
+            """
+                # before
+                orange = 100
+                orange = 200
+                apple = 500
+                apple = 600
+
+                # after
+                orange = 300
+                orange = 400
+                apple = 700
+                apple = 800
+            """.trimIndent().toFormData()
+        )
+
+        val expectedBenchmarkResult = listOf(
+            BenchmarkResult(
+                title = "before vs after",
+                testName = "",
+                blockRows = listOf(
+                    BlockRow(
+                        title = "before",
+                        data = mapOf(
+                            "orange" to 300f,
+                            "apple" to 1100f,
+                        )
+                    ),
+                    BlockRow(
+                        title = "after",
+                        data = mapOf(
+                            "orange" to 700f,
+                            "apple" to 1500f,
+                        )
+                    ),
+                )
+            )
+        ).typify(InputType.GENERIC)
+
+        assertEquals(expectedBenchmarkResult, actualResult)
+    }
+
+
+
 }
 
 private fun List<BenchmarkResult>.typify(type: InputType): Pair<InputType, List<BenchmarkResult>> {

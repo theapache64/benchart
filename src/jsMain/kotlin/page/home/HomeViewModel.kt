@@ -113,7 +113,7 @@ class HomeViewModel(
 
     fun onFormChanged(newForm: FormData, shouldSelectUnsaved: Boolean = true) {
         form = newForm
-        formRepo.saveFormData(newForm)
+        formRepo.storeFormData(newForm)
 
         debounce<Unit>(
             func = {
