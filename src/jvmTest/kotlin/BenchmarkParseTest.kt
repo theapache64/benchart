@@ -863,15 +863,15 @@ class BenchmarkParseTest {
                     BlockRow(
                         title = "before",
                         data = mapOf(
-                            "orange" to 300f,
-                            "apple" to 1100f,
+                            "orange" to 150f,
+                            "apple" to 550f,
                         )
                     ),
                     BlockRow(
                         title = "after",
                         data = mapOf(
-                            "orange" to 700f,
-                            "apple" to 1500f,
+                            "orange" to 350f,
+                            "apple" to 750f,
                         )
                     ),
                 )

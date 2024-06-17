@@ -65,7 +65,7 @@ data class BenchmarkResult(
                 .filter { it.isNotBlank() }
 
             println("parsing input...")
-            if(blocks.isEmpty()) return null
+            if (blocks.isEmpty()) return null
             if (form.isGenericInput()) return parseGenericInput(blocks)
 
             println("parsing machine generated benchmark input...")
@@ -156,7 +156,7 @@ data class BenchmarkResult(
             for ((index, block) in blocks.withIndex()) {
                 val lines = block.split("\n").map { it.trim() }
                 var title: String? = null
-                val values = mutableMapOf<String, Float>()
+                val valuesMap = mutableMapOf<String, MutableList<Float>>()
                 for (line in lines) {
 
                     if (title == null && isHumanLine(line)) {
@@ -165,7 +165,8 @@ data class BenchmarkResult(
                     }
 
                     val textNumberLine = TextNumberLine.parse(line)
-                    values[parseGenericTitle(textNumberLine.text)] = textNumberLine.number
+                    val genericTitle = parseGenericTitle(textNumberLine.text)
+                    valuesMap.getOrPut(genericTitle) { mutableListOf() }.add(textNumberLine.number)
                 }
 
                 if (title == null) {
@@ -177,7 +178,9 @@ data class BenchmarkResult(
                 blockRows.add(
                     BlockRow(
                         title = title,
-                        data = values
+                        data = valuesMap.map { (key, value) ->
+                            key to value.average().toFloat()
+                        }.toMap()
                     )
                 )
             }
@@ -263,7 +266,6 @@ data class BenchmarkResult(
         }
     }
 }
-
 
 
 private fun FormData.isGenericInput(): Boolean {
