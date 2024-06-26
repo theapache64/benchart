@@ -6,46 +6,46 @@ import org.jetbrains.compose.web.dom.*
 
 
 @Composable
-fun TestNames(
-    testNames: List<String>,
-    currentTestName: String? = null,
-    onTestNameSelected: (option: String) -> Unit
+fun FocusGroups(
+    focusGroups: List<String>,
+    currentFocusGroup: String?,
+    onFocusGroupSelected: (focusGroup: String) -> Unit
 ){
-    if(testNames.isNotEmpty()){
+    if(focusGroups.isNotEmpty()){
         Div(
             attrs = {
                 classes("form-group")
             }
         ) {
             Label(
-                forId = "testNames",
+                forId = "focusGroups",
                 attrs = {
                     classes("form-label")
                 }
             ) {
-                Text("Test Name :")
+                Text("Focus Group :")
             }
             Select(
                 attrs = {
                     classes("form-select")
-                    id("testNames")
+                    id("focusGroups")
                     onInput {
-                        it.value?.let { newTestName ->
-                            onTestNameSelected(newTestName)
+                        it.value?.let { focusGroup ->
+                            onFocusGroupSelected(focusGroup)
                         }
                     }
                 }
             ) {
-                for (testName in testNames) {
+                for (focusGroup in focusGroups) {
                     Option(
-                        value = testName,
+                        value = focusGroup,
                         attrs = {
-                            if (testName == currentTestName) {
+                            if (focusGroup == currentFocusGroup) {
                                 selected()
                             }
                         }
                     ) {
-                        Text(testName)
+                        Text(focusGroup)
                     }
                 }
             }

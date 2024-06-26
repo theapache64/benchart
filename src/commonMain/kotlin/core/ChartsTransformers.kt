@@ -19,7 +19,7 @@ fun List<BenchmarkResult>.toCharts(): ChartsBundle {
         // before1 -> {P50=40.5, P90=45.8, P95=60.4, P99=80.4}
         val dataSets = mutableMapOf<String, Map<String, Float>>()
         for (item in this) {
-            dataSets[item.title] = item.blockRows.find { it.title == chartName }?.data ?: emptyMap()
+            dataSets[item.title] = item.blockRows.find { it.title == chartName }?.avgData ?: emptyMap()
         }
 
         charts.add(
@@ -48,10 +48,8 @@ fun List<BenchmarkResult>.toGenericChart(): ChartsBundle {
         label = result.title,
         dataSets = mutableMapOf<String, Map<String, Float>>().apply {
             for(blockRow in result.blockRows){
-                put(blockRow.title, blockRow.data)
+                put(blockRow.title, blockRow.avgData)
             }
-        }.also {
-            println("chartSet -> $it")
         },
         bsClass = "col-lg-12"
     )

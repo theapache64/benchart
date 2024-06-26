@@ -6,6 +6,7 @@ import components.AutoGroup
 import components.ChartUi
 import components.EditableTitle
 import components.ErrorUi
+import components.FocusGroups
 import components.FormUi
 import components.Heading
 import components.SummaryContainer
@@ -137,6 +138,22 @@ fun HomePageUi(
                                     )
                                 }
 
+                                if (viewModel.focusGroups.size > 1) {
+                                    Div(
+                                        attrs = {
+                                            classes("col-md-4")
+                                        }
+                                    ) {
+                                        FocusGroups(
+                                            focusGroups = viewModel.focusGroups,
+                                            currentFocusGroup = viewModel.currentFocusedGroup,
+                                            onFocusGroupSelected = { focusGroup ->
+                                                viewModel.onFocusGroupSelected(focusGroup)
+                                            }
+                                        )
+                                    }
+                                }
+
                                 if (viewModel.inputType == InputType.NORMAL_BENCHMARK) {
                                     Div(
                                         attrs = {
@@ -158,8 +175,8 @@ fun HomePageUi(
                                     ) {
                                         TestNames(
                                             testNames = viewModel.testNames,
-                                            onTestNameChanged = { newTestName ->
-                                                viewModel.onTestNameChanged(newTestName)
+                                            onTestNameSelected = { newTestName ->
+                                                viewModel.onTestNameSelected(newTestName)
                                             }
                                         )
                                     }

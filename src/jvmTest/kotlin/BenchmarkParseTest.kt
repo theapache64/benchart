@@ -1,4 +1,5 @@
 import core.BenchmarkResult
+import core.BenchmarkResult.Companion.FOCUS_GROUP_ALL
 import core.BlockRow
 import core.InputType
 import core.InvalidBenchmarkDataException
@@ -39,7 +40,8 @@ class BenchmarkParseTest {
                 frameDurationCpuMs   P50   13.8,   P90   21.9,   P95   27.3,   P99   53.4
                 frameOverrunMs   P50   -5.7,   P90    7.4,   P95   22.4,   P99   63.2
                 Traces: Iteration 0 1 2 3 4
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -49,20 +51,20 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = SupportedMetrics.Duration.key,
-                        data = mapOf(
-                            "P50" to 13.5f,
-                            "P90" to 20.8f,
-                            "P95" to 25.4f,
-                            "P99" to 47.4f,
+                        fullData = mapOf(
+                            "P50" to listOf(13.5f),
+                            "P90" to listOf(20.8f),
+                            "P95" to listOf(25.4f),
+                            "P99" to listOf(47.4f),
                         )
                     ),
                     BlockRow(
                         title = SupportedMetrics.Overrun.key,
-                        data = mapOf(
-                            "P50" to -5.9f,
-                            "P90" to 7.0f,
-                            "P95" to 20.1f,
-                            "P99" to 64.4f,
+                        fullData = mapOf(
+                            "P50" to listOf(-5.9f),
+                            "P90" to listOf(7.0f),
+                            "P95" to listOf(20.1f),
+                            "P99" to listOf(64.4f),
                         ),
                     )
                 ),
@@ -74,20 +76,20 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = SupportedMetrics.Duration.key,
-                        data = mapOf(
-                            "P50" to 13.4f,
-                            "P90" to 20.7f,
-                            "P95" to 24.4f,
-                            "P99" to 51.2f,
+                        fullData = mapOf(
+                            "P50" to listOf(13.4f),
+                            "P90" to listOf(20.7f),
+                            "P95" to listOf(24.4f),
+                            "P99" to listOf(51.2f),
                         )
                     ),
                     BlockRow(
                         title = SupportedMetrics.Overrun.key,
-                        data = mapOf(
-                            "P50" to -6.5f,
-                            "P90" to 5.4f,
-                            "P95" to 15.0f,
-                            "P99" to 60.3f,
+                        fullData = mapOf(
+                            "P50" to listOf(-6.5f),
+                            "P90" to listOf(5.4f),
+                            "P95" to listOf(15.0f),
+                            "P99" to listOf(60.3f),
                         ),
                     )
                 ),
@@ -99,20 +101,20 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = SupportedMetrics.Duration.key,
-                        data = mapOf(
-                            "P50" to 13.6f,
-                            "P90" to 21.8f,
-                            "P95" to 27.5f,
-                            "P99" to 49.4f,
+                        fullData = mapOf(
+                            "P50" to listOf(13.6f),
+                            "P90" to listOf(21.8f),
+                            "P95" to listOf(27.5f),
+                            "P99" to listOf(49.4f),
                         )
                     ),
                     BlockRow(
                         title = SupportedMetrics.Overrun.key,
-                        data = mapOf(
-                            "P50" to -6.2f,
-                            "P90" to 7.3f,
-                            "P95" to 19.5f,
-                            "P99" to 61.7f,
+                        fullData = mapOf(
+                            "P50" to listOf(-6.2f),
+                            "P90" to listOf(7.3f),
+                            "P95" to listOf(19.5f),
+                            "P99" to listOf(61.7f),
                         ),
                     )
                 ),
@@ -124,20 +126,20 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = SupportedMetrics.Duration.key,
-                        data = mapOf(
-                            "P50" to 13.8f,
-                            "P90" to 21.9f,
-                            "P95" to 27.3f,
-                            "P99" to 53.4f,
+                        fullData = mapOf(
+                            "P50" to listOf(13.8f),
+                            "P90" to listOf(21.9f),
+                            "P95" to listOf(27.3f),
+                            "P99" to listOf(53.4f),
                         )
                     ),
                     BlockRow(
                         title = SupportedMetrics.Overrun.key,
-                        data = mapOf(
-                            "P50" to -5.7f,
-                            "P90" to 7.4f,
-                            "P95" to 22.4f,
-                            "P99" to 63.2f,
+                        fullData = mapOf(
+                            "P50" to listOf(-5.7f),
+                            "P90" to listOf(7.4f),
+                            "P95" to listOf(22.4f),
+                            "P99" to listOf(63.2f),
                         ),
                     )
                 ),
@@ -157,7 +159,8 @@ class BenchmarkParseTest {
                 frameOverrunMs   P50   -5.9,   P90    7.0,   P95   20.1,   P99   64.4
                 Traces: Iteration 0 1 2 3 4
   
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -167,20 +170,20 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = SupportedMetrics.Duration.key,
-                        data = mapOf(
-                            "P50" to 13.5f,
-                            "P90" to 20.8f,
-                            "P95" to 25.4f,
-                            "P99" to 47.4f,
+                        fullData = mapOf(
+                            "P50" to listOf(13.5f),
+                            "P90" to listOf(20.8f),
+                            "P95" to listOf(25.4f),
+                            "P99" to listOf(47.4f),
                         )
                     ),
                     BlockRow(
                         title = SupportedMetrics.Overrun.key,
-                        data = mapOf(
-                            "P50" to -5.9f,
-                            "P90" to 7.0f,
-                            "P95" to 20.1f,
-                            "P99" to 64.4f,
+                        fullData = mapOf(
+                            "P50" to listOf(-5.9f),
+                            "P90" to listOf(7.0f),
+                            "P95" to listOf(20.1f),
+                            "P99" to listOf(64.4f),
                         ),
                     )
                 ),
@@ -202,7 +205,8 @@ class BenchmarkParseTest {
                 this is also some weird shit
                 Traces: Iteration 0 1 2 3 4
   
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -212,20 +216,20 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = SupportedMetrics.Duration.key,
-                        data = mapOf(
-                            "P50" to 13.5f,
-                            "P90" to 20.8f,
-                            "P95" to 25.4f,
-                            "P99" to 47.4f,
+                        fullData = mapOf(
+                            "P50" to listOf(13.5f),
+                            "P90" to listOf(20.8f),
+                            "P95" to listOf(25.4f),
+                            "P99" to listOf(47.4f),
                         )
                     ),
                     BlockRow(
                         title = SupportedMetrics.Overrun.key,
-                        data = mapOf(
-                            "P50" to -5.9f,
-                            "P90" to 7.0f,
-                            "P95" to 20.1f,
-                            "P99" to 64.4f,
+                        fullData = mapOf(
+                            "P50" to listOf(-5.9f),
+                            "P90" to listOf(7.0f),
+                            "P95" to listOf(20.1f),
+                            "P99" to listOf(64.4f),
                         ),
                     )
                 ),
@@ -248,7 +252,8 @@ class BenchmarkParseTest {
                 this is also some weird shit
                 Traces: Iteration 0 1 2 3 4
   
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -258,20 +263,20 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = SupportedMetrics.Duration.key,
-                        data = mapOf(
-                            "P50" to 13.5f,
-                            "P90" to 20.8f,
-                            "P95" to 25.4f,
-                            "P99" to 47.4f,
-                        )
+                        fullData = mapOf(
+                            "P50" to listOf(13.5f),
+                            "P90" to listOf(20.8f),
+                            "P95" to listOf(25.4f),
+                            "P99" to listOf(47.4f),
+                        ),
                     ),
                     BlockRow(
                         title = SupportedMetrics.Overrun.key,
-                        data = mapOf(
-                            "P50" to -5.9f,
-                            "P90" to 7.0f,
-                            "P95" to 20.1f,
-                            "P99" to 64.4f,
+                        fullData = mapOf(
+                            "P50" to listOf(-5.9f),
+                            "P90" to listOf(7.0f),
+                            "P95" to listOf(20.1f),
+                            "P99" to listOf(64.4f),
                         ),
                     )
                 )
@@ -295,7 +300,8 @@ class BenchmarkParseTest {
                 this is also some weird shit
                 Traces: Iteration 0 1 2 3 4
   
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -305,20 +311,20 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = SupportedMetrics.Overrun.key,
-                        data = mapOf(
-                            "P50" to -5.9f,
-                            "P90" to 7.0f,
-                            "P95" to 20.1f,
-                            "P99" to 64.4f,
+                        fullData = mapOf(
+                            "P50" to listOf(-5.9f),
+                            "P90" to listOf(7.0f),
+                            "P95" to listOf(20.1f),
+                            "P99" to listOf(64.4f),
                         ),
                     ),
                     BlockRow(
                         title = SupportedMetrics.Duration.key,
-                        data = mapOf(
-                            "P50" to 13.5f,
-                            "P90" to 20.8f,
-                            "P95" to 25.4f,
-                            "P99" to 47.4f,
+                        fullData = mapOf(
+                            "P50" to listOf(13.5f),
+                            "P90" to listOf(20.8f),
+                            "P95" to listOf(25.4f),
+                            "P99" to listOf(47.4f),
                         )
                     ),
                 ),
@@ -335,7 +341,8 @@ class BenchmarkParseTest {
                 ### Before 1
                 frameDurationCpuMs   P50   13.5,   P90   20.8,   P95   25.4,   P99   47.4 
                 frameOverrunMs   P50   -5.9,   P90    7.0,   P95   20.1,   P99   64.4
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -345,20 +352,20 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = SupportedMetrics.Duration.key,
-                        data = mapOf(
-                            "P50" to 13.5f,
-                            "P90" to 20.8f,
-                            "P95" to 25.4f,
-                            "P99" to 47.4f,
+                        fullData = mapOf(
+                            "P50" to listOf(13.5f),
+                            "P90" to listOf(20.8f),
+                            "P95" to listOf(25.4f),
+                            "P99" to listOf(47.4f),
                         )
                     ),
                     BlockRow(
                         title = SupportedMetrics.Overrun.key,
-                        data = mapOf(
-                            "P50" to -5.9f,
-                            "P90" to 7.0f,
-                            "P95" to 20.1f,
-                            "P99" to 64.4f,
+                        fullData = mapOf(
+                            "P50" to listOf(-5.9f),
+                            "P90" to listOf(7.0f),
+                            "P95" to listOf(20.1f),
+                            "P99" to listOf(64.4f),
                         ),
                     )
                 )
@@ -401,7 +408,8 @@ class BenchmarkParseTest {
                 frameOverrunMs   P50   -5.7,   P90    7.4,   P95   22.4,   P99   63.2
                 Traces: Iteration 0 1 2 3 4
                 
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -410,18 +418,18 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, data = mapOf(
-                            "P50" to 13.5f,
-                            "P90" to 20.8f,
-                            "P95" to 25.4f,
-                            "P99" to 47.4f,
+                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                            "P50" to listOf(13.5f),
+                            "P90" to listOf(20.8f),
+                            "P95" to listOf(25.4f),
+                            "P99" to listOf(47.4f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, data = mapOf(
-                            "P50" to -5.9f,
-                            "P90" to 7.0f,
-                            "P95" to 20.1f,
-                            "P99" to 64.4f,
+                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                            "P50" to listOf(-5.9f),
+                            "P90" to listOf(7.0f),
+                            "P95" to listOf(20.1f),
+                            "P99" to listOf(64.4f),
                         )
                     )
                 )
@@ -432,18 +440,18 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, data = mapOf(
-                            "P50" to 13.4f,
-                            "P90" to 20.7f,
-                            "P95" to 24.4f,
-                            "P99" to 51.2f,
+                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                            "P50" to listOf(13.4f),
+                            "P90" to listOf(20.7f),
+                            "P95" to listOf(24.4f),
+                            "P99" to listOf(51.2f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, data = mapOf(
-                            "P50" to -6.5f,
-                            "P90" to 5.4f,
-                            "P95" to 15.0f,
-                            "P99" to 60.3f,
+                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                            "P50" to listOf(-6.5f),
+                            "P90" to listOf(5.4f),
+                            "P95" to listOf(15.0f),
+                            "P99" to listOf(60.3f),
                         )
                     )
                 )
@@ -454,18 +462,18 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, data = mapOf(
-                            "P50" to 13.6f,
-                            "P90" to 21.8f,
-                            "P95" to 27.5f,
-                            "P99" to 49.4f,
+                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                            "P50" to listOf(13.6f),
+                            "P90" to listOf(21.8f),
+                            "P95" to listOf(27.5f),
+                            "P99" to listOf(49.4f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, data = mapOf(
-                            "P50" to -6.2f,
-                            "P90" to 7.3f,
-                            "P95" to 19.5f,
-                            "P99" to 61.7f,
+                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                            "P50" to listOf(-6.2f),
+                            "P90" to listOf(7.3f),
+                            "P95" to listOf(19.5f),
+                            "P99" to listOf(61.7f),
                         )
                     )
                 )
@@ -476,18 +484,18 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, data = mapOf(
-                            "P50" to 13.8f,
-                            "P90" to 21.9f,
-                            "P95" to 27.3f,
-                            "P99" to 53.4f,
+                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                            "P50" to listOf(13.8f),
+                            "P90" to listOf(21.9f),
+                            "P95" to listOf(27.3f),
+                            "P99" to listOf(53.4f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, data = mapOf(
-                            "P50" to -5.7f,
-                            "P90" to 7.4f,
-                            "P95" to 22.4f,
-                            "P99" to 63.2f,
+                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                            "P50" to listOf(-5.7f),
+                            "P90" to listOf(7.4f),
+                            "P95" to listOf(22.4f),
+                            "P99" to listOf(63.2f),
                         )
                     )
                 )
@@ -521,7 +529,8 @@ class BenchmarkParseTest {
                 this is also some weird shit
                 Traces: Iteration 0 1 2 3 4
   
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+                focusGroup = FOCUS_GROUP_ALL
             )
             assertTrue(false)
         } catch (e: InvalidBenchmarkDataException) {
@@ -538,7 +547,8 @@ class BenchmarkParseTest {
 
                 # PNG + HsImage
                 SplashContent: image took ms to render = 120.625
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -548,14 +558,14 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = "PNG Image",
-                        data = mapOf(
-                            "SplashContent image took ms to render" to 18f,
+                        fullData = mapOf(
+                            "SplashContent image took ms to render" to listOf(18f),
                         )
                     ),
                     BlockRow(
                         title = "PNG HsImage",
-                        data = mapOf(
-                            "SplashContent image took ms to render" to 120.625f
+                        fullData = mapOf(
+                            "SplashContent image took ms to render" to listOf(120.625f)
                         )
                     )
                 )
@@ -578,7 +588,8 @@ class BenchmarkParseTest {
                  x: 5
                  y: 4
                  z: 3
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -588,18 +599,18 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = "first",
-                        data = mapOf(
-                            "x" to 1f,
-                            "y" to 2.5f,
-                            "z" to 3f
+                        fullData = mapOf(
+                            "x" to listOf(1f),
+                            "y" to listOf(2.5f),
+                            "z" to listOf(3f)
                         )
                     ),
                     BlockRow(
                         title = "second",
-                        data = mapOf(
-                            "x" to 5f,
-                            "y" to 4f,
-                            "z" to 3f
+                        fullData = mapOf(
+                            "x" to listOf(5f),
+                            "y" to listOf(4f),
+                            "z" to listOf(3f)
                         )
                     ),
                 )
@@ -616,7 +627,8 @@ class BenchmarkParseTest {
                 # orange price
                 2019 = 20
                 2020 = 30
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -626,9 +638,9 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = "orange price",
-                        data = mapOf(
-                            "2019" to 20f,
-                            "2020" to 30f,
+                        fullData = mapOf(
+                            "2019" to listOf(20f),
+                            "2020" to listOf(30f),
                         )
                     ),
                 )
@@ -649,7 +661,8 @@ class BenchmarkParseTest {
                 # after
                 apple = 130 rs
                 orange = 110 rs
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -659,16 +672,16 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = "before",
-                        data = mapOf(
-                            "apple" to 100f,
-                            "orange" to 150f,
+                        fullData = mapOf(
+                            "apple" to listOf(100f),
+                            "orange" to listOf(150f),
                         )
                     ),
                     BlockRow(
                         title = "after",
-                        data = mapOf(
-                            "apple" to 130f,
-                            "orange" to 110f,
+                        fullData = mapOf(
+                            "apple" to listOf(130f),
+                            "orange" to listOf(110f),
                         )
                     ),
                 )
@@ -685,7 +698,8 @@ class BenchmarkParseTest {
                 # before
                 splash time is: = 846.3 (input count : 10)
                 startup time is: = 1356 (input count : 10)
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -695,9 +709,9 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = "before",
-                        data = mapOf(
-                            "splash time is" to 846.3f,
-                            "startup time is" to 1356f,
+                        fullData = mapOf(
+                            "splash time is" to listOf(846.3f),
+                            "startup time is" to listOf(1356f),
                         )
                     ),
                 )
@@ -740,7 +754,8 @@ class BenchmarkParseTest {
                 see.. am some random text
                 frameOverrunMs   P50   -5.7,   P90    7.4,   P95   22.4,   P99   63.2
                 Traces: Iteration 0 1 2 3 4
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -749,18 +764,18 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, data = mapOf(
-                            "P50" to 13.5f,
-                            "P90" to 20.8f,
-                            "P95" to 25.4f,
-                            "P99" to 47.4f,
+                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                            "P50" to listOf(13.5f),
+                            "P90" to listOf(20.8f),
+                            "P95" to listOf(25.4f),
+                            "P99" to listOf(47.4f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, data = mapOf(
-                            "P50" to -5.9f,
-                            "P90" to 7.0f,
-                            "P95" to 20.1f,
-                            "P99" to 64.4f,
+                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                            "P50" to listOf(-5.9f),
+                            "P90" to listOf(7.0f),
+                            "P95" to listOf(20.1f),
+                            "P99" to listOf(64.4f),
                         )
                     )
                 )
@@ -771,18 +786,18 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, data = mapOf(
-                            "P50" to 13.4f,
-                            "P90" to 20.7f,
-                            "P95" to 24.4f,
-                            "P99" to 51.2f,
+                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                            "P50" to listOf(13.4f),
+                            "P90" to listOf(20.7f),
+                            "P95" to listOf(24.4f),
+                            "P99" to listOf(51.2f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, data = mapOf(
-                            "P50" to -6.5f,
-                            "P90" to 5.4f,
-                            "P95" to 15.0f,
-                            "P99" to 60.3f,
+                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                            "P50" to listOf(-6.5f),
+                            "P90" to listOf(5.4f),
+                            "P95" to listOf(15.0f),
+                            "P99" to listOf(60.3f),
                         )
                     )
                 )
@@ -793,18 +808,18 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, data = mapOf(
-                            "P50" to 13.6f,
-                            "P90" to 21.8f,
-                            "P95" to 27.5f,
-                            "P99" to 49.4f,
+                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                            "P50" to listOf(13.6f),
+                            "P90" to listOf(21.8f),
+                            "P95" to listOf(27.5f),
+                            "P99" to listOf(49.4f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, data = mapOf(
-                            "P50" to -6.2f,
-                            "P90" to 7.3f,
-                            "P95" to 19.5f,
-                            "P99" to 61.7f,
+                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                            "P50" to listOf(-6.2f),
+                            "P90" to listOf(7.3f),
+                            "P95" to listOf(19.5f),
+                            "P99" to listOf(61.7f),
                         )
                     )
                 )
@@ -815,18 +830,18 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, data = mapOf(
-                            "P50" to 13.8f,
-                            "P90" to 21.9f,
-                            "P95" to 27.3f,
-                            "P99" to 53.4f,
+                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                            "P50" to listOf(13.8f),
+                            "P90" to listOf(21.9f),
+                            "P95" to listOf(27.3f),
+                            "P99" to listOf(53.4f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, data = mapOf(
-                            "P50" to -5.7f,
-                            "P90" to 7.4f,
-                            "P95" to 22.4f,
-                            "P99" to 63.2f,
+                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                            "P50" to listOf(-5.7f),
+                            "P90" to listOf(7.4f),
+                            "P95" to listOf(22.4f),
+                            "P99" to listOf(63.2f),
                         )
                     )
                 )
@@ -852,7 +867,8 @@ class BenchmarkParseTest {
                 orange = 400
                 apple = 700
                 apple = 800
-            """.trimIndent().toFormData()
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
         )
 
         val expectedBenchmarkResult = listOf(
@@ -862,16 +878,16 @@ class BenchmarkParseTest {
                 blockRows = listOf(
                     BlockRow(
                         title = "before",
-                        data = mapOf(
-                            "orange" to 150f,
-                            "apple" to 550f,
+                        fullData = mapOf(
+                            "orange" to listOf(100f, 200f),
+                            "apple" to listOf(500f, 600f),
                         )
                     ),
                     BlockRow(
                         title = "after",
-                        data = mapOf(
-                            "orange" to 350f,
-                            "apple" to 750f,
+                        fullData = mapOf(
+                            "orange" to listOf(300f, 400f),
+                            "apple" to listOf(700f, 800f),
                         )
                     ),
                 )
@@ -881,6 +897,54 @@ class BenchmarkParseTest {
         assertEquals(expectedBenchmarkResult, actualResult)
     }
 
+    @Test
+    fun parseAverageResponseWithFocusGroup() {
+        val actualResult = BenchmarkResult.parse(
+            form = """
+                # before
+                orange = 100
+                orange = 200
+                orange = 60
+                apple = 500
+                apple = 600
+
+                # after
+                orange = 300
+                orange = 400
+                orange = 500
+                apple = 700
+                apple = 800
+            """.trimIndent().toFormData(),
+            focusGroup = "orange"
+        )
+
+        val expectedBenchmarkResult = listOf(
+            BenchmarkResult(
+                title = "orange - before vs after",
+                testName = "",
+                blockRows = listOf(
+                    BlockRow(
+                        title = "before",
+                        fullData = mapOf(
+                            "1" to listOf(100f),
+                            "2" to listOf(200f),
+                            "3" to listOf(60f),
+                        )
+                    ),
+                    BlockRow(
+                        title = "after",
+                        fullData = mapOf(
+                            "1" to listOf(300f),
+                            "2" to listOf(400f),
+                            "3" to listOf(500f),
+                        )
+                    ),
+                )
+            )
+        ).typify(InputType.GENERIC)
+
+        assertEquals(expectedBenchmarkResult, actualResult)
+    }
 
 
 }

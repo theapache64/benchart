@@ -9,6 +9,7 @@ import components.KEY_UNSAVED_BENCHMARK
 import components.SavedBenchmarkNode
 import components.Summary
 import core.BenchmarkResult
+import core.BenchmarkResult.Companion.FOCUS_GROUP_ALL
 import core.InputType
 import core.toCharts
 import core.toGenericChart
@@ -43,6 +44,13 @@ class HomeViewModel(
     private var currentTestName: String? = null
 
     var testNames = mutableStateListOf<String>()
+        private set
+
+
+    var currentFocusedGroup by mutableStateOf(FOCUS_GROUP_ALL)
+        private set
+
+    var focusGroups = mutableStateListOf<String>()
         private set
 
     var chartsBundle by mutableStateOf<ChartsBundle?>(null)
@@ -123,10 +131,11 @@ class HomeViewModel(
                     // clearing old data
                     fullBenchmarkResults.clear()
                     testNames.clear()
+                    focusGroups.clear()
                     blockNames.clear()
 
                     // refill
-                    val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm) ?: run {
+                    val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm, currentFocusedGroup) ?: run {
                         println("failed to parse form")
                         reset()
                         errorMsg = ""
@@ -134,6 +143,17 @@ class HomeViewModel(
                     }
                     this.inputType = inputType
                     fullBenchmarkResults.addAll(benchmarkResults)
+
+                    val focusGroups = mutableSetOf(FOCUS_GROUP_ALL)
+                        .apply {
+                            addAll(
+                                benchmarkResults
+                                    .flatMap { result -> result.blockRows }
+                                    .flatMap { blockRow -> blockRow.avgData.keys }
+                            )
+                        }
+
+                    this.focusGroups.addAll(focusGroups)
 
                     when (inputType) {
                         InputType.GENERIC -> {
@@ -188,7 +208,7 @@ class HomeViewModel(
         val newAggSums = mutableListOf<AggSummary>()
         for (blockNameOuter in blockNames) {
             for (blockNameInner in blockNames) {
-                if(blockNameOuter==blockNameInner){
+                if (blockNameOuter == blockNameInner) {
                     continue
                 }
                 chartsBundle?.charts?.mapNotNull { chart ->
@@ -208,6 +228,7 @@ class HomeViewModel(
                                     // bad
                                     redSum += node.diff.toInt()
                                 }
+
                                 node.diff < 0 -> {
                                     // green
                                     greenSum -= node.diff.toInt()
@@ -231,7 +252,7 @@ class HomeViewModel(
         if (blockNames.size >= 2) {
             selectedBlockNameOne = blockNames[0]
             selectedBlockNameTwo = blockNames[1]
-        }else {
+        } else {
             selectedBlockNameOne = null
             selectedBlockNameTwo = null
         }
@@ -255,7 +276,7 @@ class HomeViewModel(
         calcAggSummary()
     }
 
-    fun onTestNameChanged(newTestName: String) {
+    fun onTestNameSelected(newTestName: String) {
         try {
             currentTestName = newTestName
             val filteredBenchmarkResult = if (currentTestName != null) {
@@ -272,6 +293,11 @@ class HomeViewModel(
             e.printStackTrace()
             errorMsg = e.message ?: ERROR_GENERIC
         }
+    }
+
+    fun onFocusGroupSelected(focusGroup: String) {
+        currentFocusedGroup = focusGroup
+        onFormChanged(form)
     }
 
     fun onTitleDoubleClicked() {

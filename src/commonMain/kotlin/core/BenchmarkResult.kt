@@ -8,8 +8,10 @@ class InvalidGenericDataException(message: String?) : InvalidDataException(messa
 
 data class BlockRow(
     val title: String,
-    val data: Map<String, Float>
-)
+    val fullData: Map<String, List<Float>>
+) {
+    val avgData: Map<String, Float> = fullData.mapValues { it.value.average().toFloat() }
+}
 
 enum class SupportedMetrics(
     val key: String,
@@ -49,7 +51,7 @@ data class BenchmarkResult(
     val blockRows: List<BlockRow>,
 ) {
     companion object {
-
+        const val FOCUS_GROUP_ALL = "All"
         private val metricKeys = SupportedMetrics.values().map { it.key }
 
         private val machineLineRegEx = "^(Traces|${metricKeys.joinToString(separator = "|")}).+".toRegex()
@@ -57,7 +59,7 @@ data class BenchmarkResult(
         private val genericTitleStripRegEx = "\\W+".toRegex()
         private val testNameRegex = "[A-Z].*_[a-z].*".toRegex()
 
-        fun parse(form: FormData): Pair<InputType, List<BenchmarkResult>>? {
+        fun parse(form: FormData, focusGroup: String): Pair<InputType, List<BenchmarkResult>>? {
 
             val blocks = form.data
                 .split("\n").joinToString(separator = "\n") { it.trim() }
@@ -66,7 +68,7 @@ data class BenchmarkResult(
 
             println("parsing input...")
             if (blocks.isEmpty()) return null
-            if (form.isGenericInput()) return parseGenericInput(blocks)
+            if (form.isGenericInput()) return parseGenericInput(blocks, focusGroup)
 
             println("parsing machine generated benchmark input...")
             val benchmarkResults = mutableListOf<BenchmarkResult>()
@@ -116,7 +118,9 @@ data class BenchmarkResult(
                         blockRows.add(
                             BlockRow(
                                 title = metricName,
-                                data = parseValues(metricName, line)
+                                fullData = parseValues(metricName, line).map { (key, value) ->
+                                    key to listOf(value)
+                                }.toMap()
                             )
                         )
                     }
@@ -142,15 +146,18 @@ data class BenchmarkResult(
             return Pair(InputType.NORMAL_BENCHMARK, benchmarkResults)
         }
 
-        private fun parseGenericInput(blocks: List<String>): Pair<InputType, List<BenchmarkResult>> {
-            return Pair(InputType.GENERIC, parseMultiLineGenericInput(blocks))
+        private fun parseGenericInput(
+            blocks: List<String>,
+            focusGroup: String
+        ): Pair<InputType, List<BenchmarkResult>> {
+            return Pair(InputType.GENERIC, parseMultiLineGenericInput(blocks, focusGroup))
         }
 
         private fun createChartTitle(blockRows: MutableList<BlockRow>): String {
             return blockRows.joinToString(separator = " vs ") { it.title }
         }
 
-        private fun parseMultiLineGenericInput(blocks: List<String>): List<BenchmarkResult> {
+        private fun parseMultiLineGenericInput(blocks: List<String>, focusGroup: String): List<BenchmarkResult> {
             val benchmarkResults = mutableListOf<BenchmarkResult>()
             val blockRows = mutableListOf<BlockRow>()
             for ((index, block) in blocks.withIndex()) {
@@ -178,9 +185,7 @@ data class BenchmarkResult(
                 blockRows.add(
                     BlockRow(
                         title = title,
-                        data = valuesMap.map { (key, value) ->
-                            key to value.average().toFloat()
-                        }.toMap()
+                        fullData = valuesMap
                     )
                 )
             }
@@ -197,17 +202,46 @@ data class BenchmarkResult(
                 )
             )
 
-            return benchmarkResults
+            return if (focusGroup == FOCUS_GROUP_ALL) {
+                benchmarkResults
+            } else {
+                focus(benchmarkResults, focusGroup)
+            }
+        }
+
+        private fun focus(benchmarkResults: List<BenchmarkResult>, focusGroup: String): List<BenchmarkResult> {
+            val newBenchmarkResult = mutableListOf<BenchmarkResult>()
+            for (result in benchmarkResults) {
+                val blockRows = mutableListOf<BlockRow>()
+                for (blockRow in result.blockRows) {
+                    blockRows.add(
+                        BlockRow(
+                            title = blockRow.title,
+                            fullData = blockRow.fullData[focusGroup]?.mapIndexed { index, value ->
+                                Pair((index+1).toString(), listOf(value))
+                            }?.toMap() ?: error("Invalid focus group '$focusGroup' for ${blockRow.title}")
+                        )
+                    )
+                }
+                newBenchmarkResult.add(
+                    BenchmarkResult(
+                        title = "$focusGroup - ${result.title}",
+                        testName = result.testName,
+                        blockRows = blockRows
+                    )
+                )
+            }
+            return newBenchmarkResult
         }
 
         private fun checkDataIntegrity(blockRows: List<BlockRow>) {
             if (blockRows.size >= 2) {
-                val originalValueOrder = blockRows.first().data.keys.toList()
+                val originalValueOrder = blockRows.first().avgData.keys.toList()
                 for ((index, blockRow) in blockRows.withIndex()) {
                     if (index == 0) {
                         continue
                     }
-                    val currentValueOrder = blockRow.data.keys.toList()
+                    val currentValueOrder = blockRow.avgData.keys.toList()
                     if (originalValueOrder != currentValueOrder) {
                         error("Invalid order. Expected '$originalValueOrder', but found '$currentValueOrder'")
                     }
