@@ -135,7 +135,7 @@ class HomeViewModel(
                     blockNames.clear()
 
                     // refill
-                    val (inputType, benchmarkResults) = BenchmarkResult.parse(newForm, currentFocusedGroup) ?: run {
+                    val (inputType, benchmarkResults, focusGroups) = BenchmarkResult.parse(newForm, currentFocusedGroup) ?: run {
                         println("failed to parse form")
                         reset()
                         errorMsg = ""
@@ -143,16 +143,6 @@ class HomeViewModel(
                     }
                     this.inputType = inputType
                     fullBenchmarkResults.addAll(benchmarkResults)
-
-                    val focusGroups = mutableSetOf(FOCUS_GROUP_ALL)
-                        .apply {
-                            addAll(
-                                benchmarkResults
-                                    .flatMap { result -> result.blockRows }
-                                    .flatMap { blockRow -> blockRow.avgData.keys }
-                            )
-                        }
-
                     this.focusGroups.addAll(focusGroups)
 
                     when (inputType) {

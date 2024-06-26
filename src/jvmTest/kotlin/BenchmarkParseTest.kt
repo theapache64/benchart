@@ -3,6 +3,7 @@ import core.BenchmarkResult.Companion.FOCUS_GROUP_ALL
 import core.BlockRow
 import core.InputType
 import core.InvalidBenchmarkDataException
+import core.ResultContainer
 import core.SupportedMetrics
 import model.FormData
 import org.junit.Assert.assertEquals
@@ -144,7 +145,7 @@ class BenchmarkParseTest {
                     )
                 ),
             ),
-        ).typify(InputType.NORMAL_BENCHMARK)
+        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -188,7 +189,7 @@ class BenchmarkParseTest {
                     )
                 ),
             ),
-        ).typify(InputType.NORMAL_BENCHMARK)
+        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -234,7 +235,7 @@ class BenchmarkParseTest {
                     )
                 ),
             ),
-        ).typify(InputType.NORMAL_BENCHMARK)
+        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -281,7 +282,7 @@ class BenchmarkParseTest {
                     )
                 )
             ),
-        ).typify(InputType.NORMAL_BENCHMARK)
+        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -329,7 +330,7 @@ class BenchmarkParseTest {
                     ),
                 ),
             ),
-        ).typify(InputType.NORMAL_BENCHMARK)
+        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -370,7 +371,7 @@ class BenchmarkParseTest {
                     )
                 )
             ),
-        ).typify(InputType.NORMAL_BENCHMARK)
+        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -500,7 +501,7 @@ class BenchmarkParseTest {
                     )
                 )
             ),
-        ).typify(InputType.NORMAL_BENCHMARK)
+        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -570,7 +571,7 @@ class BenchmarkParseTest {
                     )
                 )
             )
-        ).typify(InputType.GENERIC)
+        ).typify(InputType.GENERIC, setOf("SplashContent image took ms to render"))
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -615,7 +616,7 @@ class BenchmarkParseTest {
                     ),
                 )
             )
-        ).typify(InputType.GENERIC)
+        ).typify(InputType.GENERIC, setOf("x", "y", "z"))
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -645,7 +646,7 @@ class BenchmarkParseTest {
                     ),
                 )
             )
-        ).typify(InputType.GENERIC)
+        ).typify(InputType.GENERIC, setOf("2019", "2020"))
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -686,7 +687,7 @@ class BenchmarkParseTest {
                     ),
                 )
             )
-        ).typify(InputType.GENERIC)
+        ).typify(InputType.GENERIC, setOf("apple", "orange"))
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -716,7 +717,7 @@ class BenchmarkParseTest {
                     ),
                 )
             )
-        ).typify(InputType.GENERIC)
+        ).typify(InputType.GENERIC, setOf("splash time is", "startup time is"))
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -846,7 +847,7 @@ class BenchmarkParseTest {
                     )
                 )
             ),
-        ).typify(InputType.NORMAL_BENCHMARK)
+        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -892,7 +893,7 @@ class BenchmarkParseTest {
                     ),
                 )
             )
-        ).typify(InputType.GENERIC)
+        ).typify(InputType.GENERIC, setOf("orange", "apple"))
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -926,31 +927,59 @@ class BenchmarkParseTest {
                     BlockRow(
                         title = "before",
                         fullData = mapOf(
-                            "1" to listOf(100f),
-                            "2" to listOf(200f),
-                            "3" to listOf(60f),
+                            "1st" to listOf(100f),
+                            "2nd" to listOf(200f),
+                            "3rd" to listOf(60f),
                         )
                     ),
                     BlockRow(
                         title = "after",
                         fullData = mapOf(
-                            "1" to listOf(300f),
-                            "2" to listOf(400f),
-                            "3" to listOf(500f),
+                            "1st" to listOf(300f),
+                            "2nd" to listOf(400f),
+                            "3rd" to listOf(500f),
                         )
                     ),
                 )
             )
-        ).typify(InputType.GENERIC)
+        ).typify(InputType.GENERIC, setOf("orange", "apple"))
 
         assertEquals(expectedBenchmarkResult, actualResult)
+    }
+
+    @Test
+    fun checkBlockRowItemCountIntegrity() {
+        try {
+            BenchmarkResult.parse(
+                form = """
+                # before
+                orange = 100
+                orange = 200
+                orange = 60
+                apple = 500
+                apple = 600
+
+                # after
+                orange = 300
+                orange = 400
+                orange = 500
+                orange = 500
+                apple = 700
+                apple = 800
+            """.trimIndent().toFormData(),
+                focusGroup = FOCUS_GROUP_ALL
+            )
+            assert(false) { "Data integrity failed" }
+        } catch (e: Exception) {
+            assert(true)
+        }
     }
 
 
 }
 
-private fun List<BenchmarkResult>.typify(type: InputType): Pair<InputType, List<BenchmarkResult>> {
-    return Pair(type, this)
+private fun List<BenchmarkResult>.typify(type: InputType, focusGroups: Set<String>): ResultContainer {
+    return ResultContainer(type, this, setOf(FOCUS_GROUP_ALL, *focusGroups.toTypedArray()))
 }
 
 private fun String.toFormData(): FormData {

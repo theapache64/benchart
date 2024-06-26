@@ -45,10 +45,16 @@ enum class InputType {
     NORMAL_BENCHMARK
 }
 
+data class ResultContainer(
+    val inputType: InputType,
+    val benchmarkResults: List<BenchmarkResult>,
+    val focusGroups: Set<String>
+)
+
 data class BenchmarkResult(
     val title: String,
     val testName: String?,
-    val blockRows: List<BlockRow>,
+    val blockRows: List<BlockRow>
 ) {
     companion object {
         const val FOCUS_GROUP_ALL = "All"
@@ -59,7 +65,7 @@ data class BenchmarkResult(
         private val genericTitleStripRegEx = "\\W+".toRegex()
         private val testNameRegex = "[A-Z].*_[a-z].*".toRegex()
 
-        fun parse(form: FormData, focusGroup: String): Pair<InputType, List<BenchmarkResult>>? {
+        fun parse(form: FormData, focusGroup: String): ResultContainer? {
 
             val blocks = form.data
                 .split("\n").joinToString(separator = "\n") { it.trim() }
@@ -73,6 +79,7 @@ data class BenchmarkResult(
             println("parsing machine generated benchmark input...")
             val benchmarkResults = mutableListOf<BenchmarkResult>()
 
+            val focusGroups = mutableSetOf(FOCUS_GROUP_ALL)
             for ((index, block) in blocks.withIndex()) {
                 println("block: '$block'")
                 val lines = block.split("\n").map { it.trim() }
@@ -115,6 +122,8 @@ data class BenchmarkResult(
                         if (isMetricAlreadyAdded) {
                             throw InvalidBenchmarkDataException("Two $metricName found in block ${index + 1}. Expected only one")
                         }
+
+                        focusGroups.add(metricName)
                         blockRows.add(
                             BlockRow(
                                 title = metricName,
@@ -143,23 +152,29 @@ data class BenchmarkResult(
                 }
             }
 
-            return Pair(InputType.NORMAL_BENCHMARK, benchmarkResults)
+            return ResultContainer(InputType.NORMAL_BENCHMARK, benchmarkResults, focusGroups)
         }
 
         private fun parseGenericInput(
             blocks: List<String>,
             focusGroup: String
-        ): Pair<InputType, List<BenchmarkResult>> {
-            return Pair(InputType.GENERIC, parseMultiLineGenericInput(blocks, focusGroup))
+        ): ResultContainer {
+            val (focusGroups, benchmarkResults) = parseMultiLineGenericInput(blocks, focusGroup)
+            return ResultContainer(
+                InputType.GENERIC,
+                benchmarkResults,
+                focusGroups
+            )
         }
 
         private fun createChartTitle(blockRows: MutableList<BlockRow>): String {
             return blockRows.joinToString(separator = " vs ") { it.title }
         }
 
-        private fun parseMultiLineGenericInput(blocks: List<String>, focusGroup: String): List<BenchmarkResult> {
+        private fun parseMultiLineGenericInput(blocks: List<String>, focusGroup: String): Pair<Set<String>, List<BenchmarkResult>> {
             val benchmarkResults = mutableListOf<BenchmarkResult>()
             val blockRows = mutableListOf<BlockRow>()
+            val focusGroups = mutableSetOf(FOCUS_GROUP_ALL)
             for ((index, block) in blocks.withIndex()) {
                 val lines = block.split("\n").map { it.trim() }
                 var title: String? = null
@@ -172,7 +187,9 @@ data class BenchmarkResult(
                     }
 
                     val textNumberLine = TextNumberLine.parse(line)
-                    val genericTitle = parseGenericTitle(textNumberLine.text)
+                    val genericTitle = parseGenericTitle(textNumberLine.text).also {
+                        focusGroups.add(it)
+                    }
                     valuesMap.getOrPut(genericTitle) { mutableListOf() }.add(textNumberLine.number)
                 }
 
@@ -203,9 +220,9 @@ data class BenchmarkResult(
             )
 
             return if (focusGroup == FOCUS_GROUP_ALL) {
-                benchmarkResults
+                Pair(focusGroups, benchmarkResults)
             } else {
-                focus(benchmarkResults, focusGroup)
+                Pair(focusGroups,focus(benchmarkResults, focusGroup))
             }
         }
 
@@ -218,7 +235,7 @@ data class BenchmarkResult(
                         BlockRow(
                             title = blockRow.title,
                             fullData = blockRow.fullData[focusGroup]?.mapIndexed { index, value ->
-                                Pair((index+1).toString(), listOf(value))
+                                Pair(getPositionText(index+1), listOf(value))
                             }?.toMap() ?: error("Invalid focus group '$focusGroup' for ${blockRow.title}")
                         )
                     )
@@ -234,6 +251,18 @@ data class BenchmarkResult(
             return newBenchmarkResult
         }
 
+        private fun getPositionText(index: Int): String {
+            val suffix = when {
+                index % 100 in 11..13 -> "th"
+                index % 10 == 1 -> "st"
+                index % 10 == 2 -> "nd"
+                index % 10 == 3 -> "rd"
+                else -> "th"
+            }
+            return "$index$suffix"
+        }
+
+
         private fun checkDataIntegrity(blockRows: List<BlockRow>) {
             if (blockRows.size >= 2) {
                 val originalValueOrder = blockRows.first().avgData.keys.toList()
@@ -244,6 +273,17 @@ data class BenchmarkResult(
                     val currentValueOrder = blockRow.avgData.keys.toList()
                     if (originalValueOrder != currentValueOrder) {
                         error("Invalid order. Expected '$originalValueOrder', but found '$currentValueOrder'")
+                    }
+                }
+            }
+
+            val keyLengthMap = mutableMapOf<String, Int>()
+            blockRows.forEach { blockRow ->
+                blockRow.fullData.forEach { (key, values) ->
+                    if(keyLengthMap.containsKey(key) && keyLengthMap[key] != values.size ){
+                        error("Item count mismatch. For '$key', ${keyLengthMap[key]} rows expected, but found ${values.size} in '${blockRow.title}' block")
+                    }else {
+                        keyLengthMap[key] = values.size
                     }
                 }
             }
@@ -299,6 +339,8 @@ data class BenchmarkResult(
             return metricKeys.find { this.startsWith(it) }
         }
     }
+
+
 }
 
 
