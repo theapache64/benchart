@@ -145,6 +145,11 @@ class HomeViewModel(
                     fullBenchmarkResults.addAll(benchmarkResults)
                     this.focusGroups.addAll(focusGroups)
 
+                    if(!focusGroups.contains(currentFocusedGroup)){
+                        currentFocusedGroup = FOCUS_GROUP_ALL
+                    }
+
+
                     when (inputType) {
                         InputType.GENERIC -> {
                             val newCharts = fullBenchmarkResults.toGenericChart()

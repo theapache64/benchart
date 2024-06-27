@@ -219,7 +219,7 @@ data class BenchmarkResult(
                 )
             )
 
-            return if (focusGroup == FOCUS_GROUP_ALL) {
+            return if (focusGroup == FOCUS_GROUP_ALL || focusGroup !in focusGroups) {
                 Pair(focusGroups, benchmarkResults)
             } else {
                 Pair(focusGroups,focus(benchmarkResults, focusGroup))
