@@ -145,7 +145,7 @@ class BenchmarkParseTest {
                     )
                 ),
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
+        ).typify(InputType.NORMAL_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -189,7 +189,7 @@ class BenchmarkParseTest {
                     )
                 ),
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
+        ).typify(InputType.NORMAL_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -235,7 +235,7 @@ class BenchmarkParseTest {
                     )
                 ),
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
+        ).typify(InputType.NORMAL_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -282,7 +282,7 @@ class BenchmarkParseTest {
                     )
                 )
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
+        ).typify(InputType.NORMAL_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -330,7 +330,7 @@ class BenchmarkParseTest {
                     ),
                 ),
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
+        ).typify(InputType.NORMAL_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -371,7 +371,7 @@ class BenchmarkParseTest {
                     )
                 )
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
+        ).typify(InputType.NORMAL_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -501,7 +501,7 @@ class BenchmarkParseTest {
                     )
                 )
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
+        ).typify(InputType.NORMAL_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -571,7 +571,7 @@ class BenchmarkParseTest {
                     )
                 )
             )
-        ).typify(InputType.GENERIC, setOf("SplashContent image took ms to render"))
+        ).typify(InputType.GENERIC, setOf())
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -616,7 +616,7 @@ class BenchmarkParseTest {
                     ),
                 )
             )
-        ).typify(InputType.GENERIC, setOf("x", "y", "z"))
+        ).typify(InputType.GENERIC, setOf())
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -646,7 +646,7 @@ class BenchmarkParseTest {
                     ),
                 )
             )
-        ).typify(InputType.GENERIC, setOf("2019", "2020"))
+        ).typify(InputType.GENERIC, setOf())
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -687,7 +687,7 @@ class BenchmarkParseTest {
                     ),
                 )
             )
-        ).typify(InputType.GENERIC, setOf("apple", "orange"))
+        ).typify(InputType.GENERIC, setOf())
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -717,7 +717,7 @@ class BenchmarkParseTest {
                     ),
                 )
             )
-        ).typify(InputType.GENERIC, setOf("splash time is", "startup time is"))
+        ).typify(InputType.GENERIC, setOf())
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -847,7 +847,7 @@ class BenchmarkParseTest {
                     )
                 )
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf("frameDurationCpuMs", "frameOverrunMs"))
+        ).typify(InputType.NORMAL_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -975,6 +975,26 @@ class BenchmarkParseTest {
         }
     }
 
+    @Test
+    fun focusGroupShouldBeEmptyForSingleRowItems() {
+
+        val resultContainer = BenchmarkResult.parse(
+            form = """
+                # before
+                orange = 100
+                apple = 500
+
+                # after
+                orange = 300
+                apple = 800
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
+        )
+        assertEquals(
+            setOf(FOCUS_GROUP_ALL),
+            resultContainer!!.focusGroups
+        )
+    }
 
 }
 
