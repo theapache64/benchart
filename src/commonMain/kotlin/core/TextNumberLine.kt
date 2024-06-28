@@ -8,7 +8,7 @@ data class TextNumberLine(
 ) {
     companion object {
         private val AVGIZER_REGEX = "\\(input count : .+\\)\$".toRegex()
-        fun parse(iLine: String): TextNumberLine {
+        fun parse(index : Int, iLine: String): TextNumberLine {
             // Quick support for https://theapache64.github.io/avgizer/
             val match = AVGIZER_REGEX.find(iLine)
             val line = if (match != null){
@@ -21,7 +21,7 @@ data class TextNumberLine(
                 .lastOrNull()
                 ?.groupValues
                 ?.firstOrNull()
-                ?: error("$line doesn't match the regex '${digitRegex.pattern}'")
+                ?: error("At line `${index+1}`, '$line' doesn't match the regex '${digitRegex.pattern}'")
             val numberIndex = line.lastIndexOf(number)
             val newLine = line.substring(0, numberIndex)
             return TextNumberLine(newLine, number.toFloat())

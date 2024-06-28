@@ -119,9 +119,10 @@ class HomeViewModel(
         }, delay)
     }
 
-    fun onFormChanged(newForm: FormData, shouldSelectUnsaved: Boolean = true) {
-        form = newForm
-        formRepo.storeFormData(newForm)
+    fun onFormChanged(unfilteredForm: FormData, shouldSelectUnsaved: Boolean = true) {
+        // filtering android log
+        form = unfilteredForm.copy(data = filterOutAndroidJunkLog(unfilteredForm.data))
+        formRepo.storeFormData(form)
 
         debounce<Unit>(
             func = {
@@ -135,17 +136,18 @@ class HomeViewModel(
                     blockNames.clear()
 
                     // refill
-                    val (inputType, benchmarkResults, focusGroups) = BenchmarkResult.parse(newForm, currentFocusedGroup) ?: run {
-                        println("failed to parse form")
-                        reset()
-                        errorMsg = ""
-                        return@debounce
-                    }
+                    val (inputType, benchmarkResults, focusGroups) = BenchmarkResult.parse(form, currentFocusedGroup)
+                        ?: run {
+                            println("failed to parse form")
+                            reset()
+                            errorMsg = ""
+                            return@debounce
+                        }
                     this.inputType = inputType
                     fullBenchmarkResults.addAll(benchmarkResults)
                     this.focusGroups.addAll(focusGroups)
 
-                    if(!focusGroups.contains(currentFocusedGroup)){
+                    if (!focusGroups.contains(currentFocusedGroup)) {
                         currentFocusedGroup = FOCUS_GROUP_ALL
                     }
 
@@ -185,6 +187,31 @@ class HomeViewModel(
             },
             300
         )
+    }
+
+    private fun filterOutAndroidJunkLog(data: String): String {
+        return data.split("\n")
+            .filterNot { line ->
+                // line removal
+                line.contains("PROCESS ENDED", ignoreCase = false) ||
+                        line.contains("PROCESS STARTED", ignoreCase = false)
+            }.joinToString(separator = "\n") {
+                // line manipulation
+                when {
+                    it.contains("startup type is: cold") -> {
+                        "startup type is: cold"
+                    }
+                    it.contains("startup type is: warm") -> {
+                        "startup type is: warm"
+                    }
+                    it.contains("startup type is: hot") -> {
+                        "startup type is: hot"
+                    }
+                    else -> { it }
+                }.trimStart()
+            }.also {
+                println("QuickTag: HomeViewModel:filterOutAndroidJunkLog: '$it'")
+            }
     }
 
     private fun reset() {

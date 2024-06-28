@@ -117,6 +117,7 @@ data class BenchmarkResult(
                     }
 
                     val metricName = line.findMetricKeyOrNull()
+                    println("QuickTag: BenchmarkResult:parse: metric name is $metricName")
                     if (metricName != null) {
                         val isMetricAlreadyAdded = blockRows.find { it.title == metricName } != null
                         if (isMetricAlreadyAdded) {
@@ -179,14 +180,18 @@ data class BenchmarkResult(
                 val lines = block.split("\n").map { it.trim() }
                 var title: String? = null
                 val valuesMap = mutableMapOf<String, MutableList<Float>>()
-                for (line in lines) {
+                for ((lineIndex, line) in lines.withIndex()) {
 
                     if (title == null && isHumanLine(line)) {
                         title = line
                         continue
                     }
 
-                    val textNumberLine = TextNumberLine.parse(line)
+                    if(line.shouldSkip()){
+                        continue
+                    }
+
+                    val textNumberLine = TextNumberLine.parse(lineIndex,line)
                     val genericTitle = parseGenericTitle(textNumberLine.text).also {
                         focusGroups.add(it)
                     }
@@ -338,10 +343,17 @@ data class BenchmarkResult(
         private fun String.findMetricKeyOrNull(): String? {
             return metricKeys.find { this.startsWith(it) }
         }
+
+        private fun String.shouldSkip(): Boolean {
+            return this == "startup type is: cold" || this == "startup type is: warm" || this == "startup type is: hot"
+        }
     }
 
 
+
+
 }
+
 
 
 private fun FormData.isGenericInput(): Boolean {
