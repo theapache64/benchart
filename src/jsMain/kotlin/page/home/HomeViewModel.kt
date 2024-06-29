@@ -74,6 +74,9 @@ class HomeViewModel(
     var blockNames = mutableStateListOf<String>()
         private set
 
+    var avgOfCount by mutableStateOf<Int>(-1)
+        private set
+
     var summaries = mutableStateListOf<Summary>()
         private set
 
@@ -152,6 +155,16 @@ class HomeViewModel(
                     }
 
 
+                    avgOfCount = benchmarkResults
+                        .flatMap {
+                            it.blockRows.map { blockRow ->
+                                blockRow.fullData.map { fullData ->
+                                    fullData.value.size
+                                }
+                            }
+                        }.flatten().takeIf { it.isNotEmpty() }?.min() ?: -1
+
+
                     when (inputType) {
                         InputType.GENERIC -> {
                             val newCharts = fullBenchmarkResults.toGenericChart()
@@ -208,7 +221,7 @@ class HomeViewModel(
                 // line manipulation
                 var line = it.replace(fullTimestampRegex, "").trimStart()
                 line = line.replace(compactTimestampRegex, "").trimStart()
-                if(line.startsWith("System.out ")){
+                if (line.startsWith("System.out ")) {
                     line = line.replace("System.out ", "").trimStart()
                 }
                 line = line.replace(logLevelRegex, "").trimStart()
@@ -243,6 +256,7 @@ class HomeViewModel(
         summaries.clear()
         bestAggSummary = null
         worstAggSummary = null
+        avgOfCount = -1
         updateSummary()
     }
 

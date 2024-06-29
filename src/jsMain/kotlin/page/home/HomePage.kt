@@ -88,7 +88,8 @@ fun HomePageUi(
                             )
                         }
                     },
-                    summaries = viewModel.summaries
+                    summaries = viewModel.summaries,
+                    avgOfCount = viewModel.avgOfCount
                 )
             }
 

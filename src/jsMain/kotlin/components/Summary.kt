@@ -8,7 +8,22 @@ import org.jetbrains.compose.web.attributes.ButtonType
 import org.jetbrains.compose.web.attributes.selected
 import org.jetbrains.compose.web.attributes.type
 import org.jetbrains.compose.web.css.fontWeight
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.AttrBuilderContext
+import org.jetbrains.compose.web.dom.Br
+import org.jetbrains.compose.web.dom.Button
+import org.jetbrains.compose.web.dom.ContentBuilder
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.ElementBuilder
+import org.jetbrains.compose.web.dom.H3
+import org.jetbrains.compose.web.dom.Li
+import org.jetbrains.compose.web.dom.Option
+import org.jetbrains.compose.web.dom.P
+import org.jetbrains.compose.web.dom.Select
+import org.jetbrains.compose.web.dom.Small
+import org.jetbrains.compose.web.dom.Span
+import org.jetbrains.compose.web.dom.TagElement
+import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.Ul
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
@@ -36,6 +51,7 @@ data class Summary(
 fun SummaryContainer(
     selector: @Composable () -> Unit,
     summaries: List<Summary>,
+    avgOfCount: Int
 ) {
 
     selector()
@@ -43,7 +59,7 @@ fun SummaryContainer(
 
     for (summary in summaries) {
         key(summary.title) {
-            SummaryUi(summary.title, summary.nodes)
+            SummaryUi(summary.title, avgOfCount, summary.nodes)
             Br()
         }
     }
@@ -51,8 +67,8 @@ fun SummaryContainer(
 
 @Composable
 fun SummarySelector(
-    bestButtonLabel  : String,
-    worstButtonLabel : String,
+    bestButtonLabel: String,
+    worstButtonLabel: String,
     onBestClicked: () -> Unit,
     onWorstClicked: () -> Unit,
     blockNames: List<String>,
@@ -192,13 +208,20 @@ fun Strong(
 ) = TagElement(elementBuilder = Strong, applyAttrs = attrs, content = content)
 
 @Composable
-fun SummaryUi(title: String, summary: List<SummaryNode>) {
+fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>) {
     Div(
         attrs = {
             classes("row")
         }
     ) {
-        H3 { Text(title) }
+        H3 {
+            Text(title)
+            if (avgOfCount > 1) {
+                Small {
+                    Text(" (average of $avgOfCount)")
+                }
+            }
+        }
         Ul {
             summary.forEach { node ->
                 Li {
