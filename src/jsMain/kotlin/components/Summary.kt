@@ -7,7 +7,9 @@ import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.attributes.ButtonType
 import org.jetbrains.compose.web.attributes.selected
 import org.jetbrains.compose.web.attributes.type
+import org.jetbrains.compose.web.css.fontSize
 import org.jetbrains.compose.web.css.fontWeight
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.AttrBuilderContext
 import org.jetbrains.compose.web.dom.Br
 import org.jetbrains.compose.web.dom.Button
@@ -217,7 +219,14 @@ fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>) {
         H3 {
             Text(title)
             if (avgOfCount > 1) {
-                Small {
+                Small(
+                    attrs = {
+                        classes("text-muted")
+                        style {
+                            fontSize(18.px)
+                        }
+                    }
+                ) {
                     Text(" (average of $avgOfCount)")
                 }
             }

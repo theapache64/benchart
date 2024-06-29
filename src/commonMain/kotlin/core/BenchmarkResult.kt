@@ -190,7 +190,7 @@ data class BenchmarkResult(
                         continue
                     }
 
-                    val textNumberLine = TextNumberLine.parse(lineIndex, line)
+                    val textNumberLine = TextNumberLine.parse(lineIndex, line) ?: continue
                     val genericTitle = parseGenericTitle(textNumberLine.text)
                     valuesMap.getOrPut(genericTitle) { mutableListOf() }.add(textNumberLine.number)
                 }
