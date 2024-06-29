@@ -189,6 +189,15 @@ class HomeViewModel(
         )
     }
 
+
+    // timestamp eg : 2024-06-29 11:30:46.641
+    val fullTimestampRegex = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}".toRegex()
+
+    // compact timestamp eg: 11:30:46.865
+    val compactTimestampRegex = "\\d{2}:\\d{2}:\\d{2}\\.\\d{3}".toRegex()
+
+    val logLevelRegex = "^(I|D|E|W|V)  ".toRegex()
+
     private fun filterOutAndroidJunkLog(data: String): String {
         return data.split("\n")
             .filterNot { line ->
@@ -197,18 +206,30 @@ class HomeViewModel(
                         line.contains("PROCESS STARTED", ignoreCase = false)
             }.joinToString(separator = "\n") {
                 // line manipulation
-                when {
-                    it.contains("startup type is: cold") -> {
+                var line = it.replace(fullTimestampRegex, "").trimStart()
+                line = line.replace(compactTimestampRegex, "").trimStart()
+                if(line.startsWith("System.out ")){
+                    line = line.replace("System.out ", "").trimStart()
+                }
+                line = line.replace(logLevelRegex, "").trimStart()
+                line = when {
+                    line.contains("startup type is: cold") -> {
                         "startup type is: cold"
                     }
-                    it.contains("startup type is: warm") -> {
+
+                    line.contains("startup type is: warm") -> {
                         "startup type is: warm"
                     }
-                    it.contains("startup type is: hot") -> {
+
+                    line.contains("startup type is: hot") -> {
                         "startup type is: hot"
                     }
-                    else -> { it }
+
+                    else -> {
+                        line
+                    }
                 }.trimStart()
+                line
             }.also {
                 println("QuickTag: HomeViewModel:filterOutAndroidJunkLog: '$it'")
             }
