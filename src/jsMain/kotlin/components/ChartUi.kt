@@ -62,6 +62,7 @@ fun ChartUi(
                         println("labels: ${it.toList()}")
                     }
                     datasets = dataSets.toTypedArray()
+
                 }
                 this.options = jso {
                     plugins = jso {
@@ -69,7 +70,14 @@ fun ChartUi(
                             display = true
                         }
                     }
+                    scales = jso {
+                        y = jso {
+                            beginAtZero = true
+                        }
+                    }
                 }
+
+
             })
             onDispose {
                 chart.destroy()
