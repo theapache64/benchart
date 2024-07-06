@@ -6,7 +6,12 @@ import androidx.compose.runtime.DisposableEffect
 import chartjs.Type
 import core.GroupMap
 import jso
-import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.css.height
+import org.jetbrains.compose.web.css.maxHeight
+import org.jetbrains.compose.web.css.maxWidth
+import org.jetbrains.compose.web.css.percent
+import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.css.width
 import org.jetbrains.compose.web.dom.Canvas
 import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.Text
@@ -15,9 +20,10 @@ import org.jetbrains.compose.web.dom.Text
 fun ChartUi(
     isColorMapEnabled: Boolean,
     groupMap: GroupMap,
-    chart: model.Chart,
+    chartModel: model.Chart,
+    onDotClicked : (focusGroup : String) -> Unit
 ) {
-    H3 { Text("${chart.emoji} ${chart.label}") }
+    H3 { Text("${chartModel.emoji} ${chartModel.label}") }
 
     // Charts
     Canvas(
@@ -31,9 +37,9 @@ fun ChartUi(
             }
         }
     ) {
-        DisposableEffect(chart, isColorMapEnabled) {
+        DisposableEffect(chartModel, isColorMapEnabled) {
             val dataSets = mutableListOf<Chart.ChartDataSets>()
-            for ((legend, values) in chart.dataSets) {
+            for ((legend, values) in chartModel.dataSets) {
 
                 dataSets.add(
                     jso {
@@ -57,10 +63,9 @@ fun ChartUi(
             }
             val chart = Chart(scopeElement, jso {
                 type = Type.line
+                val chartLabels = chartModel.dataSets.values.flatMap { it.keys }.toSet().toTypedArray()
                 this.data = jso {
-                    labels = chart.dataSets.values.flatMap { it.keys }.toSet().toTypedArray().also {
-                        println("labels: ${it.toList()}")
-                    }
+                    labels = chartLabels
                     datasets = dataSets.toTypedArray()
 
                 }
@@ -73,6 +78,15 @@ fun ChartUi(
                     scales = jso {
                         y = jso {
                             beginAtZero = true
+                        }
+                    }
+                    onClick = { event: dynamic, elements: Array<dynamic> ->
+                        if (elements.isNotEmpty()) {
+                            val element = elements[0]
+                            val datasetIndex = element.datasetIndex
+                            val index = element.index
+                            val focusGroup = chartLabels[index as Int]
+                            onDotClicked(focusGroup)
                         }
                     }
                 }

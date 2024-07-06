@@ -444,6 +444,12 @@ class HomeViewModel(
         selectedBlockNameTwo = worstAggSummary?.blockTwoName
         updateSummary()
     }
+
+    fun onDotClicked(focusGroup: String) {
+        if(focusGroups.contains(focusGroup)){
+            onFocusGroupSelected(focusGroup)
+        }
+    }
 }
 
 data class AggSummary(

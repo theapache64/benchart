@@ -207,8 +207,9 @@ fun HomePageUi(
                                     ChartUi(
                                         isColorMapEnabled = viewModel.form.isAutoGroupEnabled,
                                         groupMap = mainCharts.groupMap,
-                                        chart = chart
-                                    )
+                                        chartModel = chart,
+                                        onDotClicked = viewModel::onDotClicked
+                                    ,)
                                 }
                             }
                         }

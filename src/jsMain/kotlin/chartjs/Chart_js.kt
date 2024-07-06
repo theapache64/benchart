@@ -322,7 +322,7 @@ external class Chart {
             set(value) = definedExternally
         val legendCallback: ((chart: Chart) -> String)?
         val onHover: ((event: MouseEvent, activeElements: Array<Any>) -> Any)?
-        val onClick: ((event: MouseEvent, activeElements: Array<Any>) -> Any)?
+        var onClick: ((event: MouseEvent, activeElements: Array<Any>) -> Any)?
         val onResize: ((newSize: ChartSize) -> Unit)?
         var title: ChartTitleOptions?
             get() = definedExternally
