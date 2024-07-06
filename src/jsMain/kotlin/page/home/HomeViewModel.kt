@@ -16,6 +16,7 @@ import core.toGenericChart
 import kotlinx.browser.window
 import model.ChartsBundle
 import model.FormData
+import org.w3c.dom.events.KeyboardEvent
 import repo.BenchmarkRepo
 import repo.FormRepo
 import utils.DefaultValues
@@ -103,6 +104,14 @@ class HomeViewModel(
 
     init {
         refreshBenchmarks()
+
+        // set key press listener on window
+        window.addEventListener("keydown", {
+            val event = it.unsafeCast<KeyboardEvent>()
+            if (event.key == "Escape") {
+                onFocusGroupSelected(FOCUS_GROUP_ALL)
+            }
+        })
     }
 
 
@@ -446,7 +455,7 @@ class HomeViewModel(
     }
 
     fun onDotClicked(focusGroup: String) {
-        if(focusGroups.contains(focusGroup)){
+        if (focusGroups.contains(focusGroup)) {
             onFocusGroupSelected(focusGroup)
         }
     }
