@@ -211,6 +211,9 @@ class HomeViewModel(
 
     val logLevelRegex = "^(I|D|E|W|V)  ".toRegex()
 
+    /**
+     * this is a custom logic to filter out android junk logs (personal)
+     */
     private fun filterOutAndroidJunkLog(data: String): String {
         return data.split("\n")
             .filterNot { line ->

@@ -275,12 +275,12 @@ data class BenchmarkResult(
 
         private fun checkDataIntegrity(blockRows: List<BlockRow>) {
             if (blockRows.size >= 2) {
-                val originalValueOrder = blockRows.first().avgData.keys.toList()
+                val originalValueOrder = blockRows.first().avgData.keys.toList().sorted()
                 for ((index, blockRow) in blockRows.withIndex()) {
                     if (index == 0) {
                         continue
                     }
-                    val currentValueOrder = blockRow.avgData.keys.toList()
+                    val currentValueOrder = blockRow.avgData.keys.toList().sorted()
                     if (originalValueOrder != currentValueOrder) {
                         error("Invalid order. Expected '$originalValueOrder', but found '$currentValueOrder'")
                     }
