@@ -78,6 +78,9 @@ class HomeViewModel(
     var avgOfCount by mutableStateOf<Int>(-1)
         private set
 
+    var isAutoGroupButtonVisible by mutableStateOf<Boolean>(false)
+        private set
+
     var summaries = mutableStateListOf<Summary>()
         private set
 
@@ -92,6 +95,7 @@ class HomeViewModel(
 
     var worstAggSummary by mutableStateOf<AggSummary?>(null)
         private set
+
 
     var form by mutableStateOf(
         formRepo.getFormData() ?: FormData(
@@ -159,6 +163,7 @@ class HomeViewModel(
                     fullBenchmarkResults.addAll(benchmarkResults)
                     this.focusGroups.addAll(focusGroups)
 
+
                     if (!focusGroups.contains(currentFocusedGroup)) {
                         currentFocusedGroup = FOCUS_GROUP_ALL
                     }
@@ -199,7 +204,9 @@ class HomeViewModel(
                         }
                     }
 
-
+                    val autoGroupMapSize = chartsBundle?.groupMap?.autoGroupMap?.size ?: 0
+                    val wordColorMapSize = chartsBundle?.groupMap?.wordColorMap?.size ?: 0
+                    isAutoGroupButtonVisible = autoGroupMapSize != wordColorMapSize
                     errorMsg = ""
                 } catch (e: Throwable) {
                     e.printStackTrace()

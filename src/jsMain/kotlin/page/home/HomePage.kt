@@ -128,15 +128,17 @@ fun HomePageUi(
                                 }
                             ) {
 
-                                Div(
-                                    attrs = {
-                                        classes("col-md-2")
+                                if(viewModel.isAutoGroupButtonVisible){
+                                    Div(
+                                        attrs = {
+                                            classes("col-md-2")
+                                        }
+                                    ) {
+                                        AutoGroup(
+                                            isEnabled = viewModel.form.isAutoGroupEnabled,
+                                            onButtonClicked = viewModel::onToggleAutoGroupClicked
+                                        )
                                     }
-                                ) {
-                                    AutoGroup(
-                                        isEnabled = viewModel.form.isAutoGroupEnabled,
-                                        onButtonClicked = viewModel::onToggleAutoGroupClicked
-                                    )
                                 }
 
                                 if (viewModel.focusGroups.size > 1) {
