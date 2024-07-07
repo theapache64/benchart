@@ -282,7 +282,7 @@ data class BenchmarkResult(
                     }
                     val currentValueOrder = blockRow.avgData.keys.toList().sorted()
                     if (originalValueOrder != currentValueOrder) {
-                        error("Invalid order. Expected '$originalValueOrder', but found '$currentValueOrder'")
+                        error("Missing ${originalValueOrder.minus(currentValueOrder.toSet())} in '${blockRow.title}' block")
                     }
                 }
             }
