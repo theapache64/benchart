@@ -432,7 +432,10 @@ class HomeViewModel(
                     index,
                     chunk
                 )
-            }catch (e : Exception){
+                // TODO: RESTART POINT : WHY IT SHOWS FAILED TO EXECUTE ERROR?  https://support.hcltechsw.com/csm?id=kb_article&sysparm_article=KB0106294
+            }catch (e : Throwable){
+                e.printStackTrace()
+                println("QuickTag: HomeViewModel:onShareClicked: I AM THE ERROR: ${e.message}")
                 throw Exception("Couldn't store data. '${e.message}'")
             }
         }
