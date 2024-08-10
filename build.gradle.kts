@@ -16,7 +16,20 @@ repositories {
 kotlin {
     jvm()
     js(IR) {
-        browser()
+        nodejs {
+            testTask {
+                useMocha {
+                    timeout = "9s"
+                }
+            }
+        }
+        browser {
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
+        }
         binaries.executable()
     }
     sourceSets {

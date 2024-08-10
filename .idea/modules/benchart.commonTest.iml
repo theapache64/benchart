@@ -6,6 +6,7 @@
         <additionalVisibleModuleNames>benchart:commonMain</additionalVisibleModuleNames>
         <newMppModelJpsModuleKind>SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <externalSystemTestTasks>
+          <externalSystemTestTask>jsNodeTest|:|js|js</externalSystemTestTask>
           <externalSystemTestTask>jsBrowserTest|:|js|js</externalSystemTestTask>
           <externalSystemTestTask>jvmTest|:|jvm|jvm</externalSystemTestTask>
         </externalSystemTestTasks>

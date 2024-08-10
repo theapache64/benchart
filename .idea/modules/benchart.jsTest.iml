@@ -9,6 +9,7 @@
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <externalSystemTestTasks>
+          <externalSystemTestTask>jsNodeTest|:|js|js</externalSystemTestTask>
           <externalSystemTestTask>jsBrowserTest|:|js|js</externalSystemTestTask>
         </externalSystemTestTasks>
         <compilerSettings>
