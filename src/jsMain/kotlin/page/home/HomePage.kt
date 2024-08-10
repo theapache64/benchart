@@ -25,10 +25,11 @@ import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.Text
 import repo.BenchmarkRepoImpl
 import repo.FormRepoImpl
+import repo.GoogleFormRepoImpl
 
 @Composable
 fun HomePageUi(
-    viewModel: HomeViewModel = remember { HomeViewModel(BenchmarkRepoImpl(), FormRepoImpl()) }
+    viewModel: HomeViewModel = remember { HomeViewModel(BenchmarkRepoImpl(), FormRepoImpl(), GoogleFormRepoImpl()) }
 ) {
     Div(
         attrs = {
@@ -66,6 +67,7 @@ fun HomePageUi(
                     onSavedBenchmarkChanged = viewModel::onSavedBenchmarkChanged,
                     onLoadBenchmarkClicked = viewModel::onLoadBenchmarkClicked,
                     onDeleteBenchmarkClicked = viewModel::onDeleteBenchmarkClicked,
+                    onShareClicked = viewModel::onShareClicked
                 )
 
                 Br()

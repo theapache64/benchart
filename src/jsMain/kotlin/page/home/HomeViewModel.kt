@@ -19,7 +19,9 @@ import model.FormData
 import org.w3c.dom.events.KeyboardEvent
 import repo.BenchmarkRepo
 import repo.FormRepo
+import repo.GoogleFormRepo
 import utils.DefaultValues
+import utils.RandomString
 import utils.SummaryUtils
 
 external fun setTimeout(handler: dynamic, timeout: Int): Int
@@ -29,7 +31,8 @@ external fun clearTimeout(timeoutId: Int)
 @Stable
 class HomeViewModel(
     private val benchmarkRepo: BenchmarkRepo,
-    private val formRepo: FormRepo
+    private val formRepo: FormRepo,
+    private val googleFormRepo: GoogleFormRepo
 ) {
 
     companion object {
@@ -414,6 +417,30 @@ class HomeViewModel(
         refreshBenchmarks()
     }
 
+    fun onShareClicked(formData: FormData) {
+
+        // We need to split the input into chunk of 30,000 character
+        val chunks = formData.data.chunked(30000)
+        // since we're using the millis as Random see 10 should be enough 🤔
+        val shareKey = RandomString.getRandomString(10)
+
+        // Submit the Google form to insert the data to google sheet
+        for ((index, chunk) in chunks.withIndex()) {
+            try {
+                googleFormRepo.insert(
+                    shareKey,
+                    index,
+                    chunk
+                )
+            }catch (e : Exception){
+                throw Exception("Couldn't store data. '${e.message}'")
+            }
+        }
+
+        // show a success message to user that the URL has been copied to the clipboard
+        println("QuickTag: HomeViewModel:onShareClicked: Huhhaaa!!! shareKey: $shareKey")
+    }
+
     fun onLoadBenchmarkClicked(savedBenchmarkNode: SavedBenchmarkNode) {
         val newForm = form.copy(data = savedBenchmarkNode.value)
         onFormChanged(newForm, shouldSelectUnsaved = false)
@@ -466,6 +493,7 @@ class HomeViewModel(
             onFocusGroupSelected(focusGroup)
         }
     }
+
 }
 
 data class AggSummary(
