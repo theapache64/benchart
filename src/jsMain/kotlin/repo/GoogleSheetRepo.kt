@@ -79,16 +79,6 @@ class GoogleSheetRepoImpl : GoogleSheetRepo {
                         } else {
                             onFailed("Invalid shareKey '$shareKey'")
                         }
-                        console.log("index is $firstLineBreakIndex")
-                        console.log("lines: '$responseLines'")
-                        /*if (responseLines.size == 2) {
-                            // chunk exist
-                            val chunkSize = responseLines[1].replace("\"", "").toInt()
-                            onChunkSize(chunkSize)
-                        } else {
-                            // share doesn't exist
-                            onFailed("No chunk exist for shareKey '$shareKey'")
-                        }*/
                     } else {
                         onFailed("Share request failed")
                     }

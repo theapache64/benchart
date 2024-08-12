@@ -124,9 +124,13 @@ class HomeViewModel(
 
         // Reading shareKey
         val currentUrl = window.location.href
-        val shareKey = currentUrl.substring(currentUrl.lastIndexOf("#") + 1).trim();
+        val shareKey = if(currentUrl.contains("#")){
+            currentUrl.substring(currentUrl.lastIndexOf("#") + 1).trim()
+        }else{
+            null
+        }
         println("QuickTag: HomeViewModel:: shareKey: '$shareKey'")
-        if (shareKey.isNotBlank()) {
+        if (!shareKey.isNullOrBlank()) {
             // Load input for the shareKey
             googleSheetRepo.getSharedInput(
                 shareKey = shareKey,
@@ -438,45 +442,51 @@ class HomeViewModel(
     }
 
     fun onShareClicked(formData: FormData) {
+        debounce<Unit>(
+            func = {
+                // We need to split the input into chunk of 30,000 character
+                val chunks = formData.data.chunked(30000)
+                // since we're using the millis as Random see 10 should be enough 🤔
+                val shareKey = RandomString.getRandomString(10)
 
-        // We need to split the input into chunk of 30,000 character
-        val chunks = formData.data.chunked(30000)
-        // since we're using the millis as Random see 10 should be enough 🤔
-        val shareKey = RandomString.getRandomString(10)
-
-        // Submit the Google form to insert the data to google sheet
-        for ((index, chunk) in chunks.withIndex()) {
-            try {
-                googleFormRepo.insert(
-                    shareKey,
-                    index,
-                    chunk
-                )
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                // ignoring
-            }
-        }
-
-
-        // show a success message to user that the URL has been copied to the clipboard
-        println("QuickTag: HomeViewModel:onShareClicked: Huhhaaa!!! shareKey: $shareKey. Checking data integrity...")
-
-        // using shareKey and chunkSize to verify the upload
-        googleSheetRepo.getChunkSize(
-            shareKey = shareKey,
-            onChunkSize = { remoteChunkSize ->
-                if (remoteChunkSize == chunks.size) {
-                    // Data integrity ✅
-                    println("QuickTag: HomeViewModel:onShareClicked: SHARE SUCCESS!")
-                    println("${window.location.origin}/#$shareKey")
-                } else {
-                    window.alert("Share failed. Expected ${chunks.size} chunk(s) but found $remoteChunkSize")
+                // Submit the Google form to insert the data to google sheet
+                for ((index, chunk) in chunks.withIndex()) {
+                    try {
+                        googleFormRepo.insert(
+                            shareKey,
+                            index,
+                            chunk
+                        )
+                    } catch (e: Throwable) {
+                        e.printStackTrace()
+                        // ignoring
+                    }
                 }
+
+                // show a success message to user that the URL has been copied to the clipboard
+                println("QuickTag: HomeViewModel:onShareClicked: Huhhaaa!!! shareKey: $shareKey. Checking data integrity...")
+
+                // using shareKey and chunkSize to verify the upload
+                googleSheetRepo.getChunkSize(
+                    shareKey = shareKey,
+                    onChunkSize = { remoteChunkSize ->
+                        if (remoteChunkSize == chunks.size) {
+                            // Data integrity ✅
+                            println("QuickTag: HomeViewModel:onShareClicked: SHARE SUCCESS!")
+                            window.prompt(
+                                message = "Your share URL is ready",
+                                default = "${window.location.origin}/#$shareKey"
+                            )
+                        } else {
+                            window.alert("Share failed. Expected ${chunks.size} chunk(s) but found $remoteChunkSize")
+                        }
+                    },
+                    onFailed = { reason ->
+                        window.alert("Share failed : $reason")
+                    }
+                )
             },
-            onFailed = { reason ->
-                window.alert("Share failed : $reason")
-            }
+            delay = 500
         )
 
 
