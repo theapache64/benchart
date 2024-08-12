@@ -480,7 +480,7 @@ class HomeViewModel(
                                 println("QuickTag: HomeViewModel:onShareClicked: SHARE SUCCESS!")
                                 window.prompt(
                                     message = "Ready to share, copy below URL",
-                                    default = "${window.location.origin}/#$shareKey"
+                                    default = "${window.location.origin}/benchart/#$shareKey"
                                 )
                             } else {
                                 window.alert("Share failed. Expected ${chunks.size} chunk(s) but found $remoteChunkSize")
