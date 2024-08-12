@@ -121,6 +121,24 @@ class HomeViewModel(
                 onFocusGroupSelected(FOCUS_GROUP_ALL)
             }
         })
+
+        // Reading shareKey
+        val currentUrl = window.location.href
+        val shareKey = currentUrl.substring(currentUrl.lastIndexOf("#") + 1).trim();
+        println("QuickTag: HomeViewModel:: shareKey: '$shareKey'")
+        if (shareKey.isNotBlank()) {
+            // Load input for the shareKey
+            googleSheetRepo.getSharedInput(
+                shareKey = shareKey,
+                onSharedInput = { sharedInput ->
+                    form = form.copy(data = sharedInput)
+                    onFormChanged(form)
+                },
+                onFailed = { message ->
+                    window.alert(message)
+                }
+            )
+        }
     }
 
 
@@ -434,7 +452,7 @@ class HomeViewModel(
                     index,
                     chunk
                 )
-            }catch (e : Throwable){
+            } catch (e: Throwable) {
                 e.printStackTrace()
                 // ignoring
             }
@@ -448,11 +466,11 @@ class HomeViewModel(
         googleSheetRepo.getChunkSize(
             shareKey = shareKey,
             onChunkSize = { remoteChunkSize ->
-                if(remoteChunkSize == chunks.size){
+                if (remoteChunkSize == chunks.size) {
                     // Data integrity ✅
                     println("QuickTag: HomeViewModel:onShareClicked: SHARE SUCCESS!")
                     println("${window.location.origin}/#$shareKey")
-                }else{
+                } else {
                     window.alert("Share failed. Expected ${chunks.size} chunk(s) but found $remoteChunkSize")
                 }
             },
