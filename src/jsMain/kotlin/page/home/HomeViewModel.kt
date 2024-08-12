@@ -21,6 +21,7 @@ import repo.BenchmarkRepo
 import repo.FormRepo
 import repo.GoogleFormRepo
 import repo.GoogleSheetRepo
+import repo.UserRepo
 import utils.DefaultValues
 import utils.RandomString
 import utils.SummaryUtils
@@ -34,7 +35,8 @@ class HomeViewModel(
     private val benchmarkRepo: BenchmarkRepo,
     private val formRepo: FormRepo,
     private val googleFormRepo: GoogleFormRepo,
-    private val googleSheetRepo: GoogleSheetRepo
+    private val googleSheetRepo: GoogleSheetRepo,
+    private val userRepo: UserRepo
 ) {
 
     companion object {
@@ -442,54 +444,58 @@ class HomeViewModel(
     }
 
     fun onShareClicked(formData: FormData) {
-        debounce<Unit>(
-            func = {
-                // We need to split the input into chunk of 30,000 character
-                val chunks = formData.data.chunked(30000)
-                // since we're using the millis as Random see 10 should be enough 🤔
-                val shareKey = RandomString.getRandomString(10)
+        val isAwareDataPublic = userRepo.isAwareShareIsPublic()
+        println("QuickTag: HomeViewModel:onShareClicked: isAwareDataPublic $isAwareDataPublic")
+        if(isAwareDataPublic){
+            debounce<Unit>(
+                func = {
+                    // We need to split the input into chunk of 30,000 character
+                    val chunks = formData.data.chunked(30000)
+                    // since we're using the millis as Random see 10 should be enough 🤔
+                    val shareKey = RandomString.getRandomString(10)
 
-                // Submit the Google form to insert the data to google sheet
-                for ((index, chunk) in chunks.withIndex()) {
-                    try {
-                        googleFormRepo.insert(
-                            shareKey,
-                            index,
-                            chunk
-                        )
-                    } catch (e: Throwable) {
-                        e.printStackTrace()
-                        // ignoring
-                    }
-                }
-
-                // show a success message to user that the URL has been copied to the clipboard
-                println("QuickTag: HomeViewModel:onShareClicked: Huhhaaa!!! shareKey: $shareKey. Checking data integrity...")
-
-                // using shareKey and chunkSize to verify the upload
-                googleSheetRepo.getChunkSize(
-                    shareKey = shareKey,
-                    onChunkSize = { remoteChunkSize ->
-                        if (remoteChunkSize == chunks.size) {
-                            // Data integrity ✅
-                            println("QuickTag: HomeViewModel:onShareClicked: SHARE SUCCESS!")
-                            window.prompt(
-                                message = "Your share URL is ready",
-                                default = "${window.location.origin}/#$shareKey"
+                    // Submit the Google form to insert the data to google sheet
+                    for ((index, chunk) in chunks.withIndex()) {
+                        try {
+                            googleFormRepo.insert(
+                                shareKey,
+                                index,
+                                chunk
                             )
-                        } else {
-                            window.alert("Share failed. Expected ${chunks.size} chunk(s) but found $remoteChunkSize")
+                        } catch (e: Throwable) {
+                            e.printStackTrace()
+                            // ignoring
                         }
-                    },
-                    onFailed = { reason ->
-                        window.alert("Share failed : $reason")
                     }
-                )
-            },
-            delay = 500
-        )
 
+                    // show a success message to user that the URL has been copied to the clipboard
+                    println("QuickTag: HomeViewModel:onShareClicked: Huhhaaa!!! shareKey: $shareKey. Checking data integrity...")
 
+                    // using shareKey and chunkSize to verify the upload
+                    googleSheetRepo.getChunkSize(
+                        shareKey = shareKey,
+                        onChunkSize = { remoteChunkSize ->
+                            if (remoteChunkSize == chunks.size) {
+                                // Data integrity ✅
+                                println("QuickTag: HomeViewModel:onShareClicked: SHARE SUCCESS!")
+                                window.prompt(
+                                    message = "Ready to share, copy below URL",
+                                    default = "${window.location.origin}/#$shareKey"
+                                )
+                            } else {
+                                window.alert("Share failed. Expected ${chunks.size} chunk(s) but found $remoteChunkSize")
+                            }
+                        },
+                        onFailed = { reason ->
+                            window.alert("Share failed : $reason")
+                        }
+                    )
+                },
+                delay = 500
+            )
+        }else{
+            js("var myModal = new bootstrap.Modal(document.getElementById('shareAwareModal'), {});myModal.show();")
+        }
     }
 
     fun onLoadBenchmarkClicked(savedBenchmarkNode: SavedBenchmarkNode) {
@@ -543,6 +549,12 @@ class HomeViewModel(
         if (focusGroups.contains(focusGroup)) {
             onFocusGroupSelected(focusGroup)
         }
+    }
+
+
+    fun onAwarePublicShare() {
+        userRepo.setAwareShareIsPublic(isAware = true)
+        onShareClicked(form)
     }
 
 }
