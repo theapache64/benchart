@@ -26,10 +26,11 @@ import org.jetbrains.compose.web.dom.Text
 import repo.BenchmarkRepoImpl
 import repo.FormRepoImpl
 import repo.GoogleFormRepoImpl
+import repo.GoogleSheetRepoImpl
 
 @Composable
 fun HomePageUi(
-    viewModel: HomeViewModel = remember { HomeViewModel(BenchmarkRepoImpl(), FormRepoImpl(), GoogleFormRepoImpl()) }
+    viewModel: HomeViewModel = remember { HomeViewModel(BenchmarkRepoImpl(), FormRepoImpl(), GoogleFormRepoImpl(), GoogleSheetRepoImpl()) }
 ) {
     Div(
         attrs = {

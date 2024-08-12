@@ -14,7 +14,7 @@ class GoogleFormRepoImpl : GoogleFormRepo {
 
     companion object {
         private const val FORM_SUBMISSION_URL =
-            "https://docs.ggggoogle.com/forms/d/e/1FAIpQLSfYy0ZnzlSot_3SpJ7GVK9umEpf3Dqzz1pQ7jyLUVd7jO2qCQ/formResponse"
+            "https://docs.google.com/forms/d/e/1FAIpQLSfYy0ZnzlSot_3SpJ7GVK9umEpf3Dqzz1pQ7jyLUVd7jO2qCQ/formResponse"
     }
 
     override fun insert(shareKey: String, chunkIndex: Int, inputChunk: String) {

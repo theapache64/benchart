@@ -20,6 +20,7 @@ import org.w3c.dom.events.KeyboardEvent
 import repo.BenchmarkRepo
 import repo.FormRepo
 import repo.GoogleFormRepo
+import repo.GoogleSheetRepo
 import utils.DefaultValues
 import utils.RandomString
 import utils.SummaryUtils
@@ -32,7 +33,8 @@ external fun clearTimeout(timeoutId: Int)
 class HomeViewModel(
     private val benchmarkRepo: BenchmarkRepo,
     private val formRepo: FormRepo,
-    private val googleFormRepo: GoogleFormRepo
+    private val googleFormRepo: GoogleFormRepo,
+    private val googleSheetRepo: GoogleSheetRepo
 ) {
 
     companion object {
@@ -432,16 +434,34 @@ class HomeViewModel(
                     index,
                     chunk
                 )
-                // TODO: RESTART POINT : WHY IT SHOWS FAILED TO EXECUTE ERROR?  https://support.hcltechsw.com/csm?id=kb_article&sysparm_article=KB0106294
             }catch (e : Throwable){
                 e.printStackTrace()
-                println("QuickTag: HomeViewModel:onShareClicked: I AM THE ERROR: ${e.message}")
-                throw Exception("Couldn't store data. '${e.message}'")
+                // ignoring
             }
         }
 
+
         // show a success message to user that the URL has been copied to the clipboard
-        println("QuickTag: HomeViewModel:onShareClicked: Huhhaaa!!! shareKey: $shareKey")
+        println("QuickTag: HomeViewModel:onShareClicked: Huhhaaa!!! shareKey: $shareKey. Checking data integrity...")
+
+        // using shareKey and chunkSize to verify the upload
+        googleSheetRepo.getChunkSize(
+            shareKey = shareKey,
+            onChunkSize = { remoteChunkSize ->
+                if(remoteChunkSize == chunks.size){
+                    // Data integrity ✅
+                    println("QuickTag: HomeViewModel:onShareClicked: SHARE SUCCESS!")
+                    println("${window.location.origin}/#$shareKey")
+                }else{
+                    window.alert("Share failed. Expected ${chunks.size} chunk(s) but found $remoteChunkSize")
+                }
+            },
+            onFailed = { reason ->
+                window.alert("Share failed : $reason")
+            }
+        )
+
+
     }
 
     fun onLoadBenchmarkClicked(savedBenchmarkNode: SavedBenchmarkNode) {
