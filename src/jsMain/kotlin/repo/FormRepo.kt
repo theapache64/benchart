@@ -28,7 +28,7 @@ class FormRepoImpl : FormRepo {
         val data = localStorage.getItem(KEY_AUTO_FORM_INPUT) ?: return null
         val isTestNameDetectionEnabled = localStorage.getItem(KEY_IS_TEST_NAME_DETECTION_ENABLED).toBoolean()
         val isAutoGroupEnabled = localStorage.getItem(KEY_IS_AUTO_GROUP_ENABLED).toBoolean()
-        return FormData(data, isTestNameDetectionEnabled, isAutoGroupEnabled)
+        return FormData(data, isTestNameDetectionEnabled, isAutoGroupEnabled, isLoading = true) // true because its not reached UI yet
     }
 
 }

@@ -25,6 +25,7 @@ import repo.UserRepo
 import utils.DefaultValues
 import utils.RandomString
 import utils.SummaryUtils
+import kotlin.js.Date
 
 external fun setTimeout(handler: dynamic, timeout: Int): Int
 external fun clearTimeout(timeoutId: Int)
@@ -43,6 +44,7 @@ class HomeViewModel(
         private const val ERROR_GENERIC = "Something went wrong!"
 
         // keys
+        const val RETRY_COUNT = 3
     }
 
     var savedBenchmarks by mutableStateOf<List<SavedBenchmarkNode>>(emptyList())
@@ -108,7 +110,8 @@ class HomeViewModel(
         FormData(
             data = "",
             isTestNameDetectionEnabled = false,
-            isAutoGroupEnabled = false
+            isAutoGroupEnabled = false,
+            isLoading = true
         )
     )
         private set
@@ -137,7 +140,7 @@ class HomeViewModel(
             googleSheetRepo.getSharedInput(
                 shareKey = shareKey,
                 onSharedInput = { sharedInput ->
-                    form = form.copy(data = sharedInput)
+                    form = form.copy(data = sharedInput, isLoading = false)
                     onFormChanged(form)
                 },
                 onFailed = { message ->
@@ -151,7 +154,7 @@ class HomeViewModel(
     }
 
     private fun loadDefaultForm() {
-        form = formRepo.getFormData() ?: form
+        form = (formRepo.getFormData() ?: form.copy(data = DefaultValues.form)).copy(isLoading = false)
     }
 
     private fun refreshBenchmarks() {
@@ -450,9 +453,12 @@ class HomeViewModel(
     }
 
     fun onShareClicked(formData: FormData) {
+
+        val startTime = Date().getTime()
         val isAwareDataPublic = userRepo.isAwareShareIsPublic()
         println("QuickTag: HomeViewModel:onShareClicked: isAwareDataPublic $isAwareDataPublic")
         if (isAwareDataPublic) {
+            form = form.copy(isLoading = true)
             debounce<Unit>(
                 func = {
                     // We need to split the input into chunk of 30,000 character
@@ -478,30 +484,67 @@ class HomeViewModel(
                     println("QuickTag: HomeViewModel:onShareClicked: Huhhaaa!!! shareKey: $shareKey. Checking data integrity...")
 
                     // using shareKey and chunkSize to verify the upload
-                    googleSheetRepo.getChunkSize(
-                        shareKey = shareKey,
-                        onChunkSize = { remoteChunkSize ->
-                            if (remoteChunkSize == chunks.size) {
-                                // Data integrity ✅
-                                println("QuickTag: HomeViewModel:onShareClicked: SHARE SUCCESS!")
-                                window.prompt(
-                                    message = "Ready to share, copy below URL",
-                                    default = "${window.location.origin}/benchart/#$shareKey"
-                                )
-                            } else {
-                                window.alert("Share failed. Expected ${chunks.size} chunk(s) but found $remoteChunkSize")
-                            }
-                        },
-                        onFailed = { reason ->
-                            window.alert("Share failed : $reason")
-                        }
-                    )
+                    retriedCount = 0;
+                    getChunkSize(shareKey, chunks, startTime)
+
                 },
                 delay = 500
             )
         } else {
             js("var myModal = new bootstrap.Modal(document.getElementById('shareAwareModal'), {});myModal.show();")
         }
+    }
+
+    private var retriedCount = 0
+    private fun getChunkSize(
+        shareKey: String,
+        chunks: List<String>,
+        startTime: Double,
+    ) {
+        retriedCount++
+        googleSheetRepo.getChunkSize(
+            shareKey = shareKey,
+            onChunkSize = { remoteChunkSize ->
+                if (remoteChunkSize == chunks.size) {
+                    // Data integrity ✅
+                    println("QuickTag: HomeViewModel:onShareClicked: SHARE SUCCESS!")
+                    println("QuickTag: HomeViewModel:onShareClicked: time took : ${Date().getTime() - startTime}ms")
+                    form = form.copy(isLoading = false)
+                    window.prompt(
+                        message = "Ready to share, copy below URL",
+                        default = "${window.location.origin}/benchart/#$shareKey"
+                    )
+                } else {
+                    if (retriedCount >= RETRY_COUNT) {
+                        form = form.copy(isLoading = false)
+                        window.alert("Share failed. Expected ${chunks.size} chunk(s) but found $remoteChunkSize")
+                    } else {
+                        getChunkSize(shareKey, chunks, startTime)
+                        retryGetChunkSize(shareKey, chunks, startTime)
+                    }
+                }
+            },
+            onFailed = { reason ->
+                if (retriedCount >= RETRY_COUNT) {
+                    form = form.copy(isLoading = false)
+                    window.alert("Share failed : $reason")
+                    retryGetChunkSize(shareKey, chunks, startTime)
+                }
+            }
+        )
+    }
+
+    private fun retryGetChunkSize(
+        shareKey: String,
+        chunks: List<String>,
+        startTime: Double
+    ) {
+        setTimeout(
+            {
+                getChunkSize(shareKey, chunks, startTime)
+            },
+            1000
+        )
     }
 
     fun onLoadBenchmarkClicked(savedBenchmarkNode: SavedBenchmarkNode) {
