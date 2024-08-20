@@ -105,8 +105,8 @@ class HomeViewModel(
 
 
     var form by mutableStateOf(
-        formRepo.getFormData() ?: FormData(
-            DefaultValues.form,
+        FormData(
+            data = "",
             isTestNameDetectionEnabled = false,
             isAutoGroupEnabled = false
         )
@@ -126,9 +126,9 @@ class HomeViewModel(
 
         // Reading shareKey
         val currentUrl = window.location.href
-        val shareKey = if(currentUrl.contains("#")){
+        val shareKey = if (currentUrl.contains("#")) {
             currentUrl.substring(currentUrl.lastIndexOf("#") + 1).trim()
-        }else{
+        } else {
             null
         }
         println("QuickTag: HomeViewModel:: shareKey: '$shareKey'")
@@ -142,11 +142,17 @@ class HomeViewModel(
                 },
                 onFailed = { message ->
                     window.alert(message)
+                    loadDefaultForm()
                 }
             )
+        } else {
+            loadDefaultForm()
         }
     }
 
+    private fun loadDefaultForm() {
+        form = formRepo.getFormData() ?: form
+    }
 
     private fun refreshBenchmarks() {
         savedBenchmarks = benchmarkRepo.getSavedBenchmarks()
@@ -446,7 +452,7 @@ class HomeViewModel(
     fun onShareClicked(formData: FormData) {
         val isAwareDataPublic = userRepo.isAwareShareIsPublic()
         println("QuickTag: HomeViewModel:onShareClicked: isAwareDataPublic $isAwareDataPublic")
-        if(isAwareDataPublic){
+        if (isAwareDataPublic) {
             debounce<Unit>(
                 func = {
                     // We need to split the input into chunk of 30,000 character
@@ -493,7 +499,7 @@ class HomeViewModel(
                 },
                 delay = 500
             )
-        }else{
+        } else {
             js("var myModal = new bootstrap.Modal(document.getElementById('shareAwareModal'), {});myModal.show();")
         }
     }
