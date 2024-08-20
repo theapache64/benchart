@@ -102,11 +102,11 @@ fun FormUi(
                 }
 
                 if (form.isLoading) {
-                    var progress by remember { mutableStateOf(0) }
+                    var progress by remember { mutableStateOf(20) }
                     LaunchedEffect(Unit) {
                         while (progress < 90) {
+                            delay(200)
                             progress += 4
-                            delay(100)
                         }
                     }
 

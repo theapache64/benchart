@@ -17,11 +17,6 @@ fun SharedModal(
     shareUrl : String?,
     onCopyToClipboardClicked : (shareUrl : String?) -> Unit
 ){
-    LaunchedEffect(shareUrl){
-        if(shareUrl!=null){
-            js("var myModal = new bootstrap.Modal(document.getElementById('sharedModal'), {});myModal.show();")
-        }
-    }
     Div(
         attrs = {
             id("sharedModal")

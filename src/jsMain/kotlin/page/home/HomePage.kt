@@ -14,7 +14,6 @@ import components.SummarySelector
 import components.TestNameDetectionToggle
 import components.TestNames
 import core.InputType
-import kotlinx.browser.window
 import org.jetbrains.compose.web.css.paddingBottom
 import org.jetbrains.compose.web.css.paddingLeft
 import org.jetbrains.compose.web.css.paddingRight
@@ -245,7 +244,7 @@ fun HomePageUi(
     SharedModal(
         shareUrl = viewModel.sharedUrl,
         onCopyToClipboardClicked = { sharedUrl ->
-           viewModel.onCopyToClipboardClicked(sharedUrl)
+            viewModel.onCopyToClipboardClicked(sharedUrl)
         }
     )
 }

@@ -145,6 +145,7 @@ class HomeViewModel(
                 onSharedInput = { sharedInput ->
                     form = form.copy(data = sharedInput, isLoading = false)
                     onFormChanged(form)
+                    sharedUrl = window.location.href
                 },
                 onFailed = { message ->
                     window.alert(message)
@@ -177,8 +178,17 @@ class HomeViewModel(
     }
 
     fun onFormChanged(unfilteredForm: FormData, shouldSelectUnsaved: Boolean = true) {
+        val oldFormData = form.data
+
         // filtering android log
         form = unfilteredForm.copy(data = filterOutAndroidJunkLog(unfilteredForm.data))
+
+        // check if input changes
+        if (oldFormData != form.data) {
+            console.log("input has changed...")
+            sharedUrl = null
+        }
+
         formRepo.storeFormData(form)
 
         debounce<Unit>(
@@ -456,6 +466,11 @@ class HomeViewModel(
     }
 
     fun onShareClicked(formData: FormData) {
+        if (sharedUrl != null) {
+            // show the modal again
+            showSharedModal()
+            return
+        }
 
         val startTime = Date().getTime()
         val isAwareDataPublic = userRepo.isAwareShareIsPublic()
@@ -498,6 +513,10 @@ class HomeViewModel(
         }
     }
 
+    fun showSharedModal() {
+        js("var myModal = new bootstrap.Modal(document.getElementById('sharedModal'), {});myModal.show();")
+    }
+
     private var retriedCount = 0
     private fun getChunkSize(
         shareKey: String,
@@ -518,6 +537,7 @@ class HomeViewModel(
                         default =
                     )*/
                     sharedUrl = "${window.location.origin}/benchart/#$shareKey"
+                    showSharedModal()
                 } else {
                     if (retriedCount >= RETRY_COUNT) {
                         form = form.copy(isLoading = false)
@@ -610,9 +630,9 @@ class HomeViewModel(
         onShareClicked(form)
     }
 
-    fun onCopyToClipboardClicked(stringToCopy: String?) {
-        if (stringToCopy != null) {
-            window.navigator.clipboard.writeText(stringToCopy)
+    fun onCopyToClipboardClicked(sharedUrl: String?) {
+        if (sharedUrl != null) {
+            window.navigator.clipboard.writeText(sharedUrl)
                 .then(
                     onFulfilled = {
                         console.log("Copied to clipboard")
@@ -621,7 +641,7 @@ class HomeViewModel(
                         window.alert("Failed to copy to clipboard : ${it.message}")
                     }
                 )
-        }else{
+        } else {
             window.alert("Failed to copy to clipboard. data is null")
         }
     }
