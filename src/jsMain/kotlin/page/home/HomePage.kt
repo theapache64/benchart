@@ -15,20 +15,14 @@ import components.TestNameDetectionToggle
 import components.TestNames
 import core.InputType
 import kotlinx.browser.window
-import org.jetbrains.compose.web.attributes.ButtonType
-import org.jetbrains.compose.web.attributes.type
-import org.jetbrains.compose.web.css.marginTop
 import org.jetbrains.compose.web.css.paddingBottom
 import org.jetbrains.compose.web.css.paddingLeft
 import org.jetbrains.compose.web.css.paddingRight
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Br
-import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Form
 import org.jetbrains.compose.web.dom.H3
-import org.jetbrains.compose.web.dom.H4
-import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 import repo.BenchmarkRepoImpl
 import repo.FormRepoImpl
@@ -245,6 +239,13 @@ fun HomePageUi(
     ShareAwareModal(
         onShareClicked = {
             viewModel.onAwarePublicShare()
+        }
+    )
+
+    SharedModal(
+        shareUrl = viewModel.sharedUrl,
+        onCopyToClipboardClicked = { sharedUrl ->
+           viewModel.onCopyToClipboardClicked(sharedUrl)
         }
     )
 }

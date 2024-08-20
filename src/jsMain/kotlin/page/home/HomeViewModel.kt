@@ -47,6 +47,7 @@ class HomeViewModel(
         const val RETRY_COUNT = 3
     }
 
+
     var savedBenchmarks by mutableStateOf<List<SavedBenchmarkNode>>(emptyList())
         private set
 
@@ -105,6 +106,8 @@ class HomeViewModel(
     var worstAggSummary by mutableStateOf<AggSummary?>(null)
         private set
 
+    var sharedUrl by mutableStateOf<String?>(null)
+        private set
 
     var form by mutableStateOf(
         FormData(
@@ -510,17 +513,18 @@ class HomeViewModel(
                     println("QuickTag: HomeViewModel:onShareClicked: SHARE SUCCESS!")
                     println("QuickTag: HomeViewModel:onShareClicked: time took : ${Date().getTime() - startTime}ms")
                     form = form.copy(isLoading = false)
-                    window.prompt(
+                    /*window.prompt(
                         message = "Ready to share, copy below URL",
-                        default = "${window.location.origin}/benchart/#$shareKey"
-                    )
+                        default =
+                    )*/
+                    sharedUrl = "${window.location.origin}/benchart/#$shareKey"
                 } else {
                     if (retriedCount >= RETRY_COUNT) {
                         form = form.copy(isLoading = false)
                         window.alert("Share failed. Expected ${chunks.size} chunk(s) but found $remoteChunkSize")
                     } else {
                         getChunkSize(shareKey, chunks, startTime)
-                        retryGetChunkSize(shareKey, chunks, startTime)
+
                     }
                 }
             },
@@ -604,6 +608,22 @@ class HomeViewModel(
     fun onAwarePublicShare() {
         userRepo.setAwareShareIsPublic(isAware = true)
         onShareClicked(form)
+    }
+
+    fun onCopyToClipboardClicked(stringToCopy: String?) {
+        if (stringToCopy != null) {
+            window.navigator.clipboard.writeText(stringToCopy)
+                .then(
+                    onFulfilled = {
+                        console.log("Copied to clipboard")
+                    },
+                    onRejected = {
+                        window.alert("Failed to copy to clipboard : ${it.message}")
+                    }
+                )
+        }else{
+            window.alert("Failed to copy to clipboard. data is null")
+        }
     }
 
 }
