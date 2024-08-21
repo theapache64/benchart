@@ -543,8 +543,7 @@ class HomeViewModel(
                         form = form.copy(isLoading = false)
                         window.alert("Share failed. Expected ${chunks.size} chunk(s) but found $remoteChunkSize")
                     } else {
-                        getChunkSize(shareKey, chunks, startTime)
-
+                        retryGetChunkSize(shareKey, chunks, startTime)
                     }
                 }
             },
