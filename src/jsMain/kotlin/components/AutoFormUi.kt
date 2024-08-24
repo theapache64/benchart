@@ -57,7 +57,7 @@ fun FormUi(
     }
 
     H3 {
-        Text("⌨️ Inputssss")
+        Text("⌨️ Input")
     }
 
     Div {
