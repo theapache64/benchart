@@ -85,10 +85,17 @@ class HomeViewModel(
     var blockNames = mutableStateListOf<String>()
         private set
 
+
+    var oldAvgOfCount by mutableStateOf<Int>(-1)
+        private set
+
     var avgOfCount by mutableStateOf<Int>(-1)
         private set
 
     var isAutoGroupButtonVisible by mutableStateOf<Boolean>(false)
+        private set
+
+    var oldSummaries = mutableStateListOf<Summary>()
         private set
 
     var summaries = mutableStateListOf<Summary>()
@@ -219,6 +226,11 @@ class HomeViewModel(
                         currentFocusedGroup = FOCUS_GROUP_ALL
                     }
 
+                    if (currentFocusedGroup == FOCUS_GROUP_ALL) {
+                        oldAvgOfCount = -1
+                    } else if (oldAvgOfCount == -1) {
+                        oldAvgOfCount = avgOfCount
+                    }
 
                     avgOfCount = benchmarkResults
                         .flatMap {
@@ -313,8 +325,6 @@ class HomeViewModel(
                     }
                 }.trimStart()
                 line
-            }.also {
-                println("QuickTag: HomeViewModel:filterOutAndroidJunkLog: '$it'")
             }
     }
 
@@ -324,9 +334,11 @@ class HomeViewModel(
         blockNames.clear()
         chartsBundle = null
         summaries.clear()
+        oldSummaries.clear()
         bestAggSummary = null
         worstAggSummary = null
         avgOfCount = -1
+        oldAvgOfCount = -1
         updateSummary()
     }
 
@@ -387,6 +399,20 @@ class HomeViewModel(
     }
 
     private fun updateSummary() {
+        if (currentFocusedGroup != FOCUS_GROUP_ALL && oldSummaries.isEmpty()) {
+            // preserving previous summary because user is now focusing ona particular group
+            oldSummaries.addAll(summaries)
+            println("QuickTag: HomeViewModel:updateSummary: preserving ${summaries.size} summary nodes (old $oldAvgOfCount) ")
+        }
+
+        if (currentFocusedGroup == FOCUS_GROUP_ALL && oldSummaries.isNotEmpty()) {
+            println("QuickTag: HomeViewModel:updateSummary: clearing ${oldSummaries.size} nodes")
+            // user is not focused on a particular metric, hence two summaries are not needed.
+            // the old summaries can now be cleared
+            oldSummaries.clear()
+            oldAvgOfCount = -1
+        }
+
         // Calculating duration summary
         summaries.clear()
 

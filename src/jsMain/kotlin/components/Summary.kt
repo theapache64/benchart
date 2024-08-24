@@ -52,17 +52,26 @@ data class Summary(
 @Composable
 fun SummaryContainer(
     selector: @Composable () -> Unit,
-    summaries: List<Summary>,
-    avgOfCount: Int
+    oldSummaries: List<Summary>,
+    newSummaries: List<Summary>,
+    oldAvgOfCount: Int,
+    newAvgOfCount: Int,
+    currentFocusedGroup : String
 ) {
 
     selector()
-    Br()
+    for ((index, summaries) in listOf(oldSummaries to oldAvgOfCount, newSummaries to newAvgOfCount).withIndex()) {
+        key("summaries-$index") {
+            if (summaries.first.isNotEmpty()) {
+                Br()
 
-    for (summary in summaries) {
-        key(summary.title) {
-            SummaryUi(summary.title, avgOfCount, summary.nodes)
-            Br()
+                for (summary in summaries.first) {
+                    key(summary.title + index) {
+                        SummaryUi(summary.title, summaries.second, summary.nodes, currentFocusedGroup)
+                        Br()
+                    }
+                }
+            }
         }
     }
 }
@@ -210,7 +219,7 @@ fun Strong(
 ) = TagElement(elementBuilder = Strong, applyAttrs = attrs, content = content)
 
 @Composable
-fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>) {
+fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>, currentFocusGroup : String) {
     Div(
         attrs = {
             classes("row")
@@ -218,7 +227,7 @@ fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>) {
     ) {
         H3 {
             Text(title)
-            if (avgOfCount > 1) {
+            if (avgOfCount >= 1 ) {
                 Small(
                     attrs = {
                         classes("text-muted")
@@ -227,7 +236,11 @@ fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>) {
                         }
                     }
                 ) {
-                    Text(" (average of $avgOfCount)")
+                    if(avgOfCount==1){
+                        Text(" (focused on '$currentFocusGroup')")
+                    }else{
+                        Text(" (average of $avgOfCount)")
+                    }
                 }
             }
         }

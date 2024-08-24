@@ -100,8 +100,11 @@ fun HomePageUi(
                             )
                         }
                     },
-                    summaries = viewModel.summaries,
-                    avgOfCount = viewModel.avgOfCount
+                    newSummaries = viewModel.summaries,
+                    oldSummaries = viewModel.oldSummaries,
+                    newAvgOfCount = viewModel.avgOfCount,
+                    oldAvgOfCount = viewModel.oldAvgOfCount,
+                    currentFocusedGroup = viewModel.currentFocusedGroup
                 )
             }
 
