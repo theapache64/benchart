@@ -352,6 +352,7 @@ class HomeViewModel(
                 }
                 chartsBundle?.charts?.mapNotNull { chart ->
                     SummaryUtils.getSummaryOrThrow(
+                        currentFocusedGroup = currentFocusedGroup,
                         isGeneric = isGeneric,
                         chart = chart,
                         selectedBlockNameOne = blockNameOuter,
@@ -419,6 +420,7 @@ class HomeViewModel(
         val isGeneric = inputType == InputType.GENERIC
         val allSummaries = chartsBundle?.charts?.mapNotNull { chart ->
             SummaryUtils.getSummaryOrThrow(
+                currentFocusedGroup = currentFocusedGroup,
                 isGeneric = isGeneric,
                 chart = chart,
                 selectedBlockNameOne = selectedBlockNameOne,

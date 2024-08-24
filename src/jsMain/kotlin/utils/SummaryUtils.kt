@@ -2,6 +2,7 @@ package utils
 
 import components.Summary
 import components.SummaryNode
+import core.BenchmarkResult.Companion.FOCUS_GROUP_ALL
 import core.SupportedMetrics
 import model.Chart
 import kotlin.math.absoluteValue
@@ -9,6 +10,7 @@ import kotlin.math.absoluteValue
 object SummaryUtils {
 
     fun getSummaryOrThrow(
+        currentFocusedGroup: String,
         isGeneric: Boolean,
         chart: Chart,
         selectedBlockNameOne: String?,
@@ -79,7 +81,11 @@ object SummaryUtils {
             )
         }
         val title = if (isGeneric) {
-            "📊$selectedBlockNameOne vs $selectedBlockNameTwo"
+            if (currentFocusedGroup == FOCUS_GROUP_ALL) {
+                "📊$selectedBlockNameOne vs $selectedBlockNameTwo"
+            } else {
+                "📊${chart.label}"
+            }
         } else {
             val metricConfig = SupportedMetrics.values().find { it.key == chart.label }
                 ?: error("Unsupported metric name `${chart.label}`")
