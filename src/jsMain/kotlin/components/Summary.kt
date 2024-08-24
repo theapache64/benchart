@@ -2,6 +2,7 @@ package components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
+import core.BenchmarkResult.Companion.FOCUS_GROUP_ALL
 import kotlinx.browser.document
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.attributes.ButtonType
@@ -56,7 +57,7 @@ fun SummaryContainer(
     newSummaries: List<Summary>,
     oldAvgOfCount: Int,
     newAvgOfCount: Int,
-    currentFocusedGroup : String
+    currentFocusedGroup: String
 ) {
 
     selector()
@@ -219,7 +220,7 @@ fun Strong(
 ) = TagElement(elementBuilder = Strong, applyAttrs = attrs, content = content)
 
 @Composable
-fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>, currentFocusGroup : String) {
+fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>, currentFocusGroup: String) {
     Div(
         attrs = {
             classes("row")
@@ -227,7 +228,7 @@ fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>, curren
     ) {
         H3 {
             Text(title)
-            if (avgOfCount >= 1 ) {
+            if (avgOfCount >= 1) {
                 Small(
                     attrs = {
                         classes("text-muted")
@@ -236,9 +237,11 @@ fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>, curren
                         }
                     }
                 ) {
-                    if(avgOfCount==1){
-                        Text(" (focused on '$currentFocusGroup')")
-                    }else{
+                    if (avgOfCount == 1) {
+                        if (currentFocusGroup != FOCUS_GROUP_ALL) {
+                            Text(" (focused on '$currentFocusGroup')")
+                        }
+                    } else {
                         Text(" (average of $avgOfCount)")
                     }
                 }
