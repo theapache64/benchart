@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id="benchart:jvmTest" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="com.theapache64.benchart" external.system.module.type="sourceSet" external.system.module.version="1.0.0-beta01" type="JAVA_MODULE" version="4">
+<module external.linked.project.id="benchart:jvmTest" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="com.theapache64.benchart" external.system.module.type="sourceSet" external.system.module.version="1.0.0-rc01" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet external-system-id="GRADLE" type="kotlin-language" name="Kotlin">
-      <configuration version="5" platform="JVM 1.8" allPlatforms="JVM [1.8]" useProjectSettings="false" isTestModule="true" externalProjectId="benchart" isHmppProject="true" pureKotlinSourceFolders="$MODULE_DIR$/../../build/externals/benchart/src;/Users/theapache64/Documents/projects/benchart/src/jvmTest/kotlin;/Users/theapache64/Documents/projects/benchart/src/jsMain/kotlin;/Users/theapache64/Documents/projects/benchart/src/jsTest/kotlin;/Users/theapache64/Documents/projects/benchart/src/jvmMain/kotlin">
+      <configuration version="5" platform="JVM 1.8" allPlatforms="JVM [1.8]" useProjectSettings="false" isTestModule="true" externalProjectId="benchart" isHmppProject="true" pureKotlinSourceFolders="$MODULE_DIR$/../../src/jvmTest/kotlin;/Users/theapache64/Documents/projects/benchart/src/jsMain/kotlin;/Users/theapache64/Documents/projects/benchart/src/jsTest/kotlin;/Users/theapache64/Documents/projects/benchart/src/jvmMain/kotlin">
         <dependsOnModuleNames>benchart:commonTest</dependsOnModuleNames>
+        <additionalVisibleModuleNames>
+          <friend>benchart:jvmMain</friend>
+          <friend>benchart:commonMain</friend>
+        </additionalVisibleModuleNames>
         <sourceSets>
           <sourceSet>benchart.commonTest</sourceSet>
         </sourceSets>
@@ -11,7 +15,9 @@
         <externalSystemTestTasks>
           <externalSystemTestTask>jvmTest|:|jvm|jvm</externalSystemTestTask>
         </externalSystemTestTasks>
-        <compilerSettings />
+        <compilerSettings>
+          <option name="additionalArguments" value="-Xfragment-refines=jvmTest:commonTest -Xfragments=jvmTest,commonTest" />
+        </compilerSettings>
         <compilerArguments>
           <flagArguments>
             <flagArg name="allowNoSourceFiles" arg="true" />
@@ -22,35 +28,29 @@
           <stringArguments>
             <stringArg name="destination" arg="$MODULE_DIR$/../../build/classes/kotlin/jvm/test" />
             <stringArg name="jvmTarget" arg="1.8" />
-            <stringArg name="moduleName" arg="benchart" />
-            <stringArg name="apiVersion" arg="1.7" />
-            <stringArg name="languageVersion" arg="1.7" />
+            <stringArg name="moduleName" arg="benchart_test" />
+            <stringArg name="apiVersion" arg="2.0" />
+            <stringArg name="languageVersion" arg="2.0" />
           </stringArguments>
           <arrayArguments>
-            <arrayArg name="friendPaths">
-              <args>
-                <arg>$MODULE_DIR$/../../build/classes/kotlin/jvm/main</arg>
-                <arg>$MODULE_DIR$/../../build/libs/benchart-jvm-1.0.0-beta01.jar</arg>
-              </args>
-            </arrayArg>
             <arrayArg name="pluginClasspaths">
               <args>
-                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.compose.compiler/compiler/1.3.2.1/f50694066b0ce4b8e57300b3eff8e018cd3a9b4f/compiler-1.3.2.1.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-gradle-plugin-api/1.7.20/8159de6c79ac1c91fe2ecc488c30b27b2a8f5f1c/kotlin-gradle-plugin-api-1.7.20-gradle71.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-jvm/1.7.20/c79de17329ea8f7c7d200063145d5694ca3f6786/kotlin-scripting-jvm-1.7.20.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-common/1.7.20/88ed4f0a92a48e12d2d4596f26967400e390648c/kotlin-scripting-common-1.7.20.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.7.20/726594ea9ba2beb2ee113647fefa9a10f9fabe52/kotlin-stdlib-1.7.20.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-native-utils/1.7.20/8e64e54cf3fb0c275b3f2f5a9276110fbb329f8f/kotlin-native-utils-1.7.20.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-project-model/1.7.20/8db9bd1b28e2fefd67727adecb96462f7d454a39/kotlin-project-model-1.7.20.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-tooling-core/1.7.20/19c84dd609449479dd647cfb8b885f6430501a21/kotlin-tooling-core-1.7.20.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.7.20/e15351bdaf9fa06f009be5da7a202e4184f00ae3/kotlin-stdlib-common-1.7.20.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-compose-compiler-plugin-embeddable/2.0.20/d3b5072df7943425b2ec5b5cfb323701cb5d8bd2/kotlin-compose-compiler-plugin-embeddable-2.0.20.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-jvm/2.0.20/46b8d2d2028448f6596cc3ce0ad7b10b259ec236/kotlin-scripting-jvm-2.0.20.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-common/2.0.20/af6097b8ac359457ec1cf9b34bd9b5313b52eb6/kotlin-scripting-common-2.0.20.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.0.20/7388d355f7cceb002cd387ccb7ab3850e4e0a07f/kotlin-stdlib-2.0.20.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-util-io/1.7.20/6e11b33883defb7ca4b8bff8c5fe81e463803bc7/kotlin-util-io-1.7.20.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-script-runtime/1.7.20/bcd1cc6f865e632550357fcc59f5ffd532615a8/kotlin-script-runtime-1.7.20.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-script-runtime/2.0.20/4aea042b39014e0a924c2e1d4a21b6fff7e4d35/kotlin-script-runtime-2.0.20.jar</arg>
                 <arg>$KOTLIN_BUNDLED$/lib/kotlinx-serialization-compiler-plugin.jar</arg>
               </args>
             </arrayArg>
-            <arrayArg name="pluginOptions" />
+            <arrayArg name="pluginOptions">
+              <args>
+                <arg>plugin:androidx.compose.compiler.plugins.kotlin:generateFunctionKeyMetaClasses=false</arg>
+                <arg>plugin:androidx.compose.compiler.plugins.kotlin:sourceInformation=false</arg>
+                <arg>plugin:androidx.compose.compiler.plugins.kotlin:traceMarkersEnabled=true</arg>
+              </args>
+            </arrayArg>
           </arrayArguments>
         </compilerArguments>
       </configuration>
@@ -59,23 +59,21 @@
   <component name="NewModuleRootManager">
     <output-test url="file://$MODULE_DIR$/../../build/classes/kotlin/jvm/test" />
     <exclude-output />
+    <content url="file://$MODULE_DIR$/../../build/generated/compose/resourceGenerator/preparedResources/jvmTest/composeResources" />
     <content url="file://$MODULE_DIR$/../../src/jvmTest">
       <sourceFolder url="file://$MODULE_DIR$/../../src/jvmTest/kotlin" isTestSource="true" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="benchart.commonMain" scope="TEST" />
-    <orderEntry type="module" module-name="benchart.commonTest" scope="TEST" production-on-test="" />
+    <orderEntry type="module" module-name="benchart.commonTest" scope="TEST" />
     <orderEntry type="module" module-name="benchart.jvmMain" scope="TEST" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.13.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.compose.runtime:runtime-desktop:1.2.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.20" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.7.20" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.hamcrest:hamcrest-core:1.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.1" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.jetbrains.kotlinx:atomicfu-jvm:0.17.2" level="project" />
+    <orderEntry type="module" module-name="benchart.commonMain" scope="TEST" />
+    <orderEntry type="library" scope="TEST" name="org.jetbrains.compose.runtime:runtime-desktop:1.7.0-alpha03" level="project" />
+    <orderEntry type="library" scope="TEST" name="org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="org.jetbrains.kotlin:kotlin-stdlib:2.0.20" level="project" />
+    <orderEntry type="library" scope="TEST" name="junit:junit:4.13.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="org.jetbrains:annotations:23.0.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="org.hamcrest:hamcrest-core:1.3" level="project" />
   </component>
   <component name="TestModuleProperties" production-module="benchart.jvmMain" />
 </module>
