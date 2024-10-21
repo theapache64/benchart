@@ -19,7 +19,19 @@ fun Heading() {
         }) {
             H1(attrs = {
                 classes("text-center")
-            }) { Text("📊 benchart") }
+            }) {
+                Img(
+                    src = "icons/apple-touch-icon.png",
+                    attrs = {
+                        style {
+                            width(36.px)
+                            marginRight(6.px)
+                            marginTop((-8).px)
+                        }
+                    }
+                )
+                Text("benchart")
+            }
         }
     }
 }
