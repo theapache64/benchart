@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import components.KEY_UNSAVED_BENCHMARK
+import components.SDNode
 import components.SavedBenchmarkNode
 import components.Summary
 import core.BenchmarkResult
@@ -25,10 +26,21 @@ import repo.UserRepo
 import utils.DefaultValues
 import utils.RandomString
 import utils.SummaryUtils
+import utils.calculateErrorMargins
 import kotlin.js.Date
 
 external fun setTimeout(handler: dynamic, timeout: Int): Int
 external fun clearTimeout(timeoutId: Int)
+
+data class ConfidenceIntervals(
+    val mean: Float,
+    val marginOf68p3: Float,
+    val marginOf90: Float,
+    val marginOf95: Float,
+    val marginOf99: Float,
+    val sampleSize: Int,
+    val standardDeviation: Float
+)
 
 
 @Stable
@@ -85,6 +97,8 @@ class HomeViewModel(
     var blockNames = mutableStateListOf<String>()
         private set
 
+    var sdNodes = mutableStateListOf<SDNode>()
+        private set
 
     var oldAvgOfCount by mutableStateOf<Int>(-1)
         private set
@@ -208,6 +222,7 @@ class HomeViewModel(
                     testNames.clear()
                     focusGroups.clear()
                     blockNames.clear()
+                    sdNodes.clear()
 
                     // refill
                     val (inputType, benchmarkResults, focusGroups) = BenchmarkResult.parse(form, currentFocusedGroup)
@@ -267,6 +282,30 @@ class HomeViewModel(
                         }
                     }
 
+                    if (currentFocusedGroup != FOCUS_GROUP_ALL) {
+                        fullBenchmarkResults
+                            .flatMap { it.blockRows }
+                            .forEach { blockRow ->
+                                console.log("Block row is ", blockRow)
+                                val population = blockRow.avgData.values
+                                val confidenceIntervals = population.calculateErrorMargins()
+                                sdNodes.add(
+                                    SDNode(
+                                        name = blockRow.title,
+                                        population = population.toList(),
+                                        standardDeviation = confidenceIntervals.standardDeviation.formatTwoDecimals(),
+                                        errorMargin = mapOf(
+                                            "68.3%" to confidenceIntervals.marginOf68p3.formatTwoDecimals(),
+                                            "90%" to confidenceIntervals.marginOf90.formatTwoDecimals(),
+                                            "95%" to confidenceIntervals.marginOf95.formatTwoDecimals(),
+                                            "99%" to confidenceIntervals.marginOf99.formatTwoDecimals(),
+                                        )
+                                    )
+                                )
+                            }
+                    }
+
+
                     val autoGroupMapSize = chartsBundle?.groupMap?.autoGroupMap?.size ?: 0
                     val wordColorMapSize = chartsBundle?.groupMap?.wordColorMap?.size ?: 0
                     isAutoGroupButtonVisible = autoGroupMapSize != wordColorMapSize
@@ -279,6 +318,11 @@ class HomeViewModel(
             },
             300
         )
+    }
+
+
+    private fun Float.formatTwoDecimals(): Float {
+        return asDynamic().toFixed(2).toString().toFloat()
     }
 
 
@@ -339,6 +383,7 @@ class HomeViewModel(
         worstAggSummary = null
         avgOfCount = -1
         oldAvgOfCount = -1
+        sdNodes.clear()
         updateSummary()
     }
 

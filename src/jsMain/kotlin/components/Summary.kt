@@ -24,6 +24,7 @@ import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Select
 import org.jetbrains.compose.web.dom.Small
 import org.jetbrains.compose.web.dom.Span
+import org.jetbrains.compose.web.dom.Table
 import org.jetbrains.compose.web.dom.TagElement
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.Ul
@@ -53,6 +54,7 @@ data class Summary(
 @Composable
 fun SummaryContainer(
     selector: @Composable () -> Unit,
+    standardDeviation: @Composable () -> Unit,
     oldSummaries: List<Summary>,
     newSummaries: List<Summary>,
     oldAvgOfCount: Int,
@@ -75,6 +77,7 @@ fun SummaryContainer(
             }
         }
     }
+    standardDeviation()
 }
 
 @Composable

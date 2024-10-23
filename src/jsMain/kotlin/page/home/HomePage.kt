@@ -9,11 +9,14 @@ import components.ErrorUi
 import components.FocusGroups
 import components.FormUi
 import components.Heading
+import components.StandardDeviationUi
 import components.SummaryContainer
 import components.SummarySelector
 import components.TestNameDetectionToggle
 import components.TestNames
+import core.BenchmarkResult
 import core.InputType
+import org.jetbrains.compose.web.css.fontSize
 import org.jetbrains.compose.web.css.paddingBottom
 import org.jetbrains.compose.web.css.paddingLeft
 import org.jetbrains.compose.web.css.paddingRight
@@ -22,6 +25,7 @@ import org.jetbrains.compose.web.dom.Br
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Form
 import org.jetbrains.compose.web.dom.H3
+import org.jetbrains.compose.web.dom.Small
 import org.jetbrains.compose.web.dom.Text
 import repo.BenchmarkRepoImpl
 import repo.FormRepoImpl
@@ -98,6 +102,15 @@ fun HomePageUi(
                                 onBlockOneSelected = viewModel::onBlockNameOneChanged,
                                 onBlockTwoSelected = viewModel::onBlockNameTwoChanged
                             )
+                        }
+                    },
+                    standardDeviation = {
+                        if(viewModel.sdNodes.isNotEmpty()){
+                            H3 {
+                                Text("📈 Standard Deviation: ")
+                            }
+
+                            StandardDeviationUi(viewModel.currentFocusedGroup, viewModel.sdNodes)
                         }
                     },
                     newSummaries = viewModel.summaries,

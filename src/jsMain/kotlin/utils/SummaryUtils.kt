@@ -82,9 +82,9 @@ object SummaryUtils {
         }
         val title = if (isGeneric) {
             if (currentFocusedGroup == FOCUS_GROUP_ALL) {
-                "📊$selectedBlockNameOne vs $selectedBlockNameTwo"
+                "📊 $selectedBlockNameOne vs $selectedBlockNameTwo"
             } else {
-                "📊${chart.label}"
+                "📊 ${chart.label}"
             }
         } else {
             val metricConfig = SupportedMetrics.values().find { it.key == chart.label }
