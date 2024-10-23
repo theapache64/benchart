@@ -34,10 +34,16 @@ external fun clearTimeout(timeoutId: Int)
 
 data class ConfidenceIntervals(
     val mean: Float,
+    // Absolute margins
     val marginOf68p3: Float,
     val marginOf90: Float,
     val marginOf95: Float,
     val marginOf99: Float,
+    // Percentage margins
+    val percentageMarginOf68p3: Float,
+    val percentageMarginOf90: Float,
+    val percentageMarginOf95: Float,
+    val percentageMarginOf99: Float,
     val sampleSize: Int,
     val standardDeviation: Float
 )
@@ -295,10 +301,10 @@ class HomeViewModel(
                                         population = population.toList(),
                                         standardDeviation = confidenceIntervals.standardDeviation.formatTwoDecimals(),
                                         errorMargin = mapOf(
-                                            "68.3%" to confidenceIntervals.marginOf68p3.formatTwoDecimals(),
-                                            "90%" to confidenceIntervals.marginOf90.formatTwoDecimals(),
-                                            "95%" to confidenceIntervals.marginOf95.formatTwoDecimals(),
-                                            "99%" to confidenceIntervals.marginOf99.formatTwoDecimals(),
+                                            "68.3%" to confidenceIntervals.percentageMarginOf68p3.formatTwoDecimals(),
+                                            "90%" to confidenceIntervals.percentageMarginOf90.formatTwoDecimals(),
+                                            "95%" to confidenceIntervals.percentageMarginOf95.formatTwoDecimals(),
+                                            "99%" to confidenceIntervals.percentageMarginOf99.formatTwoDecimals(),
                                         )
                                     )
                                 )

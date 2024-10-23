@@ -100,7 +100,7 @@ fun StandardDeviationUi(
 
                         sdNode.errorMargin.values.forEach { margin ->
                             key(margin) {
-                                Td { Text("$margin") }
+                                Td { Text("$margin%") }
                             }
                         }
                     }
