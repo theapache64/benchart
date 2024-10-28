@@ -10,6 +10,7 @@ import components.FocusGroups
 import components.FormUi
 import components.Heading
 import components.StandardDeviationUi
+import components.Stats
 import components.SummaryContainer
 import components.SummarySelector
 import components.TestNameDetectionToggle
@@ -102,15 +103,6 @@ fun HomePageUi(
                                 onBlockOneSelected = viewModel::onBlockNameOneChanged,
                                 onBlockTwoSelected = viewModel::onBlockNameTwoChanged
                             )
-                        }
-                    },
-                    standardDeviation = {
-                        if(viewModel.sdNodes.isNotEmpty()){
-                            H3 {
-                                Text("📈 Standard Deviation: ")
-                            }
-
-                            StandardDeviationUi(viewModel.currentFocusedGroup, viewModel.sdNodes)
                         }
                     },
                     newSummaries = viewModel.summaries,
@@ -242,6 +234,36 @@ fun HomePageUi(
                                     )
                                 }
                             }
+                        }
+                    }
+
+
+                    Br()
+
+                    // Summary
+                    if(viewModel.sdNodes.isNotEmpty()){
+                        Div(
+                            attrs = {
+                                classes("row", "mb-3")
+                            }
+                        ) {
+                            H3 {
+                                Text("📈 Standard Deviation: ")
+                            }
+
+                            StandardDeviationUi(viewModel.currentFocusedGroup, viewModel.sdNodes)
+                        }
+
+                        Div(
+                            attrs = {
+                                classes("row", "mb-3")
+                            }
+                        ) {
+                            H3 {
+                                Text("📈 Statistical Summary: ")
+                            }
+
+                            Stats(viewModel.currentFocusedGroup, viewModel.sdNodes)
                         }
                     }
                 }

@@ -20,7 +20,11 @@ data class SDNode(
     val name: String,
     val population: List<Float>,
     val standardDeviation: Float,
-    val errorMargin: Map<String, Float>
+    val errorMargin: Map<String, Float>,
+    val min : Float,
+    val median :Float,
+    val max: Float,
+    val percentiles : Map<String, Float>
 )
 
 
@@ -99,9 +103,108 @@ fun StandardDeviationUi(
                         }
 
                         sdNode.errorMargin.values.forEach { margin ->
-                            key(margin) {
-                                Td { Text("$margin%") }
+                            Td { Text("$margin%") }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Stats(
+    groupName: String,
+    sdNodes: List<SDNode>
+) {
+    Table(
+        attrs = {
+            attr("border", "1")
+            classes("table", "table-bordered")
+        }
+    ) {
+        Thead {
+            Tr {
+                Th(
+                    attrs = {
+                        attr("rowspan", "2")
+                    }
+                ) {
+                    Text(groupName)
+                }
+                Th(
+                    attrs = {
+                        attr("rowspan", "2")
+                    }
+                ) {
+                    Text("Min")
+                }
+                Th(
+                    attrs = {
+                        attr("rowspan", "2")
+                    }
+                ) {
+                    Text("Median")
+                }
+
+                Th(
+                    attrs = {
+                        attr("rowspan", "2")
+                    }
+                ) {
+                    Text("Max")
+                }
+                Th(
+                    attrs = {
+                        attr("colspan", "${sdNodes.firstOrNull()?.percentiles?.size ?: 0}")
+                        style {
+                            textAlign("center")
+                        }
+                    }
+                ) {
+                    Text("Percentiles")
+                }
+            }
+            Tr {
+                sdNodes.firstOrNull()?.percentiles?.keys?.forEach { emKey ->
+                    key(emKey) {
+                        Th { Text(emKey) }
+                    }
+                }
+            }
+        }
+        Tbody {
+            for (sdNode in sdNodes) {
+                key(sdNode.toString()) {
+                    Tr {
+                        Td { Text(sdNode.name) }
+                        Td(
+                            attrs = {
+                                title("${sdNode.population.sorted()}")
                             }
+                        ) {
+                            Text(sdNode.min.toString())
+                        }
+
+                        Td(
+                            attrs = {
+                                title("${sdNode.population}")
+                            }
+                        ) {
+                            Text(sdNode.median.toString())
+                        }
+
+                        Td(
+                            attrs = {
+                                title("${sdNode.population.sortedDescending()}")
+                            }
+                        ) {
+                            Text(sdNode.max.toString())
+                        }
+
+
+                        sdNode.percentiles.values.forEach { percentile ->
+                            Td { Text("$percentile") }
                         }
                     }
                 }

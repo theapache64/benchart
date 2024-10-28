@@ -54,7 +54,6 @@ data class Summary(
 @Composable
 fun SummaryContainer(
     selector: @Composable () -> Unit,
-    standardDeviation: @Composable () -> Unit,
     oldSummaries: List<Summary>,
     newSummaries: List<Summary>,
     oldAvgOfCount: Int,
@@ -77,7 +76,6 @@ fun SummaryContainer(
             }
         }
     }
-    standardDeviation()
 }
 
 @Composable

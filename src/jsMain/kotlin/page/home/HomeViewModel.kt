@@ -28,6 +28,7 @@ import utils.RandomString
 import utils.SummaryUtils
 import utils.calculateErrorMargins
 import kotlin.js.Date
+import kotlin.math.min
 
 external fun setTimeout(handler: dynamic, timeout: Int): Int
 external fun clearTimeout(timeoutId: Int)
@@ -305,6 +306,17 @@ class HomeViewModel(
                                             "90%" to confidenceIntervals.percentageMarginOf90.formatTwoDecimals(),
                                             "95%" to confidenceIntervals.percentageMarginOf95.formatTwoDecimals(),
                                             "99%" to confidenceIntervals.percentageMarginOf99.formatTwoDecimals(),
+                                        ),
+                                        min = population.minOrNull() ?: 0f,
+                                        median = population.average().toFloat().formatTwoDecimals(),
+                                        max = population.maxOrNull() ?: 0f,
+                                        percentiles = mapOf(
+                                            "25%" to population.sorted()[min(0.25 * population.size, population.size - 1f.toDouble()).toInt()].formatTwoDecimals(),
+                                            "50%" to population.sorted()[min(0.50 * population.size, population.size - 1f.toDouble()).toInt()].formatTwoDecimals(),
+                                            "75%" to population.sorted()[min(0.75 * population.size, population.size - 1f.toDouble()).toInt()].formatTwoDecimals(),
+                                            "90%" to population.sorted()[min(0.90 * population.size, population.size - 1f.toDouble()).toInt()].formatTwoDecimals(),
+                                            "95%" to population.sorted()[min(0.95 * population.size, population.size - 1f.toDouble()).toInt()].formatTwoDecimals(),
+                                            "99%" to population.sorted()[min(0.99 * population.size, population.size - 1f.toDouble()).toInt()].formatTwoDecimals()
                                         )
                                     )
                                 )
