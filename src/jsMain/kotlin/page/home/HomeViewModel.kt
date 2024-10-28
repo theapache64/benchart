@@ -311,11 +311,8 @@ class HomeViewModel(
                                         median = population.average().toFloat().formatTwoDecimals(),
                                         max = population.maxOrNull() ?: 0f,
                                         percentiles = mapOf(
-                                            "25%" to population.sorted()[min(0.25 * population.size, population.size - 1f.toDouble()).toInt()].formatTwoDecimals(),
                                             "50%" to population.sorted()[min(0.50 * population.size, population.size - 1f.toDouble()).toInt()].formatTwoDecimals(),
-                                            "75%" to population.sorted()[min(0.75 * population.size, population.size - 1f.toDouble()).toInt()].formatTwoDecimals(),
                                             "90%" to population.sorted()[min(0.90 * population.size, population.size - 1f.toDouble()).toInt()].formatTwoDecimals(),
-                                            "95%" to population.sorted()[min(0.95 * population.size, population.size - 1f.toDouble()).toInt()].formatTwoDecimals(),
                                             "99%" to population.sorted()[min(0.99 * population.size, population.size - 1f.toDouble()).toInt()].formatTwoDecimals()
                                         )
                                     )

@@ -244,27 +244,35 @@ fun HomePageUi(
                     if(viewModel.sdNodes.isNotEmpty()){
                         Div(
                             attrs = {
-                                classes("row", "mb-3")
+                                classes("row")
                             }
                         ) {
-                            H3 {
-                                Text("📈 Standard Deviation: ")
+                            Div(
+                                attrs = {
+                                    classes("col-md-6")
+                                }
+                            ) {
+                                H3 {
+                                    Text("📈 Standard Deviation: ")
+                                }
+
+                                StandardDeviationUi(viewModel.currentFocusedGroup, viewModel.sdNodes)
                             }
 
-                            StandardDeviationUi(viewModel.currentFocusedGroup, viewModel.sdNodes)
+                            Div(
+                                attrs = {
+                                    classes("col-md-6")
+                                }
+                            ) {
+                                H3 {
+                                    Text("📈 Statistical Summary: ")
+                                }
+
+                                Stats(viewModel.currentFocusedGroup, viewModel.sdNodes)
+                            }
                         }
 
-                        Div(
-                            attrs = {
-                                classes("row", "mb-3")
-                            }
-                        ) {
-                            H3 {
-                                Text("📈 Statistical Summary: ")
-                            }
 
-                            Stats(viewModel.currentFocusedGroup, viewModel.sdNodes)
-                        }
                     }
                 }
             }
