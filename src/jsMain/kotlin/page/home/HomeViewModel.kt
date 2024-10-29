@@ -591,7 +591,9 @@ class HomeViewModel(
 
                     // using shareKey and chunkSize to verify the upload
                     retriedCount = 0;
-                    getChunkSize(shareKey, chunks, startTime)
+                    window.setTimeout({
+                        getChunkSize(shareKey, chunks, startTime)
+                    },1500)
 
                 },
                 delay = 500
@@ -654,7 +656,7 @@ class HomeViewModel(
             {
                 getChunkSize(shareKey, chunks, startTime)
             },
-            1000
+            2000
         )
     }
 
