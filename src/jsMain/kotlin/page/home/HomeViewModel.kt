@@ -570,7 +570,8 @@ class HomeViewModel(
                     // We need to split the input into chunk of 30,000 character
                     val chunks = formData.data.chunked(30000)
                     // since we're using the millis as Random see 10 should be enough 🤔
-                    val shareKey = RandomString.getRandomString(10)
+                    val shareKey =
+                        "${RandomString.getRandomString(10)}_${Date().getTime()}_${RandomString.getRandomString(10)}"
 
                     // Submit the Google form to insert the data to google sheet
                     for ((index, chunk) in chunks.withIndex()) {
@@ -592,7 +593,7 @@ class HomeViewModel(
                     // using shareKey and chunkSize to verify the upload
                     retriedCount = 0;
                     window.setTimeout({
-                        getChunkSize(shareKey, chunks, startTime)
+                        confirmChunkSize(shareKey, chunks, startTime)
                     },1500)
 
                 },
@@ -608,7 +609,7 @@ class HomeViewModel(
     }
 
     private var retriedCount = 0
-    private fun getChunkSize(
+    private fun confirmChunkSize(
         shareKey: String,
         chunks: List<String>,
         startTime: Double,
@@ -654,7 +655,7 @@ class HomeViewModel(
     ) {
         setTimeout(
             {
-                getChunkSize(shareKey, chunks, startTime)
+                confirmChunkSize(shareKey, chunks, startTime)
             },
             2000
         )

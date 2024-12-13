@@ -12,7 +12,7 @@ object RandomString {
     private const val RANDOM_ENGINE = "0123456789AaBbCcDdEeFfGgHhIiJjKkLkMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
 
     fun getRandomString(length: Int): String {
-        val random = Random(Date().getMilliseconds())
+        val random = Random(Date().getTime().toInt() + (0..99999999999999999).random())
         val apiKeyBuilder = StringBuilder()
         for (i in 0 until length) {
             apiKeyBuilder.append(RANDOM_ENGINE[random.nextInt(RANDOM_ENGINE.length)])
