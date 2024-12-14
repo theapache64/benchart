@@ -52,6 +52,7 @@ class GoogleSheetRepoImpl : GoogleSheetRepo {
             }
             xhr.send()
         } catch (e: Throwable) {
+            e.printStackTrace()
             onFailed(e.message ?: "Something wrong")
         }
     }

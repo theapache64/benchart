@@ -640,9 +640,11 @@ class HomeViewModel(
                 }
             },
             onFailed = { reason ->
+                println("QuickTag: HomeViewModel:confirmChunkSize: failed: $reason : retried: $retriedCount/ $RETRY_COUNT")
                 if (retriedCount >= RETRY_COUNT) {
                     form = form.copy(isLoading = false)
                     window.alert("Share failed : $reason")
+                } else {
                     retryGetChunkSize(shareKey, chunks, startTime)
                 }
             }
