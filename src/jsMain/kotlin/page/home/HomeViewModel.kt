@@ -618,6 +618,7 @@ class HomeViewModel(
         googleSheetRepo.getChunkSize(
             shareKey = shareKey,
             onChunkSize = { remoteChunkSize ->
+                println("QuickTag: HomeViewModel:confirmChunkSize: remote chunk size is $remoteChunkSize (expected ${chunks.size})")
                 if (remoteChunkSize == chunks.size) {
                     // Data integrity ✅
                     println("QuickTag: HomeViewModel:onShareClicked: SHARE SUCCESS!")

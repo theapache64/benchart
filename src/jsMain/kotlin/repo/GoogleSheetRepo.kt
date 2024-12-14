@@ -39,6 +39,7 @@ class GoogleSheetRepoImpl : GoogleSheetRepo {
                         if (responseLines.size == 2) {
                             // chunk exist
                             val chunkSize = responseLines[1].replace("\"", "").toInt()
+                            println("QuickTag: GoogleSheetRepoImpl:getChunkSize: chunk size is '$chunkSize'")
                             onChunkSize(chunkSize)
                         } else {
                             // share doesn't exist
