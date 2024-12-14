@@ -116,7 +116,7 @@ fun FormUi(
                             .toMutableList()
                         while (loadingMessages.isNotEmpty()) {
                             loadingMsg = loadingMessages.removeAt(loadingMessages.lastIndex)
-                            delay(3000)
+                            delay(5000)
                         }
                     }
 
