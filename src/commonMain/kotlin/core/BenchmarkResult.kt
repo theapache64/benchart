@@ -38,6 +38,76 @@ enum class SupportedMetrics(
         key = "timeToFullDisplayMs",
         title = "Full Display Summary"
     ),
+    CreateViewCount(
+        emoji = "🔢",
+        key = "RV CreateViewCount",
+        title = "Create View Count"
+    ),
+    CreateViewSum(
+        emoji = "⏲",
+        key = "RV CreateViewSumMs",
+        title = "Create View Time Sum"
+    ),
+    BindViewCount(
+        emoji = "🔄",
+        key = "RV OnBindViewCount",
+        title = "Bind View Count"
+    ),
+    BindViewSum(
+        emoji = "⌛️",
+        key = "RV OnBindViewSumMs",
+        title = "Bind View Time Sum"
+    ),
+    FrameCount(
+        emoji = "🖼",
+        key = "frameCount",
+        title = "Frame Count"
+    ),
+    JankPercent(
+        emoji = "📊",
+        key = "gfxFrameJankPercent",
+        title = "Frame Jank Percentage"
+    ),
+    FrameTime50(
+        emoji = "⚡️",
+        key = "gfxFrameTime50thPercentileMs",
+        title = "Frame Time 50th Percentile"
+    ),
+    FrameTime90(
+        emoji = "🚀",
+        key = "gfxFrameTime90thPercentileMs",
+        title = "Frame Time 90th Percentile"
+    ),
+    FrameTime95(
+        emoji = "🎯",
+        key = "gfxFrameTime95thPercentileMs",
+        title = "Frame Time 95th Percentile"
+    ),
+    FrameTime99(
+        emoji = "⚠️",
+        key = "gfxFrameTime99thPercentileMs",
+        title = "Frame Time 99th Percentile"
+    ),
+    GfxFrameCount(
+        emoji = "🎬",
+        key = "gfxFrameTotalCount",
+        title = "GFX Frame Total Count"
+    ),
+    MemoryHeap(
+        emoji = "💾",
+        key = "memoryHeapSizeMaxKb",
+        title = "Memory Heap Size"
+    ),
+    OrderListPopulationCount(
+        emoji = "📋",
+        key = "order_list_populationCount",
+        title = "Order List Population Count"
+    ),
+    OrderListPopulationSum(
+        emoji = "📝",
+        key = "order_list_populationSumMs",
+        title = "Order List Population Time Sum"
+    )
 }
 
 enum class InputType {
