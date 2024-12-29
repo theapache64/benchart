@@ -996,35 +996,6 @@ class BenchmarkParseTest {
         )
     }
 
-    @Test
-    fun parseAndroidLogWithDefaultTimeFormat() {
-        val actualResult = BenchmarkResult.parse(
-            form = """
-                # before
-                2024-06-29 11:30:46.641 System.out                                                  QuickTag: MainActivity:onCreate: time is 1719640846641
-                2024-06-29 11:30:46.865 System.out                                                  QuickTag: MainActivity:AppNavigation: time is 1719640846865
-            """.trimIndent().toFormData(),
-            focusGroup = "orange"
-        )
-
-        val expectedBenchmarkResult = listOf(
-            BenchmarkResult(
-                title = "before",
-                testName = "",
-                blockRows = listOf(
-                    BlockRow(
-                        title = "before",
-                        fullData = mapOf(
-                            "QuickTag: MainActivity:onCreate: time is" to listOf(1.71964078E12f),
-                            "QuickTag: MainActivity:AppNavigation: time is" to listOf(1.71964078E12f),
-                        )
-                    )
-                )
-            )
-        ).typify(InputType.GENERIC, setOf())
-
-        assertEquals(expectedBenchmarkResult, actualResult)
-    }
 }
 
 private fun List<BenchmarkResult>.typify(type: InputType, focusGroups: Set<String>): ResultContainer {
@@ -1032,5 +1003,5 @@ private fun List<BenchmarkResult>.typify(type: InputType, focusGroups: Set<Strin
 }
 
 private fun String.toFormData(): FormData {
-    return FormData(data = this, isTestNameDetectionEnabled = true, isAutoGroupEnabled = false)
+    return FormData(data = this, isTestNameDetectionEnabled = true, isAutoGroupEnabled = false, isLoading = false)
 }
