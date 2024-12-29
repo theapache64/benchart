@@ -6,6 +6,8 @@ import core.BenchmarkResult.Companion.FOCUS_GROUP_ALL
 import core.MetricUnit
 import core.getMetricEmoji
 import model.Chart
+import org.jetbrains.compose.web.css.selectors.CSSSelector.PseudoElement.after
+import org.jetbrains.compose.web.css.selectors.CSSSelector.PseudoElement.before
 import kotlin.math.absoluteValue
 
 object SummaryUtils {
@@ -79,8 +81,12 @@ object SummaryUtils {
             val before = combinedMap[words[0]]?.get(index) ?: 0f
             println("before : '$before' -> after: '$after'")
             val diff = "${(after - before).asDynamic().toFixed(2)}".toFloat()
-            val percDiff =
-                "${(((before - after) / before) * 100).asDynamic().toFixed(2)}".toFloat().absoluteValue
+            var percDiff = if (before == 0f) {
+                after * 100
+            } else {
+                (((before - after) / before) * 100)
+            }
+            percDiff = "${percDiff.asDynamic().toFixed(2)}".toFloat().absoluteValue as Float
 
             val isHighGoodMetric = highIsGoodMetricRegex.containsMatchIn(title)
 

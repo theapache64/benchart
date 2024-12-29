@@ -254,7 +254,6 @@ fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>, curren
             summary.forEach { node ->
                 Li {
                     Text("${node.emoji} ")
-                    // ${node.segment} : ${node.label} performed ${node.percentage}%
                     BoldText(
                         text = node.segment,
                         style = {
