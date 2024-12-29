@@ -6,6 +6,15 @@ open class InvalidDataException(message: String?) : Throwable(message)
 class InvalidBenchmarkDataException(message: String?) : InvalidDataException(message)
 class InvalidGenericDataException(message: String?) : InvalidDataException(message)
 
+enum class MetricUnit(val singular: String, val plural: String) {
+    View(" view", " views"),
+    Ms(singular = "ms", plural = "ms"),
+    Mah(singular = " Mah", plural = "Mah"),
+    Kb(singular = "kb", plural = "kb"),
+    Frame(" frame", " frames"),
+    Percentage("%", "%")
+}
+
 data class BlockRow(
     val title: String,
     val fullData: Map<String, List<Float>>

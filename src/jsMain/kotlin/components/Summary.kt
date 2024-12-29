@@ -3,6 +3,7 @@ package components
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import core.BenchmarkResult.Companion.FOCUS_GROUP_ALL
+import core.MetricUnit
 import kotlinx.browser.document
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.attributes.ButtonType
@@ -24,13 +25,13 @@ import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Select
 import org.jetbrains.compose.web.dom.Small
 import org.jetbrains.compose.web.dom.Span
-import org.jetbrains.compose.web.dom.Table
 import org.jetbrains.compose.web.dom.TagElement
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.Ul
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
+import kotlin.math.absoluteValue
 
 // P50 : After performed 25% better (-30ms)
 class SummaryNode(
@@ -43,7 +44,8 @@ class SummaryNode(
     val diff: Float,
     val diffSymbol: String,
     val after: Float,
-    val before: Float
+    val before: Float,
+    val unit: MetricUnit?,
 )
 
 data class Summary(
@@ -262,8 +264,13 @@ fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>, curren
                     Text(" : ")
                     BoldText(node.label)
                     Text(if (node.isGeneric) " looks " else " performed ")
-                    BoldText("${node.percentage}% ")
-                    val postfix = if (node.isGeneric) "" else "ms"
+                    if (node.diff != 0f) {
+                        BoldText("${node.percentage}% ")
+                    }
+                    val postfix = node.getPostfix(node.diff)
+                    val beforePostfix = node.getPostfix(node.before)
+                    val afterPostfix = node.getPostfix(node.after)
+
                     Span(
                         attrs = {
                             val badgeClass = when {
@@ -276,7 +283,7 @@ fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>, curren
                             attr("data-bs-toggle", "tooltip")
                             attr("data-bs-placement", "top")
 
-                            attr("title", "${node.before}$postfix to ${node.after}$postfix")
+                            attr("title", if(node.diff ==0f) "both ${node.before}$beforePostfix" else "${node.before}$beforePostfix to ${node.after}$afterPostfix")
                         }
                     ) {
                         Text(node.stateWord)
@@ -286,6 +293,28 @@ fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>, curren
             }
         }
     }
+}
+
+fun SummaryNode.getPostfix(num: Float): String {
+    return unit?.let { unit ->
+        if (num.absoluteValue > 1) unit.plural else unit.singular
+    } ?: ""
+}
+fun String.predictTitle(): String {
+    var name = this
+    if (name.endsWith("Mah", ignoreCase = false)) {
+        name = name.replace("Mah", "")
+    }
+    if (name.endsWith("Ms", ignoreCase = false)) {
+        name = name.replace("Ms", "")
+    }
+    return name.map {
+        if (it.isUpperCase()) {
+            " $it"
+        } else {
+            it.toString()
+        }
+    }.joinToString(separator = "").replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
 }
 
 @Composable

@@ -3,7 +3,7 @@ package utils
 import components.Summary
 import components.SummaryNode
 import core.BenchmarkResult.Companion.FOCUS_GROUP_ALL
-import core.SupportedMetrics
+import core.MetricUnit
 import core.getMetricEmoji
 import model.Chart
 import kotlin.math.absoluteValue
@@ -13,6 +13,11 @@ object SummaryUtils {
     private fun getMetricTitle(label: String): String {
         return label
     }
+
+    private val highIsGoodMetricRegex = arrayOf(
+        "frameCount",
+        "gfxFrameTotalCount",
+    ).joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
     fun getSummaryOrThrow(
         currentFocusedGroup: String,
@@ -57,6 +62,17 @@ object SummaryUtils {
         val summaryNodes = mutableListOf<SummaryNode>()
         val segments = chart.dataSets.values.first().keys.toList()
         println("segments: $segments")
+
+        val title = if (isGeneric) {
+            if (currentFocusedGroup == FOCUS_GROUP_ALL) {
+                "📊 $selectedBlockNameOne vs $selectedBlockNameTwo"
+            } else {
+                "📊 ${chart.label}"
+            }
+        } else {
+            "${getMetricEmoji(chart.label)} ${getMetricTitle(chart.label)}"
+        }
+
         repeat(segments.size) { index ->
             val segment = segments[index]
             val after = combinedMap[words[1]]?.get(index) ?: 0f
@@ -66,7 +82,15 @@ object SummaryUtils {
             val percDiff =
                 "${(((before - after) / before) * 100).asDynamic().toFixed(2)}".toFloat().absoluteValue
 
-            val resultWord = if (diff > 0) "worse" else "better"
+            val isHighGoodMetric = highIsGoodMetricRegex.containsMatchIn(title)
+
+            val resultWord = if (diff == 0f) {
+                "equally"
+            } else if (isHighGoodMetric == (diff > 0)) {
+                "better"
+            } else {
+                "worse"
+            }
             val symbol = if (diff > 0) "+" else ""
             val emoji = if (diff > 0) "❌" else "✅"
 
@@ -81,20 +105,25 @@ object SummaryUtils {
                     diff = diff,
                     diffSymbol = symbol,
                     after = "${after.asDynamic().toFixed(2)}".toFloat(),
-                    before = "${before.asDynamic().toFixed(2)}".toFloat()
+                    before = "${before.asDynamic().toFixed(2)}".toFloat(),
+                    unit = getMetricUnit(title)
                 )
             )
         }
-        val title = if (isGeneric) {
-            if (currentFocusedGroup == FOCUS_GROUP_ALL) {
-                "📊 $selectedBlockNameOne vs $selectedBlockNameTwo"
-            } else {
-                "📊 ${chart.label}"
-            }
-        } else {
-            "${getMetricEmoji(chart.label)} ${getMetricTitle(chart.label)}"
-        }
+
 
         return Summary(title = title, summaryNodes)
+    }
+
+    private fun getMetricUnit(title: String): MetricUnit? {
+        return when {
+            title.endsWith("Ms") -> MetricUnit.Ms
+            title.endsWith("Mah") -> MetricUnit.Mah
+            title.endsWith("Kb") -> MetricUnit.Kb
+            title.endsWith("ViewCount") -> MetricUnit.View
+            title.endsWith("Percent") -> MetricUnit.Percentage
+            title.contains("frame", ignoreCase = true) && title.contains("count", ignoreCase = true) -> MetricUnit.Frame
+            else -> null
+        }
     }
 }
