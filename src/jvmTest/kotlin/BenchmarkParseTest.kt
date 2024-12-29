@@ -85,6 +85,185 @@ class BenchmarkParseTest {
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
 
+    @Test
+    fun parseMixedMacroBenchmarkMetric() {
+        val actualBenchmarkResult = BenchmarkResult.parse(
+            """
+                # before
+                frameCount                     min    209.0,   median    224.5,   max    272.0
+                batteryDiffMah                 min      0.0,   median      0.0,   max      4.9
+                frameDurationCpuMs             P50       4.0,   P90       9.1,   P95      14.6,   P99      43.2
+                
+                # after
+                frameCount                     min    210.0,   median    217.5,   max    272.0
+                batteryDiffMah                 min      0.0,   median      0.0,   max      3.9
+                frameDurationCpuMs             P50       4.1,   P90       9.7,   P95      15.0,   P99      45.0
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
+        )
+        val expectedBenchmarkResult = listOf(
+            BenchmarkResult(
+                title = "before",
+                testName = null,
+                blockRows = mutableListOf(
+                    BlockRow(
+                        title = "frameCount",
+                        fullData = mapOf(
+                            "min" to listOf(209.0f),
+                            "median" to listOf(224.5f),
+                            "max" to listOf(272.0f),
+                        )
+                    ),
+
+                    BlockRow(
+                        title = "batteryDiffMah",
+                        fullData = mapOf(
+                            "min" to listOf(0.0f),
+                            "median" to listOf(0.0f),
+                            "max" to listOf(4.9f),
+                        )
+                    ),
+
+                    BlockRow(
+                        title = "frameDurationCpuMs",
+                        fullData = mapOf(
+                            "P50" to listOf(4.0f),
+                            "P90" to listOf(9.1f),
+                            "P95" to listOf(14.6f),
+                            "P99" to listOf(43.2f),
+                        ),
+                    ),
+                ),
+            ),
+
+            BenchmarkResult(
+                title = "after",
+                testName = null,
+                blockRows = mutableListOf(
+                    BlockRow(
+                        title = "frameCount",
+                        fullData = mapOf(
+                            "min" to listOf(210.0f),
+                            "median" to listOf(217.5f),
+                            "max" to listOf(272.0f),
+                        )
+                    ),
+
+                    BlockRow(
+                        title = "batteryDiffMah",
+                        fullData = mapOf(
+                            "min" to listOf(0.0f),
+                            "median" to listOf(0.0f),
+                            "max" to listOf(3.9f),
+                        )
+                    ),
+
+                    BlockRow(
+                        title = "frameDurationCpuMs",
+                        fullData = mapOf(
+                            "P50" to listOf(4.1f),
+                            "P90" to listOf(9.7f),
+                            "P95" to listOf(15.0f),
+                            "P99" to listOf(45.0f),
+                        ),
+                    ),
+                ),
+            ),
+        ).typify(InputType.MACRO_BENCHMARK, setOf())
+        assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
+    }
+
+    @Test
+    fun parseCustomMetricAndMacroBenchmarkMetric() {
+        val actualBenchmarkResult = BenchmarkResult.parse(
+            """
+                # before
+                batteryDiffMah                 min      0.0,   median      0.0,   max      4.9
+                someCustomMetric                 min      0.0,   median      0.0,   max      4.9
+                anotherCustomMetric             P50       4.0,   P90       9.1,   P95      14.6,   P99      43.2
+
+                # after
+                batteryDiffMah                 min      0.0,   median      0.0,   max      3.9
+                someCustomMetric                     min    210.0,   median    217.5,   max    272.0
+                anotherCustomMetric             P50       4.1,   P90       9.7,   P95      15.0,   P99      45.0
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
+        )
+
+        val expectedBenchmarkResult = listOf(
+            BenchmarkResult(
+                title = "before",
+                testName = null,
+                blockRows = mutableListOf(
+                    BlockRow(
+                        title = "batteryDiffMah",
+                        fullData = mapOf(
+                            "min" to listOf(0.0f),
+                            "median" to listOf(0.0f),
+                            "max" to listOf(4.9f),
+                        )
+                    ),
+
+                    BlockRow(
+                        title = "someCustomMetric",
+                        fullData = mapOf(
+                            "min" to listOf(0.0f),
+                            "median" to listOf(0.0f),
+                            "max" to listOf(4.9f),
+                        )
+                    ),
+
+                    BlockRow(
+                        title = "anotherCustomMetric",
+                        fullData = mapOf(
+                            "P50" to listOf(4.0f),
+                            "P90" to listOf(9.1f),
+                            "P95" to listOf(14.6f),
+                            "P99" to listOf(43.2f),
+                        ),
+                    ),
+                ),
+            ),
+
+            BenchmarkResult(
+                title = "after",
+                testName = null,
+                blockRows = mutableListOf(
+                    BlockRow(
+                        title = "batteryDiffMah",
+                        fullData = mapOf(
+                            "min" to listOf(0.0f),
+                            "median" to listOf(0.0f),
+                            "max" to listOf(3.9f),
+                        )
+                    ),
+
+                    BlockRow(
+                        title = "someCustomMetric",
+                        fullData = mapOf(
+                            "min" to listOf(210.0f),
+                            "median" to listOf(217.5f),
+                            "max" to listOf(272.0f),
+                        )
+                    ),
+
+                    BlockRow(
+                        title = "anotherCustomMetric",
+                        fullData = mapOf(
+                            "P50" to listOf(4.1f),
+                            "P90" to listOf(9.7f),
+                            "P95" to listOf(15.0f),
+                            "P99" to listOf(45.0f),
+                        ),
+                    ),
+                ),
+            ),
+        ).typify(InputType.MACRO_BENCHMARK, setOf())
+
+        assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
+    }
+
+
 
     @Test
     fun parseFullSuccess() {
