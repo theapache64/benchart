@@ -1,9 +1,18 @@
 package components
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.css.marginBottom
+import org.jetbrains.compose.web.css.marginRight
+import org.jetbrains.compose.web.css.marginTop
+import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.css.width
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.H1
+import org.jetbrains.compose.web.dom.Img
+import org.jetbrains.compose.web.dom.Text
 
+
+private const val version = "v1.0.3 (29 Dec 2024)"
 
 @Composable
 fun Heading() {
@@ -11,15 +20,20 @@ fun Heading() {
         classes("row")
     }) {
         Div(attrs = {
-            classes("col-lg-12")
+            classes("col-lg-12", "text-center")
             style {
                 marginBottom(30.px)
                 marginTop(30.px)
             }
+
         }) {
-            H1(attrs = {
-                classes("text-center")
-            }) {
+            H1(
+                attrs = {
+                    attr("data-bs-toggle", "tooltip")
+                    attr("data-bs-placement", "top")
+                    attr("title", version)
+                }
+            ) {
                 Img(
                     src = "icons/apple-touch-icon.png",
                     attrs = {
@@ -30,7 +44,7 @@ fun Heading() {
                         }
                     }
                 )
-                Text("benchart")
+                Text("BenChart")
             }
         }
     }
