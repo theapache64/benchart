@@ -4,7 +4,6 @@ import core.BlockRow
 import core.InputType
 import core.InvalidBenchmarkDataException
 import core.ResultContainer
-import core.SupportedMetrics
 import model.FormData
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -12,6 +11,79 @@ import org.junit.Test
 
 
 class BenchmarkParseTest {
+
+    @Test
+    fun parseCustomMetric() {
+        val actualBenchmarkResult = BenchmarkResult.parse(
+            """
+                # before
+                someCustomMetric                 min      0.0,   median      0.0,   max      4.9
+                anotherCustomMetric             P50       4.0,   P90       9.1,   P95      14.6,   P99      43.2
+
+                # after
+                someCustomMetric                     min    210.0,   median    217.5,   max    272.0
+                anotherCustomMetric             P50       4.1,   P90       9.7,   P95      15.0,   P99      45.0
+
+            """.trimIndent().toFormData(),
+            focusGroup = FOCUS_GROUP_ALL
+        )
+
+        val expectedBenchmarkResult = listOf(
+            BenchmarkResult(
+                title = "before",
+                testName = null,
+                blockRows = mutableListOf(
+                    BlockRow(
+                        title = "someCustomMetric",
+                        fullData = mapOf(
+                            "min" to listOf(0.0f),
+                            "median" to listOf(0.0f),
+                            "max" to listOf(4.9f),
+                        )
+                    ),
+
+                    BlockRow(
+                        title = "anotherCustomMetric",
+                        fullData = mapOf(
+                            "P50" to listOf(4.0f),
+                            "P90" to listOf(9.1f),
+                            "P95" to listOf(14.6f),
+                            "P99" to listOf(43.2f),
+                        ),
+                    ),
+                ),
+            ),
+
+            BenchmarkResult(
+                title = "after",
+                testName = null,
+                blockRows = mutableListOf(
+
+                    BlockRow(
+                        title = "someCustomMetric",
+                        fullData = mapOf(
+                            "min" to listOf(210.0f),
+                            "median" to listOf(217.5f),
+                            "max" to listOf(272.0f),
+                        )
+                    ),
+
+                    BlockRow(
+                        title = "anotherCustomMetric",
+                        fullData = mapOf(
+                            "P50" to listOf(4.1f),
+                            "P90" to listOf(9.7f),
+                            "P95" to listOf(15.0f),
+                            "P99" to listOf(45.0f),
+                        ),
+                    ),
+
+
+                    ),
+            ),
+        ).typify(InputType.MACRO_BENCHMARK, setOf())
+        assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
+    }
 
 
     @Test
@@ -145,7 +217,7 @@ class BenchmarkParseTest {
                     )
                 ),
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf())
+        ).typify(InputType.MACRO_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -189,7 +261,7 @@ class BenchmarkParseTest {
                     )
                 ),
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf())
+        ).typify(InputType.MACRO_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -235,7 +307,7 @@ class BenchmarkParseTest {
                     )
                 ),
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf())
+        ).typify(InputType.MACRO_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -282,7 +354,7 @@ class BenchmarkParseTest {
                     )
                 )
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf())
+        ).typify(InputType.MACRO_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -330,7 +402,7 @@ class BenchmarkParseTest {
                     ),
                 ),
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf())
+        ).typify(InputType.MACRO_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -371,7 +443,7 @@ class BenchmarkParseTest {
                     )
                 )
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf())
+        ).typify(InputType.MACRO_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -501,7 +573,7 @@ class BenchmarkParseTest {
                     )
                 )
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf())
+        ).typify(InputType.MACRO_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualBenchmarkResult)
     }
@@ -555,7 +627,7 @@ class BenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "PNG Image vs PNG HsImage",
-                testName = "",
+                testName = null,
                 blockRows = listOf(
                     BlockRow(
                         title = "PNG Image",
@@ -596,7 +668,7 @@ class BenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "first vs second",
-                testName = "",
+                testName = null,
                 blockRows = listOf(
                     BlockRow(
                         title = "first",
@@ -635,7 +707,7 @@ class BenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "orange price",
-                testName = "",
+                testName = null,
                 blockRows = listOf(
                     BlockRow(
                         title = "orange price",
@@ -669,7 +741,7 @@ class BenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "before vs after",
-                testName = "",
+                testName = null,
                 blockRows = listOf(
                     BlockRow(
                         title = "before",
@@ -706,7 +778,7 @@ class BenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "before",
-                testName = "",
+                testName = null,
                 blockRows = listOf(
                     BlockRow(
                         title = "before",
@@ -847,7 +919,7 @@ class BenchmarkParseTest {
                     )
                 )
             ),
-        ).typify(InputType.NORMAL_BENCHMARK, setOf())
+        ).typify(InputType.MACRO_BENCHMARK, setOf())
 
         assertEquals(expectedBenchmarkResult, actualResult)
     }
@@ -875,7 +947,7 @@ class BenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "before vs after",
-                testName = "",
+                testName = null,
                 blockRows = listOf(
                     BlockRow(
                         title = "before",
@@ -922,7 +994,7 @@ class BenchmarkParseTest {
         val expectedBenchmarkResult = listOf(
             BenchmarkResult(
                 title = "orange - before vs after",
-                testName = "",
+                testName = null,
                 blockRows = listOf(
                     BlockRow(
                         title = "before",

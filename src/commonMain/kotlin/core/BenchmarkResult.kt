@@ -121,7 +121,7 @@ data class SupportedMetrics(
 
 enum class InputType {
     GENERIC,
-    NORMAL_BENCHMARK
+    MACRO_BENCHMARK
 }
 
 data class ResultContainer(
@@ -226,7 +226,7 @@ data class BenchmarkResult(
                 }
             }
 
-            return ResultContainer(InputType.NORMAL_BENCHMARK, benchmarkResults, setOf(FOCUS_GROUP_ALL))
+            return ResultContainer(InputType.MACRO_BENCHMARK, benchmarkResults, setOf(FOCUS_GROUP_ALL))
         }
 
         private fun parseGenericInput(
@@ -301,7 +301,7 @@ data class BenchmarkResult(
             benchmarkResults.add(
                 BenchmarkResult(
                     title = chartTitle,
-                    testName = "",
+                    testName = null,
                     blockRows = blockRows
                 )
             )

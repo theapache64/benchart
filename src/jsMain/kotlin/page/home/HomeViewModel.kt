@@ -272,7 +272,7 @@ class HomeViewModel(
                             unit = ""
                         }
 
-                        InputType.NORMAL_BENCHMARK -> {
+                        InputType.MACRO_BENCHMARK -> {
 
                             testNames.addAll(fullBenchmarkResults.mapNotNull { it.testName }.toSet())
 

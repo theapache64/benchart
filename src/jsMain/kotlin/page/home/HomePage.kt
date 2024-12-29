@@ -15,9 +15,7 @@ import components.SummaryContainer
 import components.SummarySelector
 import components.TestNameDetectionToggle
 import components.TestNames
-import core.BenchmarkResult
 import core.InputType
-import org.jetbrains.compose.web.css.fontSize
 import org.jetbrains.compose.web.css.paddingBottom
 import org.jetbrains.compose.web.css.paddingLeft
 import org.jetbrains.compose.web.css.paddingRight
@@ -26,7 +24,6 @@ import org.jetbrains.compose.web.dom.Br
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Form
 import org.jetbrains.compose.web.dom.H3
-import org.jetbrains.compose.web.dom.Small
 import org.jetbrains.compose.web.dom.Text
 import repo.BenchmarkRepoImpl
 import repo.FormRepoImpl
@@ -177,7 +174,7 @@ fun HomePageUi(
                                     }
                                 }
 
-                                if (viewModel.inputType == InputType.NORMAL_BENCHMARK) {
+                                if (viewModel.inputType == InputType.MACRO_BENCHMARK) {
                                     Div(
                                         attrs = {
                                             classes("col-md-2")
