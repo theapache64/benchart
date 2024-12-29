@@ -13,12 +13,12 @@ data class BlockRow(
     val avgData: Map<String, Float> = fullData.mapValues { it.value.average().toFloat() }
 }
 
-enum class SupportedMetrics(
+data class SupportedMetrics(
     val key: String,
     val emoji: String,
     val title: String
 ) {
-    Duration(
+    /*Duration(
         emoji = "⏱",
         key = "frameDurationCpuMs",
         title = "Duration Summary"
@@ -107,7 +107,7 @@ enum class SupportedMetrics(
         emoji = "📝",
         key = "order_list_populationSumMs",
         title = "Order List Population Time Sum"
-    )
+    )*/
 }
 
 enum class InputType {
@@ -128,9 +128,7 @@ data class BenchmarkResult(
 ) {
     companion object {
         const val FOCUS_GROUP_ALL = "All"
-        private val metricKeys = SupportedMetrics.values().map { it.key }
 
-        private val machineLineRegEx = "^(Traces|${metricKeys.joinToString(separator = "|")}).+".toRegex()
         private val titleStripRegEx = "\\W+".toRegex()
         private val genericTitleStripRegEx = "\\W+".toRegex()
         private val testNameRegex = "[A-Z].*_[a-z].*".toRegex()
@@ -183,7 +181,7 @@ data class BenchmarkResult(
                         testName = line
                     }
 
-                    val metricName = line.findMetricKeyOrNull()
+                    val metricName = findMetricKeyOrNull(line)
                     println("QuickTag: BenchmarkResult:parse: metric name is $metricName")
                     if (metricName != null) {
                         val isMetricAlreadyAdded = blockRows.find { it.title == metricName } != null
@@ -393,7 +391,7 @@ data class BenchmarkResult(
         }
 
         private fun isMachineLine(line: String): Boolean {
-            return line.matches(machineLineRegEx)
+            return line.trim().contains("Traces: ") || line.matches(percentileRegex) || line.matches(minMaxMedianRegex)
         }
 
         private fun parseValues(key: String, data: String): Map<String, Float> {
@@ -415,8 +413,22 @@ data class BenchmarkResult(
         }
 
 
-        private fun String.findMetricKeyOrNull(): String? {
-            return metricKeys.find { this.startsWith(it) }
+        private fun findMetricKeyOrNull(line: String): String? {
+            when {
+                line.matches(minMaxMedianRegex) -> {
+                    val minMaxMedianMatch = minMaxMedianRegex.matchEntire(line)!!
+                    val (metricName, _) = minMaxMedianMatch.destructured
+                    return metricName
+                }
+
+                line.matches(percentileRegex) -> {
+                    val percentileMatch = percentileRegex.matchEntire(line)!!
+                    val (metricName, _) = percentileMatch.destructured
+                    return metricName
+                }
+
+                else -> return null
+            }
         }
 
         private fun String.shouldSkip(): Boolean {
@@ -427,10 +439,11 @@ data class BenchmarkResult(
 
 }
 
+val minMaxMedianRegex = "^(.+?)\\s+min\\s+(.+?),\\s+median\\s+(.+?),\\s+max\\s+(.+?)\$".toRegex()
+val percentileRegex = "^(.+?)\\s+P50\\s+(.+?),\\s+P90\\s+(.+?),\\s+P95\\s+(.+?),\\s+P99\\s+(.+)\$".toRegex()
+
 
 private fun FormData.isGenericInput(): Boolean {
-    return !this.data.contains(
-        SupportedMetrics.values().joinToString(separator = "|", prefix = "(", postfix = ")") { it.key }.toRegex()
-    )
+    return this.data.lines().find { line -> line.matches(minMaxMedianRegex) || line.matches(percentileRegex) } == null
 }
 

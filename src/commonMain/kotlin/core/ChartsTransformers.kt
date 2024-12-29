@@ -24,7 +24,7 @@ fun List<BenchmarkResult>.toCharts(): ChartsBundle {
 
         charts.add(
             Chart(
-                emoji = SupportedMetrics.values().find { it.key == chartName }?.emoji ?: "📊",
+                emoji = getMetricEmoji(chartName),
                 label = chartName, // frameDurationCpuMs, frameOverrunMs, etc
                 dataSets = dataSets
             )
@@ -36,6 +36,11 @@ fun List<BenchmarkResult>.toCharts(): ChartsBundle {
         groupMap = groupMap,
         charts = charts
     )
+}
+
+fun getMetricEmoji(chartName: String): String {
+    // TODO:
+    return "📊"
 }
 
 

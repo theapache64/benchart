@@ -51,7 +51,7 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key,
+                        title = "frameDurationCpuMs",
                         fullData = mapOf(
                             "P50" to listOf(13.5f),
                             "P90" to listOf(20.8f),
@@ -60,7 +60,7 @@ class BenchmarkParseTest {
                         )
                     ),
                     BlockRow(
-                        title = SupportedMetrics.Overrun.key,
+                        title = "frameOverrunMs",
                         fullData = mapOf(
                             "P50" to listOf(-5.9f),
                             "P90" to listOf(7.0f),
@@ -76,7 +76,7 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key,
+                        title = "frameDurationCpuMs",
                         fullData = mapOf(
                             "P50" to listOf(13.4f),
                             "P90" to listOf(20.7f),
@@ -85,7 +85,7 @@ class BenchmarkParseTest {
                         )
                     ),
                     BlockRow(
-                        title = SupportedMetrics.Overrun.key,
+                        title = "frameOverrunMs",
                         fullData = mapOf(
                             "P50" to listOf(-6.5f),
                             "P90" to listOf(5.4f),
@@ -101,7 +101,7 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key,
+                        title = "frameDurationCpuMs",
                         fullData = mapOf(
                             "P50" to listOf(13.6f),
                             "P90" to listOf(21.8f),
@@ -110,7 +110,7 @@ class BenchmarkParseTest {
                         )
                     ),
                     BlockRow(
-                        title = SupportedMetrics.Overrun.key,
+                        title = "frameOverrunMs",
                         fullData = mapOf(
                             "P50" to listOf(-6.2f),
                             "P90" to listOf(7.3f),
@@ -126,7 +126,7 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key,
+                        title = "frameDurationCpuMs",
                         fullData = mapOf(
                             "P50" to listOf(13.8f),
                             "P90" to listOf(21.9f),
@@ -135,7 +135,7 @@ class BenchmarkParseTest {
                         )
                     ),
                     BlockRow(
-                        title = SupportedMetrics.Overrun.key,
+                        title = "frameOverrunMs",
                         fullData = mapOf(
                             "P50" to listOf(-5.7f),
                             "P90" to listOf(7.4f),
@@ -170,7 +170,7 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key,
+                        title = "frameDurationCpuMs",
                         fullData = mapOf(
                             "P50" to listOf(13.5f),
                             "P90" to listOf(20.8f),
@@ -179,7 +179,7 @@ class BenchmarkParseTest {
                         )
                     ),
                     BlockRow(
-                        title = SupportedMetrics.Overrun.key,
+                        title = "frameOverrunMs",
                         fullData = mapOf(
                             "P50" to listOf(-5.9f),
                             "P90" to listOf(7.0f),
@@ -216,7 +216,7 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key,
+                        title = "frameDurationCpuMs",
                         fullData = mapOf(
                             "P50" to listOf(13.5f),
                             "P90" to listOf(20.8f),
@@ -225,7 +225,7 @@ class BenchmarkParseTest {
                         )
                     ),
                     BlockRow(
-                        title = SupportedMetrics.Overrun.key,
+                        title = "frameOverrunMs",
                         fullData = mapOf(
                             "P50" to listOf(-5.9f),
                             "P90" to listOf(7.0f),
@@ -263,7 +263,7 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key,
+                        title = "frameDurationCpuMs",
                         fullData = mapOf(
                             "P50" to listOf(13.5f),
                             "P90" to listOf(20.8f),
@@ -272,7 +272,7 @@ class BenchmarkParseTest {
                         ),
                     ),
                     BlockRow(
-                        title = SupportedMetrics.Overrun.key,
+                        title = "frameOverrunMs",
                         fullData = mapOf(
                             "P50" to listOf(-5.9f),
                             "P90" to listOf(7.0f),
@@ -311,7 +311,7 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Overrun.key,
+                        title = "frameOverrunMs",
                         fullData = mapOf(
                             "P50" to listOf(-5.9f),
                             "P90" to listOf(7.0f),
@@ -320,7 +320,7 @@ class BenchmarkParseTest {
                         ),
                     ),
                     BlockRow(
-                        title = SupportedMetrics.Duration.key,
+                        title = "frameDurationCpuMs",
                         fullData = mapOf(
                             "P50" to listOf(13.5f),
                             "P90" to listOf(20.8f),
@@ -352,7 +352,7 @@ class BenchmarkParseTest {
                 testName = null,
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key,
+                        title = "frameDurationCpuMs",
                         fullData = mapOf(
                             "P50" to listOf(13.5f),
                             "P90" to listOf(20.8f),
@@ -361,7 +361,7 @@ class BenchmarkParseTest {
                         )
                     ),
                     BlockRow(
-                        title = SupportedMetrics.Overrun.key,
+                        title = "frameOverrunMs",
                         fullData = mapOf(
                             "P50" to listOf(-5.9f),
                             "P90" to listOf(7.0f),
@@ -419,14 +419,14 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                        title = "frameDurationCpuMs", fullData = mapOf(
                             "P50" to listOf(13.5f),
                             "P90" to listOf(20.8f),
                             "P95" to listOf(25.4f),
                             "P99" to listOf(47.4f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                        title = "frameOverrunMs", fullData = mapOf(
                             "P50" to listOf(-5.9f),
                             "P90" to listOf(7.0f),
                             "P95" to listOf(20.1f),
@@ -441,14 +441,14 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                        title = "frameDurationCpuMs", fullData = mapOf(
                             "P50" to listOf(13.4f),
                             "P90" to listOf(20.7f),
                             "P95" to listOf(24.4f),
                             "P99" to listOf(51.2f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                        title = "frameOverrunMs", fullData = mapOf(
                             "P50" to listOf(-6.5f),
                             "P90" to listOf(5.4f),
                             "P95" to listOf(15.0f),
@@ -463,14 +463,14 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                        title = "frameDurationCpuMs", fullData = mapOf(
                             "P50" to listOf(13.6f),
                             "P90" to listOf(21.8f),
                             "P95" to listOf(27.5f),
                             "P99" to listOf(49.4f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                        title = "frameOverrunMs", fullData = mapOf(
                             "P50" to listOf(-6.2f),
                             "P90" to listOf(7.3f),
                             "P95" to listOf(19.5f),
@@ -485,14 +485,14 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                        title = "frameDurationCpuMs", fullData = mapOf(
                             "P50" to listOf(13.8f),
                             "P90" to listOf(21.9f),
                             "P95" to listOf(27.3f),
                             "P99" to listOf(53.4f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                        title = "frameOverrunMs", fullData = mapOf(
                             "P50" to listOf(-5.7f),
                             "P90" to listOf(7.4f),
                             "P95" to listOf(22.4f),
@@ -765,14 +765,14 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                        title = "frameDurationCpuMs", fullData = mapOf(
                             "P50" to listOf(13.5f),
                             "P90" to listOf(20.8f),
                             "P95" to listOf(25.4f),
                             "P99" to listOf(47.4f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                        title = "frameOverrunMs", fullData = mapOf(
                             "P50" to listOf(-5.9f),
                             "P90" to listOf(7.0f),
                             "P95" to listOf(20.1f),
@@ -787,14 +787,14 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                        title = "frameDurationCpuMs", fullData = mapOf(
                             "P50" to listOf(13.4f),
                             "P90" to listOf(20.7f),
                             "P95" to listOf(24.4f),
                             "P99" to listOf(51.2f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                        title = "frameOverrunMs", fullData = mapOf(
                             "P50" to listOf(-6.5f),
                             "P90" to listOf(5.4f),
                             "P95" to listOf(15.0f),
@@ -809,14 +809,14 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                        title = "frameDurationCpuMs", fullData = mapOf(
                             "P50" to listOf(13.6f),
                             "P90" to listOf(21.8f),
                             "P95" to listOf(27.5f),
                             "P99" to listOf(49.4f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                        title = "frameOverrunMs", fullData = mapOf(
                             "P50" to listOf(-6.2f),
                             "P90" to listOf(7.3f),
                             "P95" to listOf(19.5f),
@@ -831,14 +831,14 @@ class BenchmarkParseTest {
                 testName = "HomeScrollBenchmark_scrollTest",
                 blockRows = listOf(
                     BlockRow(
-                        title = SupportedMetrics.Duration.key, fullData = mapOf(
+                        title = "frameDurationCpuMs", fullData = mapOf(
                             "P50" to listOf(13.8f),
                             "P90" to listOf(21.9f),
                             "P95" to listOf(27.3f),
                             "P99" to listOf(53.4f),
                         )
                     ), BlockRow(
-                        title = SupportedMetrics.Overrun.key, fullData = mapOf(
+                        title = "frameOverrunMs", fullData = mapOf(
                             "P50" to listOf(-5.7f),
                             "P90" to listOf(7.4f),
                             "P95" to listOf(22.4f),

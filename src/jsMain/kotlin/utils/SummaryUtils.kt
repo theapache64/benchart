@@ -4,10 +4,15 @@ import components.Summary
 import components.SummaryNode
 import core.BenchmarkResult.Companion.FOCUS_GROUP_ALL
 import core.SupportedMetrics
+import core.getMetricEmoji
 import model.Chart
 import kotlin.math.absoluteValue
 
 object SummaryUtils {
+
+    private fun getMetricTitle(label: String): String {
+        return label
+    }
 
     fun getSummaryOrThrow(
         currentFocusedGroup: String,
@@ -87,9 +92,7 @@ object SummaryUtils {
                 "📊 ${chart.label}"
             }
         } else {
-            val metricConfig = SupportedMetrics.values().find { it.key == chart.label }
-                ?: error("Unsupported metric name `${chart.label}`")
-            "${metricConfig.emoji} ${metricConfig.title}"
+            "${getMetricEmoji(chart.label)} ${getMetricTitle(chart.label)}"
         }
 
         return Summary(title = title, summaryNodes)
