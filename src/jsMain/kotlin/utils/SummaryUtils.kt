@@ -6,8 +6,6 @@ import core.BenchmarkResult.Companion.FOCUS_GROUP_ALL
 import core.MetricUnit
 import core.getMetricEmoji
 import model.Chart
-import org.jetbrains.compose.web.css.selectors.CSSSelector.PseudoElement.after
-import org.jetbrains.compose.web.css.selectors.CSSSelector.PseudoElement.before
 import kotlin.math.absoluteValue
 
 object SummaryUtils {
@@ -98,8 +96,12 @@ object SummaryUtils {
                 "worse"
             }
             val symbol = if (diff > 0) "+" else ""
-            val emoji = if (diff > 0) "❌" else "✅"
-
+            val emoji = if (diff > 0 && !isHighGoodMetric) "❌" else "✅"
+            val badgeClass = when {
+                diff == 0f -> "secondary"
+                diff > 0 && !isHighGoodMetric -> "danger"
+                else -> "success"
+            }
             summaryNodes.add(
                 SummaryNode(
                     isGeneric = isGeneric,
@@ -112,7 +114,8 @@ object SummaryUtils {
                     diffSymbol = symbol,
                     after = "${after.asDynamic().toFixed(2)}".toFloat(),
                     before = "${before.asDynamic().toFixed(2)}".toFloat(),
-                    unit = getMetricUnit(title)
+                    unit = getMetricUnit(title),
+                    badgeClass = badgeClass,
                 )
             )
         }

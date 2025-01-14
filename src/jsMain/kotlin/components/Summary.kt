@@ -45,6 +45,7 @@ class SummaryNode(
     val diffSymbol: String,
     val after: Float,
     val before: Float,
+    val badgeClass: String,
     val unit: MetricUnit?,
 )
 
@@ -272,12 +273,7 @@ fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>, curren
 
                     Span(
                         attrs = {
-                            val badgeClass = when {
-                                node.diff == 0f -> "secondary"
-                                node.diff > 0 -> "danger"
-                                else -> "success"
-                            }
-                            classes("badge", "bg-$badgeClass")
+                            classes("badge", "bg-${node.badgeClass}")
 
                             attr("data-bs-toggle", "tooltip")
                             attr("data-bs-placement", "top")
