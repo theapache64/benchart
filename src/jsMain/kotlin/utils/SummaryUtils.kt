@@ -96,10 +96,10 @@ object SummaryUtils {
                 "worse"
             }
             val symbol = if (diff > 0) "+" else ""
-            val emoji = if (diff > 0 && !isHighGoodMetric) "❌" else "✅"
+            val emoji = if (diff > 0 == isHighGoodMetric) "✅" else "❌"
             val badgeClass = when {
                 diff == 0f -> "secondary"
-                diff > 0 && !isHighGoodMetric -> "danger"
+                diff > 0 != isHighGoodMetric -> "danger"
                 else -> "success"
             }
             summaryNodes.add(
