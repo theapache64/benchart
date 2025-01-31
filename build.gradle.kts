@@ -38,7 +38,7 @@ kotlin {
             dependencies {
                 implementation(compose.web.core)
                 implementation(compose.runtime)
-                implementation(npm("chart.js", "3.9.1", generateExternals = false))
+                implementation(npm("chart.js", "4.4.7", generateExternals = false))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC.2")
 

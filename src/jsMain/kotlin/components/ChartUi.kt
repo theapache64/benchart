@@ -49,12 +49,24 @@ fun ChartUi(
                             groupMap.autoGroupMap[label]
                         } else {
                             arrayOf(
-                                "rgba(255, 99, 132, 1)",
-                                "rgba(54, 162, 235, 1)",
-                                "rgba(255, 206, 86, 1)",
-                                "rgba(75, 192, 192, 1)",
-                                "rgba(153, 102, 255, 1)",
-                                "rgba(255, 159, 64, 1)"
+                                "rgba(54, 162, 235, 1)",    // Blue
+                                "rgba(255, 159, 64, 1)",    // Orange
+                                "rgba(75, 192, 192, 1)",    // Teal
+                                "rgba(153, 102, 255, 1)",   // Purple
+                                "rgba(255, 205, 86, 1)",    // Yellow
+                                "rgba(22, 160, 133, 1)",    // Green
+                                "rgba(142, 68, 173, 1)",    // Deep Purple
+                                "rgba(230, 126, 34, 1)",    // Burnt Orange
+                                "rgba(52, 152, 219, 1)",    // Light Blue
+                                "rgba(46, 204, 113, 1)",    // Emerald
+                                "rgba(155, 89, 182, 1)",    // Amethyst
+                                "rgba(241, 196, 15, 1)",    // Sun Yellow
+                                "rgba(127, 140, 141, 1)",   // Asphalt
+                                "rgba(26, 188, 156, 1)",    // Turquoise
+                                "rgba(201, 203, 207, 1)",   // Grey
+                                "rgba(211, 84, 0, 1)",      // Pumpkin
+                                "rgba(41, 128, 185, 1)",    // Ocean Blue
+                                "rgba(39, 174, 96, 1)"      // Nephritis
                             )
                         }
                         borderWidth = 3
