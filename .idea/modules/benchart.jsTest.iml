@@ -17,7 +17,7 @@
           <externalSystemTestTask>jsBrowserTest|:|js|js</externalSystemTestTask>
         </externalSystemTestTasks>
         <compilerSettings>
-          <option name="additionalArguments" value="-Xir-module-name=com.theapache64.benchart:benchart_test -Xir-only -Xir-per-module-output-name=benchart-test -Xir-produce-klib-dir -main call -ir-output-dir $MODULE_DIR$/../../build/classes/kotlin/js/test -Xklib-enable-signature-clash-checks=false -Xfragment-refines=jsTest:commonTest -Xfragments=jsTest,commonTest" />
+          <option name="additionalArguments" value="-Xir-module-name=com.theapache64.benchart:benchart_test -Xir-per-module-output-name=benchart-test -Xir-produce-klib-dir -main call -Xklib-enable-signature-clash-checks=false" />
         </compilerSettings>
         <compilerArguments>
           <flagArguments>
@@ -28,21 +28,31 @@
           </flagArguments>
           <stringArguments>
             <stringArg name="moduleName" arg="benchart_test" />
+            <stringArg name="outputDir" arg="$MODULE_DIR$/../../build/classes/kotlin/js/test" />
             <stringArg name="sourceMapEmbedSources" arg="never" />
             <stringArg name="target" arg="es5" />
             <stringArg name="apiVersion" arg="2.0" />
             <stringArg name="languageVersion" arg="2.0" />
           </stringArguments>
           <arrayArguments>
+            <arrayArg name="fragmentRefines">
+              <args>jsTest:commonTest</args>
+            </arrayArg>
+            <arrayArg name="fragments">
+              <args>
+                <arg>jsTest</arg>
+                <arg>commonTest</arg>
+              </args>
+            </arrayArg>
             <arrayArg name="pluginClasspaths">
               <args>
                 <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-compose-compiler-plugin-embeddable/2.0.20/d3b5072df7943425b2ec5b5cfb323701cb5d8bd2/kotlin-compose-compiler-plugin-embeddable-2.0.20.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-serialization-compiler-plugin-embeddable/2.0.20/c48d1e6a5daf2345b982d68de4f259e0a1a8a449/kotlin-serialization-compiler-plugin-embeddable-2.0.20.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-jvm/2.0.20/46b8d2d2028448f6596cc3ce0ad7b10b259ec236/kotlin-scripting-jvm-2.0.20.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-common/2.0.20/af6097b8ac359457ec1cf9b34bd9b5313b52eb6/kotlin-scripting-common-2.0.20.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.0.20/7388d355f7cceb002cd387ccb7ab3850e4e0a07f/kotlin-stdlib-2.0.20.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-script-runtime/2.0.20/4aea042b39014e0a924c2e1d4a21b6fff7e4d35/kotlin-script-runtime-2.0.20.jar</arg>
-                <arg>$KOTLIN_BUNDLED$/lib/kotlinx-serialization-compiler-plugin.jar</arg>
               </args>
             </arrayArg>
             <arrayArg name="pluginOptions">
@@ -69,16 +79,16 @@
     <orderEntry type="module" module-name="benchart.commonTest" scope="TEST" />
     <orderEntry type="module" module-name="benchart.jsMain" scope="TEST" />
     <orderEntry type="module" module-name="benchart.commonMain" scope="TEST" />
-    <orderEntry type="library" scope="TEST" name="org.jetbrains.compose.html:html-core-js:1.7.0-alpha03" level="project" />
-    <orderEntry type="library" scope="TEST" name="org.jetbrains.compose.runtime:runtime-js:1.7.0-alpha03" level="project" />
-    <orderEntry type="library" scope="TEST" name="org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.9.0-RC.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="org.jetbrains.compose.html:internal-html-core-runtime-js:1.7.0-alpha03" level="project" />
-    <orderEntry type="library" scope="TEST" name="org.jetbrains.kotlin:kotlin-dom-api-compat:2.0.20" level="project" />
-    <orderEntry type="library" scope="TEST" name="org.jetbrains.kotlin:kotlin-test-js:2.0.20" level="project" />
-    <orderEntry type="library" scope="TEST" name="org.jetbrains.kotlinx:kotlinx-serialization-json-js:1.4.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="org.jetbrains.kotlinx:kotlinx-serialization-core-js:1.4.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="org.jetbrains.kotlin:kotlin-stdlib-js:2.0.20" level="project" />
-    <orderEntry type="library" scope="TEST" name="org.jetbrains.kotlinx:atomicfu-js:0.25.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.compose.html:html-core-js:1.7.0-alpha03" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.compose.runtime:runtime-js:1.7.0-alpha03" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.9.0-RC.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.compose.html:internal-html-core-runtime-js:1.7.0-alpha03" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-dom-api-compat:2.0.20" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-test-js:2.0.20" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlinx:kotlinx-serialization-json-js:1.4.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlinx:kotlinx-serialization-core-js:1.4.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-js:2.0.20" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlinx:atomicfu-js:0.25.0" level="project" />
   </component>
   <component name="TestModuleProperties" production-module="benchart.jsMain" />
 </module>
