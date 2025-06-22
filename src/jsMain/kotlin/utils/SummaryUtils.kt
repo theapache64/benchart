@@ -17,6 +17,9 @@ object SummaryUtils {
     private val highIsGoodMetricRegex = arrayOf(
         "frameCount",
         "gfxFrameTotalCount",
+        "batteryDiffMah",
+        "batteryEndMah",
+        "batteryStartMah",
     ).joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
     fun getSummaryOrThrow(
