@@ -89,7 +89,7 @@ object SummaryUtils {
             }
             percDiff = "${percDiff.asDynamic().toFixed(2)}".toFloat().absoluteValue as Float
 
-            val isHighGoodMetric = highIsGoodMetricRegex.containsMatchIn(title)
+            val isHighGoodMetric = highIsGoodMetricRegex.containsMatchIn(title) || title.endsWith("%Count")
 
             val resultWord = if (diff == 0f) {
                 "equally"
