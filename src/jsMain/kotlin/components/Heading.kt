@@ -12,7 +12,8 @@ import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.Text
 
 
-private const val version = "v25.07.27.1 (27 Jul 2025)"
+// [latest version - i promise!]
+private const val version = "v25.09.10.0 (10 Sep 2025)"
 
 @Composable
 fun Heading() {

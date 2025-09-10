@@ -6,7 +6,8 @@ plugins {
     kotlin("plugin.serialization") version "2.0.20"
 }
 group = "com.theapache64.benchart"
-version = "1.0.0-rc01"
+// [latest version - i promise!]
+version = "v25.09.10.0 (10 Sep 2025)"
 
 // Add maven repositories
 repositories {
