@@ -12,10 +12,8 @@
 
 import Chart.*
 import chartjs.Type
-import org.w3c.dom.CanvasRenderingContext2D
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.events.Event
-import org.w3c.dom.events.MouseEvent
+import org.w3c.dom.*
+import org.w3c.dom.events.*
 import kotlin.js.Json
 
 external val ArcElement: dynamic = definedExternally
@@ -49,6 +47,7 @@ external class Chart {
     }
 
 
+
     constructor(context: String, options: ChartConfiguration)
     constructor(context: CanvasRenderingContext2D, options: ChartConfiguration)
     constructor(context: HTMLCanvasElement, options: ChartConfiguration)
@@ -59,7 +58,6 @@ external class Chart {
     var data: ChartData?
         get() = definedExternally
         set(value) = definedExternally
-
     fun destroy()
     var update: ((__0: ChartUpdateProps) -> Any)?
         get() = definedExternally
@@ -1626,4 +1624,3 @@ external interface Model {
     var base: Number
     var head: Number
 }
-

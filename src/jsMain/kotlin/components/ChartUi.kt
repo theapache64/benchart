@@ -95,9 +95,6 @@ fun ChartUi(
                             val index = element.index
                             val focusGroup = chartLabels[index as Int]
                             onDotClicked(focusGroup)
-                        } else {
-                            // Copy to clipboard
-
                         }
                     }
                 }
