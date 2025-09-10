@@ -6,12 +6,7 @@ import androidx.compose.runtime.DisposableEffect
 import chartjs.Type
 import core.GroupMap
 import jso
-import org.jetbrains.compose.web.css.height
-import org.jetbrains.compose.web.css.maxHeight
-import org.jetbrains.compose.web.css.maxWidth
-import org.jetbrains.compose.web.css.percent
-import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.css.width
+import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Canvas
 import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.Text
@@ -21,7 +16,7 @@ fun ChartUi(
     isColorMapEnabled: Boolean,
     groupMap: GroupMap,
     chartModel: model.Chart,
-    onDotClicked : (focusGroup : String) -> Unit
+    onDotClicked: (focusGroup: String) -> Unit
 ) {
     H3 { Text("${chartModel.emoji} ${chartModel.label}") }
 
@@ -75,7 +70,9 @@ fun ChartUi(
             }
             val chart = Chart(scopeElement, jso {
                 type = Type.line
-                val chartLabels = chartModel.dataSets.values.flatMap { it.keys }.toSet().toTypedArray()
+                val chartLabels = chartModel.dataSets.values.flatMap { it.keys }.toSet().map {
+                    it.truncateMidIfLengthy()
+                }.toTypedArray()
                 this.data = jso {
                     labels = chartLabels
                     datasets = dataSets.toTypedArray()
@@ -95,10 +92,12 @@ fun ChartUi(
                     onClick = { event: dynamic, elements: Array<dynamic> ->
                         if (elements.isNotEmpty()) {
                             val element = elements[0]
-                            val datasetIndex = element.datasetIndex
                             val index = element.index
                             val focusGroup = chartLabels[index as Int]
                             onDotClicked(focusGroup)
+                        } else {
+                            // Copy to clipboard
+
                         }
                     }
                 }
@@ -111,4 +110,18 @@ fun ChartUi(
         }
     }
 
+}
+
+/**
+ * Download https://dl.google.com/dl/android/maven2/androidx/activity/activity/1.10.1/activity-1.10.1-sources.jar, took 174 ms
+ * to
+ * Download https:..., took 174 ms
+ */
+private const val MAX_LENGTH = 40
+private fun String.truncateMidIfLengthy(): String {
+    return if (this.length > MAX_LENGTH) {
+        this.substring(0, MAX_LENGTH / 2) + "..." + this.substring(this.length - (MAX_LENGTH / 2), this.length)
+    } else {
+        this
+    }
 }
