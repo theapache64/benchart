@@ -7,7 +7,7 @@ plugins {
 }
 group = "com.theapache64.benchart"
 // [latest version - i promise!]
-version = "v26.06.13.1 (13 Jun 2026)"
+version = "v26.06.13.2 (13 Jun 2026)"
 
 // Add maven repositories
 repositories {
