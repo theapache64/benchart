@@ -89,20 +89,32 @@ object SummaryUtils {
             }
             percDiff = "${percDiff.asDynamic().toFixed(2)}".toFloat().absoluteValue as Float
 
-            val isHighGoodMetric = highIsGoodMetricRegex.containsMatchIn(title) || title.endsWith("%Count") // TODO: Make this come from a user preference
+            val isHighGoodMetric =
+                highIsGoodMetricRegex.containsMatchIn(title) || title.endsWith("%Count") // TODO: Make this come from a user preference
 
             val resultWord = if (diff == 0f) {
                 "equally"
             } else if (isHighGoodMetric == (diff > 0)) {
                 "better"
             } else {
-                "worse"
+                if (diff <= 50) {
+                    "degraded"
+                } else {
+                    "worse"
+                }
             }
             val symbol = if (diff > 0) "+" else ""
             val emoji = if (diff > 0 == isHighGoodMetric) "✅" else "❌"
             val badgeClass = when {
                 diff == 0f -> "secondary"
-                diff > 0 != isHighGoodMetric -> "danger"
+                diff > 0 != isHighGoodMetric -> {
+                    if (diff <= 50) {
+                        "warning"
+                    } else {
+                        "danger"
+                    }
+                }
+
                 else -> "success"
             }
             summaryNodes.add(

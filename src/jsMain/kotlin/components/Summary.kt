@@ -273,7 +273,7 @@ fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>, curren
 
                     Span(
                         attrs = {
-                            classes("badge", "bg-${node.badgeClass}")
+                            classes("badge", "text-bg-${node.badgeClass}")
 
                             attr("data-bs-toggle", "tooltip")
                             attr("data-bs-placement", "top")
