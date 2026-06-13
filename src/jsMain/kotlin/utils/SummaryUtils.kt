@@ -92,30 +92,50 @@ object SummaryUtils {
             val isHighGoodMetric =
                 highIsGoodMetricRegex.containsMatchIn(title) || title.endsWith("%Count") // TODO: Make this come from a user preference
 
+            val diffThreshold = 16
+            val absDiff = diff.absoluteValue
             val resultWord = if (diff == 0f) {
                 "equally"
             } else if (isHighGoodMetric == (diff > 0)) {
-                "better"
+                if (absDiff >= diffThreshold) {
+                    "better"
+                } else {
+                    "nominal"
+                }
             } else {
-                if (diff <= 50) {
+                if (absDiff <= diffThreshold) {
                     "degraded"
                 } else {
                     "worse"
                 }
             }
             val symbol = if (diff > 0) "+" else ""
-            val emoji = if (diff > 0 == isHighGoodMetric) "✅" else "❌"
+            val emoji = if (diff > 0 == isHighGoodMetric) {
+                "🟢"
+            } else {
+                if (absDiff <= diffThreshold) {
+                    "🟠"
+                } else {
+                    "🔴"
+                }
+            }
             val badgeClass = when {
                 diff == 0f -> "secondary"
                 diff > 0 != isHighGoodMetric -> {
-                    if (diff <= 50) {
+                    if (absDiff <= diffThreshold) {
                         "warning"
                     } else {
                         "danger"
                     }
                 }
 
-                else -> "success"
+                else -> {
+                    if(absDiff >= diffThreshold){
+                        "success"
+                    }else{
+                        "info"
+                    }
+                }
             }
             summaryNodes.add(
                 SummaryNode(
