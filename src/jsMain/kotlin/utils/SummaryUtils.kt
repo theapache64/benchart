@@ -14,6 +14,13 @@ object SummaryUtils {
         return label
     }
 
+    private const val METRIC_FRAME_COUNT = "frameCount"
+    private const val METRIC_TIME_TO_FULL_DISPLAY_MS = "timeToFullDisplayMs"
+    private const val METRIC_TIME_TO_INITIAL_DISPLAY_MS = "timeToInitialDisplayMs"
+    private const val METRIC_FRAME_OVER_RUN_MS = "frameOverrunMs"
+    private const val METRIC_FRAME_DURATION_CPU_MS = "frameDurationCpuMs"
+
+
     private val highIsGoodMetricRegex = arrayOf(
         "frameCount",
         "gfxFrameTotalCount",
@@ -130,9 +137,9 @@ object SummaryUtils {
                 }
 
                 else -> {
-                    if(absDiff >= diffThreshold){
+                    if (absDiff >= diffThreshold) {
                         "success"
-                    }else{
+                    } else {
                         "info"
                     }
                 }
@@ -156,7 +163,16 @@ object SummaryUtils {
         }
 
 
-        return Summary(title = title, summaryNodes)
+        val titleHint = when (chart.label) {
+            METRIC_FRAME_COUNT -> "The number of frames rendered (higher the better)"
+            METRIC_TIME_TO_FULL_DISPLAY_MS -> "Time to reach the first interactive screen"
+            METRIC_TIME_TO_INITIAL_DISPLAY_MS -> "Time to show the first frame"
+            METRIC_FRAME_OVER_RUN_MS -> "The amount of time a given frame misses its deadline by. Positive numbers indicate a dropped frame and visible jank or stutter. Negative numbers indicate how much faster a frame is than the deadline"
+            METRIC_FRAME_DURATION_CPU_MS -> "The amount of time the frame takes to be produced"
+            else -> null
+        }
+
+        return Summary(title = title, titleHint = titleHint, summaryNodes)
     }
 
     private fun getMetricUnit(title: String): MetricUnit? {

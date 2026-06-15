@@ -51,6 +51,7 @@ class SummaryNode(
 
 data class Summary(
     val title: String,
+    val titleHint: String?,
     val nodes: List<SummaryNode>
 )
 
@@ -72,7 +73,7 @@ fun SummaryContainer(
 
                 for (summary in summaries.first) {
                     key(summary.title + index) {
-                        SummaryUi(summary.title, summaries.second, summary.nodes, currentFocusedGroup)
+                        SummaryUi(summary.title, summary.titleHint, summaries.second, summary.nodes, currentFocusedGroup)
                         Br()
                     }
                 }
@@ -224,14 +225,26 @@ fun Strong(
 ) = TagElement(elementBuilder = Strong, applyAttrs = attrs, content = content)
 
 @Composable
-fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>, currentFocusGroup: String) {
+fun SummaryUi(title: String, titleHint: String?, avgOfCount: Int, summary: List<SummaryNode>, currentFocusGroup: String) {
     Div(
         attrs = {
             classes("row")
         }
     ) {
-        H3 {
-            Text(title)
+        H3(
+
+        ) {
+            Span(
+                attrs = {
+                    if (titleHint != null) {
+                        attr("data-bs-toggle", "tooltip")
+                        attr("data-bs-placement", "top")
+                        attr("title", titleHint)
+                    }
+                }
+            ) {
+                Text(title)
+            }
             if (avgOfCount >= 1) {
                 Small(
                     attrs = {
@@ -278,7 +291,10 @@ fun SummaryUi(title: String, avgOfCount: Int, summary: List<SummaryNode>, curren
                             attr("data-bs-toggle", "tooltip")
                             attr("data-bs-placement", "top")
 
-                            attr("title", if(node.diff ==0f) "both ${node.before}$beforePostfix" else "${node.before}$beforePostfix to ${node.after}$afterPostfix")
+                            attr(
+                                "title",
+                                if (node.diff == 0f) "both ${node.before}$beforePostfix" else "${node.before}$beforePostfix to ${node.after}$afterPostfix"
+                            )
                         }
                     ) {
                         Text(node.stateWord)
@@ -295,6 +311,7 @@ fun SummaryNode.getPostfix(num: Float): String {
         if (num.absoluteValue > 1) unit.plural else unit.singular
     } ?: ""
 }
+
 fun String.predictTitle(): String {
     var name = this
     if (name.endsWith("Mah", ignoreCase = false)) {
