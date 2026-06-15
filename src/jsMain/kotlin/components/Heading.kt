@@ -13,7 +13,7 @@ import org.jetbrains.compose.web.dom.Text
 
 
 // [latest version - i promise!]
-private const val version = "v26.06.13.3 (13 Jun 2026)"
+private const val version = "v26.06.15.0 (15 Jun 2026)"
 
 @Composable
 fun Heading() {
