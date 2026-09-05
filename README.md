@@ -2,6 +2,8 @@
 
 # 📊 benchart
 
+![](https://img.shields.io/badge/%23No_AI_used-00000)
+
 > A web tool to visualize and compare plain text data with Android Macrobenchmark data support
 
 ![](https://img.shields.io/github/deployments/theapache64/benchart/github-pages)
